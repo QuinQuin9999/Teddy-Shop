@@ -77,3 +77,9 @@ export const DropdownItem = styled.div`
     display: block;
   }
 `;
+export const WrapperContentPopup = styled.p`
+    cursor: pointer;
+    &:hover {
+        color: rgb(26, 148, 255);
+    }
+`
