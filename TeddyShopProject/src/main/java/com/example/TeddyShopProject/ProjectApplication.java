@@ -1,4 +1,4 @@
-package com.example.Project;
+package com.example.TeddyShopProject;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.example.Project.Entity;
+package com.example.TeddyShopProject.Entity;
 
 
 import java.util.ArrayList;

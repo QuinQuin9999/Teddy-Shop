@@ -1,8 +1,8 @@
-package com.example.Project.Controller;
+package com.example.TeddyShopProject.Controller;
 
-import com.example.Project.Service.CategoryServices;
-import com.example.Project.Entity.Category;
-import com.example.Project.Entity.Product;
+import com.example.TeddyShopProject.Service.CategoryServices;
+import com.example.TeddyShopProject.Entity.Category;
+import com.example.TeddyShopProject.Entity.Product;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;

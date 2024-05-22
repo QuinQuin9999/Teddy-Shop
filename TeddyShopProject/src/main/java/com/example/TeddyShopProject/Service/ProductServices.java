@@ -1,7 +1,7 @@
-package com.example.Project.Service;
+package com.example.TeddyShopProject.Service;
 
-import com.example.Project.Repo.ProductRepo;
-import com.example.Project.Entity.Product;
+import com.example.TeddyShopProject.Repo.ProductRepo;
+import com.example.TeddyShopProject.Entity.Product;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

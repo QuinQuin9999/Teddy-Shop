@@ -1,6 +1,6 @@
-package com.example.Project.Repo;
+package com.example.TeddyShopProject.Repo;
 
-import com.example.Project.Entity.Review;
+import com.example.TeddyShopProject.Entity.Review;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

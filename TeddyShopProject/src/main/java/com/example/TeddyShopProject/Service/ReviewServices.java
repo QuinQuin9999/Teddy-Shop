@@ -1,10 +1,9 @@
-package com.example.Project.Service;
+package com.example.TeddyShopProject.Service;
 
-import com.example.Project.Entity.Feedback;
-import com.example.Project.Repo.ReviewRepo;
-import com.example.Project.Entity.Review;
+import com.example.TeddyShopProject.Entity.Feedback;
+import com.example.TeddyShopProject.Repo.ReviewRepo;
+import com.example.TeddyShopProject.Entity.Review;
 import java.util.ArrayList;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
