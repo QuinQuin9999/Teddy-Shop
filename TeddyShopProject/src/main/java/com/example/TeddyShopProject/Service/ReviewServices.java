@@ -1,15 +1,16 @@
 package com.example.TeddyShopProject.Service;
 
 import com.example.TeddyShopProject.Entity.Feedback;
-import com.example.TeddyShopProject.Repo.ReviewRepo;
 import com.example.TeddyShopProject.Entity.Review;
+import com.example.TeddyShopProject.Repository.ReviewRepo;
+
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ReviewServices {
-    
+
     @Autowired
     private ReviewRepo repo;
 
@@ -17,18 +18,18 @@ public class ReviewServices {
         repo.save(reviews);
     }
 
-public Review addFeedbackToReview(String reviewId, Feedback feedback) {
-    Review review = repo.findById(reviewId).orElse(null);
+    public Review addFeedbackToReview(String reviewId, Feedback feedback) {
+        Review review = repo.findById(reviewId).orElse(null);
 
-    if (review == null) {
-        throw new IllegalArgumentException("Review not found for id: " + reviewId);
+        if (review == null) {
+            throw new IllegalArgumentException("Review not found for id: " + reviewId);
+        }
+        if (review.getFeedback() == null) {
+            review.setFeedback(new ArrayList<>());
+        }
+        review.addFeedback(feedback);
+        return repo.save(review);
     }
-    if (review.getFeedback() == null) {
-        review.setFeedback(new ArrayList<>());
-    }
-    review.addFeedback(feedback); 
-    return repo.save(review);
-}
 
     public void deleteReview(String reviewId) {
         repo.deleteById(reviewId);
@@ -40,31 +41,26 @@ public Review addFeedbackToReview(String reviewId, Feedback feedback) {
 
     public ArrayList<Review> getReviewsByProductId(String productId) {
         ArrayList<Review> list = new ArrayList<>();
-        
+
         Iterable<Review> reviews = repo.findAll();
-        for(Review review: reviews)
-        {
-            if(review.getProductId().equals(productId))
-            {
+        for (Review review : reviews) {
+            if (review.getProductId().equals(productId)) {
                 list.add(review);
             }
         }
         return list;
     }
 
-    public ArrayList<Review> getReviewsByUserId(String userId) {       
-        ArrayList<Review> list = new ArrayList<>(); 
-        
+    public ArrayList<Review> getReviewsByUserId(String userId) {
+        ArrayList<Review> list = new ArrayList<>();
+
         Iterable<Review> reviews = repo.findAll();
-        for(Review review: reviews)
-        {
-            if(review.getUserId().equals(userId))
-            {
+        for (Review review : reviews) {
+            if (review.getUserId().equals(userId)) {
                 list.add(review);
             }
         }
         return list;
     }
-    
-    
+
 }

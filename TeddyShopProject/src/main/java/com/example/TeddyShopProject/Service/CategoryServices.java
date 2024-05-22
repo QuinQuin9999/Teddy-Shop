@@ -1,8 +1,9 @@
 package com.example.TeddyShopProject.Service;
 
-import com.example.TeddyShopProject.Repo.CategoryRepo;
 import com.example.TeddyShopProject.Entity.Category;
 import com.example.TeddyShopProject.Entity.Product;
+import com.example.TeddyShopProject.Repository.CategoryRepo;
+
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,12 +12,12 @@ import org.springframework.stereotype.Service;
 public class CategoryServices {
     @Autowired
     private CategoryRepo repo;
-    
-    public void saveOrUpdate(Category categories){
+
+    public void saveOrUpdate(Category categories) {
         repo.save(categories);
     }
-    
-    public Iterable<Category> listAll(){
+
+    public Iterable<Category> listAll() {
         return this.repo.findAll();
     }
 
