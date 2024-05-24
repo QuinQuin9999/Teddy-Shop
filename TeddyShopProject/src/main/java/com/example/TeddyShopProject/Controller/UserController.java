@@ -29,7 +29,7 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @PostMapping("")
+    @PostMapping("/")
     public ResponseEntity<Object> createUser(@RequestBody Map<String, Object> obj) {
         try {
             String username = obj.get("username").toString();

@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { toSlug } from "../../../utils";
 import * as UserService from "../../../services/UserService";
-import { addShippingAddressUser } from "../../../redux/slices/userSlide";
+import { addShippingAddressUser } from "../../../redux/slices/userSlice";
 
 export const ShippingAddress = (props) => {
   const stateUserDetails = props.stateUserDetails;

@@ -40,6 +40,7 @@ const Register = () => {
           return;
         }
         try {
+          console.log("sign-up")
           const response = await fetch('http://localhost:8083/api/user/', {
             method: 'POST',
             headers: {
@@ -48,7 +49,7 @@ const Register = () => {
             body: JSON.stringify(formData),
           });
           const data = await response.json();
-          //console.log(data); 
+          console.log(data); 
           if (response.ok) {
             if (data.status === 'ERR' && data.message === 'The username is already') {
                 setUsernameExistError(false); 
@@ -107,8 +108,10 @@ const Register = () => {
             ]}
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 17 }}>
-        <StyleInput name="username" value={formData.username} onChange={handleChange}/>
-        {!usernameExistError && <p style={{ color: 'red', margin: '5px 0 0 0' }}>tài khoản đã tồn tại</p>}
+            <>
+              <StyleInput name="username" value={formData.username} onChange={handleChange}/>
+              {!usernameExistError && <p style={{ color: 'red', margin: '5px 0 0 0' }}>tài khoản đã tồn tại</p>}
+            </>
         </Form.Item>
 
         <Form.Item
@@ -122,8 +125,10 @@ const Register = () => {
             ]}
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 17 }}>
-        <StyleInput name="email" value={formData.email} onChange={handleChange}/>
-        {!emailExistError && <p style={{ color: 'red', margin: '5px 0 0 0' }}>Email đã tồn tại</p>}
+            <>
+              <StyleInput name="email" value={formData.email} onChange={handleChange}/>
+              {!emailExistError && <p style={{ color: 'red', margin: '5px 0 0 0' }}>Email đã tồn tại</p>}
+            </>
         </Form.Item>
         
         <Form.Item
@@ -137,7 +142,7 @@ const Register = () => {
             ]}
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 17 }}>
-        <StyleInput name="phone" value={formData.phone} onChange={handleChange}/>
+              <StyleInput name="phone" value={formData.phone} onChange={handleChange}/>
         </Form.Item>
 
         <Form.Item
@@ -150,8 +155,8 @@ const Register = () => {
                 },
             ]}
             labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17 }}>
-            <StyleInput name="address" value={formData.address} onChange={handleChange} />
+            wrapperCol={{ span: 17 }}>      
+              <StyleInput name="address" value={formData.address} onChange={handleChange} />
         </Form.Item>
 
         <Form.Item
@@ -165,8 +170,10 @@ const Register = () => {
             ]}
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 17 }}>
-        <StyleInputPassword name="password" value={formData.password} onChange={handleChange}/>
-        {!validatePass && <p style={{ color: 'red', margin: '5px 0 0 0' }}>Mật khẩu phải chứa ít nhất 8 kí tự bao gồm kí tự hoa, kí tự thường, chữ số và kí tự đặc biệt</p>}
+            <>
+              <StyleInputPassword name="password" value={formData.password} onChange={handleChange}/>
+              {!validatePass && <p style={{ color: 'red', margin: '5px 0 0 0' }}>Mật khẩu phải chứa ít nhất 8 kí tự bao gồm kí tự hoa, kí tự thường, chữ số và kí tự đặc biệt</p>}
+            </>
         </Form.Item>
         <Form.Item
             label="Nhập lại mật khẩu"
@@ -179,8 +186,10 @@ const Register = () => {
             ]}
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 17}}>
-        <StyleInputPassword name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
-        {!passwordMatch && <p style={{ color: 'red', margin: '5px 0 0 0' }}>Mật khẩu xác nhận không khớp</p>}
+            <>
+              <StyleInputPassword name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
+              {!passwordMatch && <p style={{ color: 'red', margin: '5px 0 0 0' }}>Mật khẩu xác nhận không khớp</p>}
+            </>
         </Form.Item>
         <Form.Item wrapperCol={{offset: 10,span: 14}}>
             <div onClick={handleSubmit}><Button type="primary" htmlType="submit">Đăng ký</Button></div>

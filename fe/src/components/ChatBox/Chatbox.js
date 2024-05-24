@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './chatstyle.css';
 import { useSelector } from 'react-redux';
-import { updateUser} from "../../redux/slices/userSlide";
+import { updateUser} from "../../redux/slices/userSlice";
 import * as UserService from "../../services/UserService";
 import { Button, Modal } from 'antd';
 

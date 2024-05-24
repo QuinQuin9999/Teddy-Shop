@@ -15,7 +15,7 @@ const initialState = {
   tempShipAddrNone: {},
 };
 
-export const userSlide = createSlice({
+export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
@@ -108,6 +108,6 @@ export const {
   deleteTempShipAddr,
   saveTempShipAddrNone,
   deleteTempShipAddrNone
-} = userSlide.actions;
+} = userSlice.actions;
 
-export default userSlide.reducer;
+export default userSlice.reducer;

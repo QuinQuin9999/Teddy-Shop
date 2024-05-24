@@ -65,14 +65,14 @@ const CollectionList = () => {
                         <Flex justify = 'space-between'>
                             <strong>{collection.name}</strong>
                             <Flex>
-                                <RenameCollectionBtn collectionId={collection._id} />
+                                <RenameCollectionBtn collectionId={collection.id} />
                                 <Popconfirm
                                     placement="topRight"
                                     title="Delete the Collection"
                                     description={`Are you sure to delete the Collection "${collection.name}"?`}
                                     onConfirm={() => {
-                                        setDeleteId(collection._id)
-                                        setCollections(collections.filter(item => item._id !== collection._id))
+                                        setDeleteId(collection.id)
+                                        setCollections(collections.filter(item => item.id !== collection.id))
                                         setIsFetchDeleteCollection(true)
                                         message.success('Delete Collection Success')
                                     }}
@@ -86,7 +86,7 @@ const CollectionList = () => {
                         </Flex>
                         </>,
                     children: <ProductList 
-                                collectionId={collection._id}
+                                collectionId={collection.id}
                                 collectionName={collection.name}
                                 productList={collection.productList}
                                 />

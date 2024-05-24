@@ -155,8 +155,11 @@ import {
 import {
   ProductOutlined, TruckOutlined, PhoneOutlined, LikeOutlined, RetweetOutlined, SafetyOutlined
 } from '@ant-design/icons';
+import { useDispatch } from 'react-redux';
+import { addCartProduct } from "../../../redux/slices/cartSlice"
 
 const Info = ({ productId }) => {
+  const dispatch = useDispatch()
   const [productData, setProductData] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
@@ -190,7 +193,7 @@ const Info = ({ productId }) => {
   }, [productData]);
 
   const handleBuyNow = () => {
-    
+    dispatch(addCartProduct({...productData, price: productData.productPrice[selectedSize], amount: quantity}));
   };
 
   if (!productData) {

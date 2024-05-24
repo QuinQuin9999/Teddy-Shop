@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Form, message, Checkbox } from 'antd';
 import { StyleContainer, StyleLeftCon, StyleRightCon, StyleInput, StyleInputPassword } from './style';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { updateUser } from '../../redux/slices/userSlide';
+import { updateUser } from '../../redux/slices/userSlice';
 import { useSelector, useDispatch } from 'react-redux';
 const SignIn = () => {
     const location = useLocation();
@@ -49,7 +49,7 @@ const SignIn = () => {
                     localStorage.removeItem('rememberMe');
                     localStorage.removeItem('email'); // Xóa thông tin đăng nhập nếu không được chọn
                 }
-                if (_id === "663acfd6617eb93a25db6bab"){
+                if (_id === "665077eba8c8ec39d663256b"){
                     data.data.isAdmin = true;
                 }
                 console.log(data.data);

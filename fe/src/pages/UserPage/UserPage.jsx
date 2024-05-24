@@ -5,7 +5,7 @@ import ChangePassword from '../../components/ChangePassword/ChangePassword';
 import OrderHis from '../../components/OrderHis/OrderHis';
 import * as UserService from '../../services/UserService'
 // import { useDispatch } from 'react-redux';
-// import { updateUser } from '../../redux/slices/userSlide';
+// import { updateUser } from '../../redux/slices/userSlice';
 // import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 

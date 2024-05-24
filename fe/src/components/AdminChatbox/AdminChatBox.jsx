@@ -3,7 +3,7 @@ import { Card } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { updateUser} from "../../redux/slices/userSlide";
+import { updateUser} from "../../redux/slices/userSlice";
 import * as UserService from "../../services/UserService";
 import "./style.css"
 

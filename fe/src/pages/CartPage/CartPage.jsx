@@ -20,8 +20,8 @@ import {
   deleteTempChecklist,
   saveTempOther,
   deleteTempOther
-} from "../../redux/slices/cartSlide";
-import { resetUser, updateUser, saveTempShipAddr, deleteTempShipAddr, saveTempShipAddrNone, deleteTempShipAddrNone } from "../../redux/slices/userSlide";
+} from "../../redux/slices/cartSlice";
+import { resetUser, updateUser, saveTempShipAddr, deleteTempShipAddr, saveTempShipAddrNone, deleteTempShipAddrNone } from "../../redux/slices/userSlice";
 import * as UserService from "../../services/UserService";
 import { convertPrice } from "../../utils";
 import {
@@ -141,6 +141,8 @@ const CartPage = () => {
   useEffect(() => {
     const queryParameters = new URLSearchParams(window.location.search)
     let params = new URL(document.location.toString()).searchParams;
+    console.log("cart", cart);
+    console.log("cart", user);
     console.log("queryParameters: ",queryParameters.get("vnp_ResponseCode"))
     console.log("useSearchParms: ",searchParams.get("vnp_ResponseCode"))
     console.log("Parms: ",params.toString())
@@ -238,7 +240,7 @@ const CartPage = () => {
       window.open(link, "_self");
       return
     }
-    console.log("create order without peyment vnpay")
+    console.log("create order without payment vnpay")
     createOrder(false);
   };
   const createOrder = async (isPaid) => {
@@ -517,7 +519,7 @@ const CartPage = () => {
                                 checked={listChecked.includes(order?.id)}
                               ></CustomCheckbox>
                               <img
-                                src={order?.img}
+                                src={order?.productImg}
                                 style={{
                                   width: "77px",
                                   height: "79px",
@@ -532,7 +534,7 @@ const CartPage = () => {
                                   whiteSpace: "nowrap",
                                 }}
                               >
-                                {order?.name}
+                                {order?.productName}
                               </div>
                             </div>
                             <div

@@ -31,8 +31,7 @@ public class CollectionController {
         try {
             String name = obj.get("name").toString();
             if (name == null) {
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ErrorResponse("The input is required", "ERR"));
+                return ResponseEntity.status(HttpStatus.OK).body(new ErrorResponse("The input is required", "ERR"));
             }
             ObjectMapper mapper = new ObjectMapper();
             ArrayList<Product> productList = mapper.convertValue(obj.get("productList"),

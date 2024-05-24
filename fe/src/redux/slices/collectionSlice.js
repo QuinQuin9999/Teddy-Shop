@@ -19,7 +19,7 @@ const collectionSlice = createSlice({
     },
     removeProducts: (state, action) => {
         state.collections = state.collections.map(collection => {
-          if (collection._id === action.payload._id) {
+          if (collection.id === action.payload.id) {
             return action.payload
           }
           return collection
@@ -27,7 +27,7 @@ const collectionSlice = createSlice({
     },
     addProducts: (state, action) => {
         state.collections = state.collections.map(collection => {
-          if (collection._id === action.payload.id) {
+          if (collection.id === action.payload.id) {
             collection.productList = [...collection.productList, ...action.payload.productList]
           }
           return collection
@@ -35,7 +35,7 @@ const collectionSlice = createSlice({
     },
     renameCollection: (state, action) => {
       state.collections = state.collections.map(collection => {
-        if (collection._id === action.payload.id) {
+        if (collection.id === action.payload.id) {
           collection.name = action.payload.newName
         }
         return collection

@@ -11,8 +11,8 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import productReducer from "./slices/productSlice";
-import userReducer from "./slices/userSlide";
-import cartReducer from "./slices/cartSlide";
+import userReducer from "./slices/userSlice";
+import cartReducer from "./slices/cartSlice";
 import collectionReducer from "./slices/collectionSlice"
 
 const persistConfig = {

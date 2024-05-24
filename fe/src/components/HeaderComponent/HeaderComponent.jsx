@@ -81,8 +81,8 @@ import axios from 'axios';
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { resetUser } from "../../redux/slices/userSlide";
-import { resetCart } from "../../redux/slices/cartSlide";
+import { resetUser } from "../../redux/slices/userSlice";
+import { resetCart } from "../../redux/slices/cartSlice";
 import * as UserService from "../../services/UserService";
 import { FaUserCircle } from "react-icons/fa";
 

@@ -74,7 +74,7 @@ const AdminUser = () => {
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://localhost:8083/api/user/updateUser/${userData._id}`, {
+      const response = await fetch(`http://localhost:8083/api/user/updateUser/${userData.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ const AdminUser = () => {
       render: (text, record) => (
         <span>
           <EditOutlined style={{ color: 'red', fontSize: '30px', cursor: 'pointer' }} onClick={() => showModal(record)} />
-          <DeleteOutlined style={{ marginLeft: 8, color: 'orange', fontSize: '30px', cursor: 'pointer' }} onClick={() => handleDelete(record._id)} />
+          <DeleteOutlined style={{ marginLeft: 8, color: 'orange', fontSize: '30px', cursor: 'pointer' }} onClick={() => handleDelete(record.id)} />
         </span>
       ),
     },

@@ -25,7 +25,7 @@ const OrderHistory = () => {
       render: (orderItems) => (
         <span>
           {orderItems.map((item) => (
-            <div key={item._id}>{item.name}</div>
+            <div key={item.id}>{item.name}</div>
           ))}
         </span>
       ),
@@ -57,7 +57,7 @@ const OrderHistory = () => {
           <Button type="default" size="small" onClick={() => handleEditOrder(record)}>
             Sửa
           </Button>
-          <Popconfirm title="Bạn có chắc chắn muốn xóa đơn hàng này?" onConfirm={() => handleDeleteOrder(record._id)}>
+          <Popconfirm title="Bạn có chắc chắn muốn xóa đơn hàng này?" onConfirm={() => handleDeleteOrder(record.id)}>
             <Button type="danger" size="small">
               Xóa
             </Button>
@@ -84,14 +84,14 @@ const OrderHistory = () => {
 
   const handleOpenModal = (record) => {
     setSelectedOrder(record);
-    setSelectedOrderId(record._id);
+    setSelectedOrderId(record.id);
     setEditMode(false);
     setModalVisible(true);
   };
 
   const handleEditOrder = (record) => {
     setSelectedOrder(record);
-    setSelectedOrderId(record._id);
+    setSelectedOrderId(record.id);
     setEditMode(true);
     setModalVisible(true);
   };
@@ -103,7 +103,7 @@ const OrderHistory = () => {
   const handleDeleteOrder = async (orderId) => {
     try {
       await axios.delete(`http://localhost:8083/api/admin/orders/delete-order/${orderId}`);
-      setOrderHistory(orderHistory.filter(order => order._id !== orderId));
+      setOrderHistory(orderHistory.filter(order => order.id !== orderId));
       notification.success({ message: 'Đơn hàng đã được xóa thành công' });
     } catch (error) {
       console.error('Error deleting order:', error);
@@ -114,7 +114,7 @@ const OrderHistory = () => {
   const handleSubmit = async (values) => {
     try {
       await axios.put(`http://localhost:8083/api/admin/orders/update-order/${selectedOrderId}`, values);
-      setOrderHistory(orderHistory.map(order => (order._id === selectedOrderId ? { ...order, ...values } : order)));
+      setOrderHistory(orderHistory.map(order => (order.id === selectedOrderId ? { ...order, ...values } : order)));
       notification.success({ message: 'Đơn hàng đã được cập nhật thành công' });
       setModalVisible(false);
     } catch (error) {

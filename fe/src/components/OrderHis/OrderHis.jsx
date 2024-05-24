@@ -12,8 +12,8 @@ const OrderHistory = () => {
   const columns = [
     {
       title: 'ID',
-      dataIndex: '_id',
-      key: '_id',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
       title: 'Sản phẩm',
@@ -22,7 +22,7 @@ const OrderHistory = () => {
       render: (orderItems) => (
         <span>
           {orderItems.map((item) => (
-            <div key={item._id}>{item.name}</div>
+            <div key={item.id}>{item.name}</div>
           ))}
         </span>
       ),
@@ -74,7 +74,7 @@ const OrderHistory = () => {
 
   const handleOpenModal = (record) => {
     setSelectedOrder(record);
-    setSelectedOrderId(record._id);
+    setSelectedOrderId(record.id);
     setModalVisible(true);
   };
 
@@ -85,7 +85,7 @@ const OrderHistory = () => {
   return (
     <div style={{ }}>
       <h1>Lịch sử mua hàng</h1>
-      <Table columns={columns} dataSource={orderHistory} loading={loading} rowKey="_id" />
+      <Table columns={columns} dataSource={orderHistory} loading={loading} rowKey="id" />
 
       <Modal
         title={`Chi tiết đơn hàng #${selectedOrderId}`}
