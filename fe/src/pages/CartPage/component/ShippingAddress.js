@@ -1,24 +1,19 @@
-import React, { useEffect } from "react";
-import axios from "axios";
-import ModalComponent from "../../../components/ModalComponent/ModalComponent";
-import Loading from "../../../components/LoadingComponent/Loading";
-import InputComponent from "../../../components/InputComponent/InputComponent";
 import {
-  Form,
-  Radio,
-  Space,
   Button,
   Col,
-  Row,
   Input,
+  Radio,
+  Row,
   Select,
-  message,
+  Space,
+  message
 } from "antd";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import Loading from "../../../components/LoadingComponent/Loading";
+import ModalComponent from "../../../components/ModalComponent/ModalComponent";
 import { toSlug } from "../../../utils";
-import * as UserService from "../../../services/UserService";
-import { addShippingAddressUser } from "../../../redux/slices/userSlice";
 
 export const ShippingAddress = (props) => {
   const stateUserDetails = props.stateUserDetails;
@@ -167,7 +162,7 @@ export const AddShippingAddress = (props) => {
           let t = item;
           let sl = toSlug(item?.province_name);
           temp.push({
-            value: t.province_id,
+            value: t.provinceid,
             slug: sl,
             label: t.province_name,
           });
@@ -193,7 +188,7 @@ export const AddShippingAddress = (props) => {
           let t = item;
           let sl = toSlug(item?.district_name);
           temp.push({
-            value: t.district_id,
+            value: t.districtid,
             slug: sl,
             label: t.district_name,
           });
@@ -219,7 +214,7 @@ export const AddShippingAddress = (props) => {
           let t = item;
           let sl = toSlug(item?.ward_name);
           temp.push({
-            value: t.ward_id,
+            value: t.wardid,
             slug: sl,
             label: t.ward_name,
           });

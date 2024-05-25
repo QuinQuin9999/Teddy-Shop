@@ -9,7 +9,7 @@ export const ButtonCustom = styled(Button)`
 `
 export const SizeMenu = styled.div`
   padding: 10px;
-  width: 500px;
+  width: 510px;
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);

@@ -6,23 +6,79 @@ import java.util.ArrayList;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+// @Document(collection = "categories")
+// public class Category {
+
+//     @Id
+//     private String _id;
+//     private String categoryName;
+//     private String href;
+//     private ArrayList<Product> list;
+
+//     public Category() {
+//         this.list = new ArrayList<>();
+//     }
+    
+//     public Category(String _id, String categoryName, ArrayList<Product> list) {
+//         this._id = _id;
+//         this.categoryName = categoryName;
+//         this.list = list != null ? list : new ArrayList<>();
+//     }
+
+//     public String getId() {
+//         return _id;
+//     }
+
+//     public String getCategoryName() {
+//         return categoryName;
+//     }
+
+//     public ArrayList<Product> getList() {
+//         return list;
+//     }
+
+//     public String getHref() {
+//         return href;
+//     }
+
+//     public void setId(String _id) {
+//         this._id = _id;
+//     }
+
+//     public void setCategoryName(String categoryName) {
+//         this.categoryName = categoryName;
+//     }
+
+//     public void setHref(String href) {
+//         this.href = href;
+//     }
+
+//     public void setList(ArrayList<Product> list) {
+//         this.list = list;
+//     }
+    
+//     public void addProduct(Product product) {
+//         this.list.add(product);
+//     }
+    
+// }
+
 @Document(collection = "categories")
 public class Category {
 
     @Id
     private String _id;
     private String categoryName;
-    private String href;
-    private ArrayList<Product> list;
+    private ArrayList<SubCategory> subCategories;
 
     public Category() {
-        this.list = new ArrayList<>();
+        this.subCategories = new ArrayList<>();
     }
-    
-    public Category(String _id, String categoryName, ArrayList<Product> list) {
+
+    public Category(String _id, String categoryName, ArrayList<SubCategory> subCategories) {
         this._id = _id;
         this.categoryName = categoryName;
-        this.list = list != null ? list : new ArrayList<>();
+        this.subCategories = subCategories != null ? subCategories : new ArrayList<>();
     }
 
     public String getId() {
@@ -33,12 +89,8 @@ public class Category {
         return categoryName;
     }
 
-    public ArrayList<Product> getList() {
-        return list;
-    }
-
-    public String getHref() {
-        return href;
+    public ArrayList<SubCategory> getSubCategories() {
+        return subCategories;
     }
 
     public void setId(String _id) {
@@ -49,16 +101,11 @@ public class Category {
         this.categoryName = categoryName;
     }
 
-    public void setHref(String href) {
-        this.href = href;
+    public void setSubCategories(ArrayList<SubCategory> subCategories) {
+        this.subCategories = subCategories;
     }
 
-    public void setList(ArrayList<Product> list) {
-        this.list = list;
+    public void addSubCategory(SubCategory subCategory) {
+        this.subCategories.add(subCategory);
     }
-    
-    public void addProduct(Product product) {
-        this.list.add(product);
-    }
-    
 }

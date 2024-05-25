@@ -1,10 +1,12 @@
 package com.example.TeddyShopProject.Controller;
 
 import com.example.TeddyShopProject.Entity.Feedback;
+import com.example.TeddyShopProject.Entity.Product;
 import com.example.TeddyShopProject.Service.ReviewServices;
 import com.example.TeddyShopProject.Entity.Review;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +52,12 @@ public class ReviewController {
     private void deleteReview(@PathVariable String reviewId) {
         reviewServices.deleteReview(reviewId);
     }
+
+    @GetMapping(value= "/getAll")
+    private Iterable<Review>getReviews()
+    {
+        return reviewServices.listAll();
+    }
     
     // Lấy review theo ID
     @GetMapping("/search/{reviewId}")
@@ -67,6 +75,12 @@ public class ReviewController {
     @GetMapping("/searchByUser/{userId}")
     private ArrayList<Review> getReviewsByUserId(@PathVariable String userId) {
         return reviewServices.getReviewsByUserId(userId);
+    }
+
+    //Xóa 1 feedback ra khỏi review
+    @DeleteMapping("/{reviewId}/feedback/{feedbackId}")
+    public Review removeFeedback(@PathVariable String reviewId, @PathVariable String feedbackId) {
+        return reviewServices.removeFeedbackFromReview(reviewId,feedbackId);
     }
 
 }

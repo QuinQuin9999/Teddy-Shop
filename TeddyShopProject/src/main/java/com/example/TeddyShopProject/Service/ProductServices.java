@@ -83,6 +83,20 @@ public class ProductServices {
         return productsBySize;
     }
 
+    public ArrayList<String> getAllTypes() {
+        ArrayList<String> allTypes = new ArrayList<>();
+        Iterable<Product> allProducts = repo.findAll();
+        for (Product product : allProducts) {
+            String type = product.getProductType();
+            if (type != null) {
+                if(!allTypes.contains(type)) {
+                    allTypes.add(type);
+                }
+            }
+        }
+        return allTypes;
+    }
+
     public ArrayList<String> getAllSizes() {
         ArrayList<String> allSizes = new ArrayList<>();
         Iterable<Product> allProducts = repo.findAll();

@@ -1,5 +1,5 @@
-import React, { useState,  } from 'react';
-import { List, Image, Space, Typography, Card } from 'antd';
+import { Card, Image, List, Space, Typography } from 'antd';
+import React, { useState, } from 'react';
 
 const OrderDetail = () => {
   // const [orderDetail, setOrderDetail] = useState(null);
@@ -28,14 +28,14 @@ const OrderDetail = () => {
     },
     orderItems: [
       {
-        _id: '1',
+        id: '1',
         image: 'https://via.placeholder.com/150', // Placeholder image
         name: 'chuột',
         amount: 2,
         price: 200000,
       },
       {
-        _id: '2',
+        id: '2',
         image: 'https://via.placeholder.com/150', // Placeholder image
         name: 'chuột',
         amount: 1,

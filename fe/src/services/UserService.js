@@ -11,28 +11,28 @@ export const axiosJWT = axios.create()
 //     return res.data
 // }
 
-export const getDetailsUser = async (id, access_token) => {
+export const getDetailsUser = async (id, accessToken) => {
     const res = await axiosJWT.get(`http://localhost:8083/api/user/get-details/${id}`, {
         headers: {
-            token: `Bearer ${access_token}`,
+            token: `Bearer ${accessToken}`,
         }
     },)
     return res.data
 }
 
-// export const deleteUser = async (id, access_token, data) => {
+// export const deleteUser = async (id, accessToken, data) => {
 //     const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/user/delete-user/${id}`, data, {
 //         headers: {
-//             token: `Bearer ${access_token}`,
+//             token: `Bearer ${accessToken}`,
 //         }
 //     },)
 //     return res.data
 // }
 
-export const getAllUser = async (access_token) => {
+export const getAllUser = async (accessToken) => {
     const res = await axiosJWT.get(`http://localhost:8083/api/user/getAllUsers`, {
         headers: {
-            token: `Bearer ${access_token}`,
+            token: `Bearer ${accessToken}`,
         }
     },)
     return res.data
@@ -60,11 +60,11 @@ export const logoutUser = async () => {
     //return res.data
 }
 
-export const updateUser = async (id, data, access_token) => {
+export const updateUser = async (id, data, accessToken) => {
     console.log("update user service: ", id)
     const res = await axiosJWT.put(`http://localhost:8083/api/user/updateUser/${id}`, data, {
         headers: {
-            token: `Bearer ${access_token}`,
+            token: `Bearer ${accessToken}`,
         }
     })
     return res.data
@@ -74,7 +74,7 @@ export const addShippingAddress = async (body) => {
     console.log("add shipping address serviec: ", body);
     const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/user/shipping-address`,body,{
         headers: {
-            token: `Bearer ${body.access_token}`,
+            token: `Bearer ${body.accessToken}`,
         }
     });
     return res.data;
@@ -83,15 +83,15 @@ export const getShippingAddress = async (body) => {
     console.log("get shipping address serviec: ", body.userId);
     const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/shipping-address`,body.userId,{
         headers: {
-            token: `Bearer ${body.access_token}`,
+            token: `Bearer ${body.accessToken}`,
         }
     });
     return res.data;
 }
-// export const deleteManyUser = async (data, access_token) => {
+// export const deleteManyUser = async (data, accessToken) => {
 //     const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/user/delete-many`, data, {
 //         headers: {
-//             token: `Bearer ${access_token}`,
+//             token: `Bearer ${accessToken}`,
 //         }
 //     })
 //     return res.data

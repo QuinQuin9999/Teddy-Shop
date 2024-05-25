@@ -11,6 +11,9 @@ import AdminCollectionPage from "../../components/AdminCollection/AdminCollectio
 // import CategoryManager from "../../components/CategoryManager/CategoryManager";
 import AdminChatBox from "../../components/AdminChatbox/AdminChatBox";
 import OrderHistory from "../../components/OrderHistory"; 
+import AdminProduct from "../../components/AdminProduct/AdminProduct";
+import AdminReview from "../../components/AdminReview/AdminReview";
+import AdminCategory from "../../components/AdminCategory/AdminCategory";
 
 const AdminPage = () => {
   const [keySelected, setKeySelected] = useState("");
@@ -33,18 +36,18 @@ const AdminPage = () => {
 
   const renderPage = (key) => {
     switch (key) {
-      // case "reviews":
-      //   return <AdminReview />;
-      // case "products":
-      //   return <AdminProduct />;
+      case "reviews":
+        return <AdminReview />;
+      case "products":
+        return <AdminProduct />;
       // case "carousels":
       //   return <AdminCarousel />;
       case "users":
         return <AdminUser />;
       case "collections": 
         return <AdminCollectionPage />;
-      // case "categories": 
-      //   return <CategoryManager/>;
+      case "categories": 
+        return <AdminCategory/>;
       case "chat": 
         return <AdminChatBox/>;
       case "orders":

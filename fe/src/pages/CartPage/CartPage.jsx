@@ -1,48 +1,47 @@
+import {
+    CheckCircleFilled,
+    DeleteOutlined,
+    InboxOutlined,
+    MinusOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
+import { Form, message, Radio, Space } from "antd";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import StepComponent from "../../components/StepConponent/StepComponent";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import {
-  DeleteOutlined,
-  MinusOutlined,
-  PlusOutlined,
-  CheckCircleFilled,
-  InboxOutlined,
-} from "@ant-design/icons";
-import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
-import {
-  ShippingAddress,
-  AddShippingAddress,
-} from "./component/ShippingAddress";
-import {
-  increaseProductAmount,
-  decreaseProductAmount,
-  removeCartProduct,
-  saveTempChecklist,
-  deleteTempChecklist,
-  saveTempOther,
-  deleteTempOther
+    decreaseProductAmount,
+    deleteTempChecklist,
+    deleteTempOther,
+    increaseProductAmount,
+    removeCartProduct,
+    saveTempChecklist,
+    saveTempOther
 } from "../../redux/slices/cartSlice";
-import { resetUser, updateUser, saveTempShipAddr, deleteTempShipAddr, saveTempShipAddrNone, deleteTempShipAddrNone } from "../../redux/slices/userSlice";
+import { deleteTempShipAddr, resetUser, saveTempShipAddr, saveTempShipAddrNone } from "../../redux/slices/userSlice";
+import * as OrderService from "../../services/OrderService";
 import * as UserService from "../../services/UserService";
 import { convertPrice } from "../../utils";
 import {
-  WrapperLeft,
-  WrapperStyleHeader,
-  WrapperStyleHeaderDelivery,
-  WrapperListOrder,
-  WrapperItemOrder,
-  WrapperCountOrder,
-  WrapperInfo,
-  WrapperInputNumber,
-  WrapperRight,
-  WrapperTotal,
-  CustomCheckbox,
+    AddShippingAddress,
+    ShippingAddress,
+} from "./component/ShippingAddress";
+import {
+    CustomCheckbox,
+    WrapperCountOrder,
+    WrapperInfo,
+    WrapperInputNumber,
+    WrapperItemOrder,
+    WrapperLeft,
+    WrapperListOrder,
+    WrapperRight,
+    WrapperStyleHeader,
+    WrapperStyleHeaderDelivery,
+    WrapperTotal,
 } from "./style";
-import { useSelector } from "react-redux";
-import { useState, useEffect, useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Form, message, Radio, Space, Input } from "antd";
-import { useDispatch } from "react-redux";
-import * as OrderService from "../../services/OrderService";
 
 const CartPage = () => {
   const cart = useSelector((state) => state.cart);
@@ -258,7 +257,7 @@ const CartPage = () => {
     let shippingAddressNoneUser = shippingAddressNone;
     console.log("state shippingAddressNoneUser got: ",shippingAddressNoneUser);
     if (
-      user?.access_token &&
+      user?.accessToken &&
       cart?.orderItems.filter((item) => savedListCheck.includes(item.id))
     ) {
       console.log("check pass(with user) ");
@@ -268,7 +267,7 @@ const CartPage = () => {
       console.log("addr: ", addr)
       mutationAddOrder.mutate(
         {
-          token: user?.access_token,
+          token: user?.accessToken,
           orderItems: cart?.orderItems.filter((item) =>
             savedListCheck.includes(item.id)
           ),

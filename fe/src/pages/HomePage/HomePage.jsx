@@ -1,11 +1,9 @@
-import CardProductComponent from "../../components/CardProductComponent/CardProductComponent"
-import HeaderComponent from "../../components/HeaderComponent/HeaderComponent";
-import SelectSizeComponent from "../../components/SelectSizeComponent/SelectSizeComponent";
-
+import ImageSlider from "../../components/ImageSlider/ImageSlider";
 
 const HomePage = () => {
     return(
         <div>
+            <ImageSlider/>
         </div>
     )
 }

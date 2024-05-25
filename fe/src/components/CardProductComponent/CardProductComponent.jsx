@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button } from 'antd';
 import { WrapperCard, DiscountTag, ButtonShow, ShoppingCart} from './style';
+import { DoubleRightOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom';
 import { convertPrice } from '../../utils';
 import { useDispatch } from 'react-redux';
@@ -26,13 +27,8 @@ const CardProductComponent = ({ id, productName, productType, productImg, produc
     navigate(`/ProductDetail/${id}`);
   }
 
-  const handleAddToCart = () => {
-    // let amount=1;
-    // dispatch(addCartProduct({img,name,price,discount,type,id,amount}));
-  }
-
   return (
-    <WrapperCard hoverable style={{ borderRadius: '4px', overflow: 'hidden' }} onClick={handleViewProduct}>
+    <WrapperCard hoverable style={{ borderRadius: '4px', overflow: 'hidden' }} >
       <img
         alt={productName}
         src={productImg}
@@ -53,9 +49,9 @@ const CardProductComponent = ({ id, productName, productType, productImg, produc
           {discountPercentage && <DiscountTag>{discountPercentage}</DiscountTag>}
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <ButtonShow 
-          onClick={() => handleAddToCart()}>
-            Thêm vào giỏ
-            <ShoppingCart/>
+          onClick={() => handleViewProduct()}>
+            Xem chi tiết
+            <DoubleRightOutlined />
           </ButtonShow>
             
         </div>

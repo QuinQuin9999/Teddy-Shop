@@ -1,11 +1,11 @@
+import axios from "axios";
 import { axiosJWT } from "./UserService";
-import axios from "axios"
 
-export const createOrder = async(data, access_token) => {
-  if(access_token != "none"){
+export const createOrder = async(data, accessToken) => {
+  if(accessToken != "none"){
     const res = await axiosJWT.post(`http://localhost:8083/api/OrderDetail/createOrder/${data.user}`, data, {
       headers: {
-        token: `Bearer ${access_token}`,
+        token: `Bearer ${accessToken}`,
       }
     });
     console.log("Order service return(with user): ", res.data)
