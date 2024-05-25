@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Table, Modal, Form, Input, message } from 'antd';
-import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons'
-import { useRef } from 'react'
+import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Form, Input, message, Modal, Table } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 
 const AdminUser = () => {
    
@@ -136,9 +135,9 @@ const AdminUser = () => {
   const columns = [
     {
       title: 'ID',
-      dataIndex: '_id',
-      key: '_id',
-      ...getColumnSearchProps('_id'),
+      dataIndex: 'id',
+      key: 'id',
+      ...getColumnSearchProps('id'),
     },
     {
       title: 'Tên người dùng',
@@ -184,7 +183,7 @@ const AdminUser = () => {
 
   return (
     <div style={{ width: '90%', margin: '0 auto' }}>
-      <Table columns={columns} dataSource={users} rowKey="_id" />
+      <Table columns={columns} dataSource={users} rowKey="id" />
       <Modal
         title="Cập nhật thông tin"
         visible={updateModalVisible}

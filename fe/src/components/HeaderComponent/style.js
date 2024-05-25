@@ -1,26 +1,13 @@
-// import {Row } from 'antd';
-// import styled from 'styled-components';
-
-// export const WrapperHeader = styled(Row)`
-//   padding: 10px 20px;
-//   background-color: #F0DACD;
-// `
-
 import styled from "styled-components";
 
 export const WrapperHeader = styled.div`
-  width: 100%;
-  background-color: #F0DACD;
+  background: #F0DACD;
   padding: 10px 20px;
   box-shadow: 0 2px 8px #f0f1f2;
 `;
 
 export const Logo = styled.img`
-  height: 50px;
-`;
-
-export const LogoName = styled.h2`
-  color: #BF8B70;
+  width: 100px;
 `;
 
 export const Nav = styled.nav`
@@ -35,18 +22,8 @@ export const Nav = styled.nav`
     font-weight: bold;
 
     &:hover {
-      color: #7a3e01;
+      color: #CC7A33;
     }
-  }
-`;
-
-export const PhoneNumber = styled.a`
-  color: #6b2f90;
-  font-size: 16px;
-  font-weight: bold;
-
-  &:hover {
-    color: #d4006b;
   }
 `;
 
@@ -54,32 +31,36 @@ export const DropdownMenu = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #ddd;
   border-radius: 4px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-  padding: 0px 0px;
-  width: fit-content;
-  min-width: 210px;
+  display: flex;
+  padding: 10px 0px;
+  z-index: 10;
+  flex-direction: row;
 `;
 
 export const DropdownItem = styled.div`
-  padding: 12px 8px;
-  background-color: #F7F2EC;
-  border-radius: 4px;
+  padding: 4px 8px;
+  white-space: nowrap;
+`;
+
+
+export const SubCategoryMenu = styled.div`
+  padding-left: 16px;
+  font-size: 14px;
+`;
+
+export const WrapperContentPopup = styled.div`
+  cursor: pointer;
   &:hover {
-    color: #7a3e01;
-    background-color: #F0DACD;
-  }
-  a {
-    text-decoration: none;
-    color: #994C00;
-    display: block;
+    background-color: #f5f5f5;
   }
 `;
-export const WrapperContentPopup = styled.p`
-    cursor: pointer;
-    &:hover {
-        color: rgb(26, 148, 255);
-    }
-`
+
+export const CategorySection = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+`;

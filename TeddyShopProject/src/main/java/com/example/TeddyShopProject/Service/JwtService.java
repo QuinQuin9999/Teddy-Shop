@@ -1,15 +1,17 @@
 package com.example.TeddyShopProject.Service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.crypto.SecretKey;
+
 // import io.jsonwebtoken.security.Keys;
 // import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 
 @Service
 public class JwtService {
@@ -57,7 +59,7 @@ public class JwtService {
             Map<String, Object> response = new HashMap<>();
             response.put("status", "OK");
             response.put("message", "SUCCESS");
-            response.put("access_token", newAccessToken);
+            response.put("accessToken", newAccessToken);
             return response;
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();

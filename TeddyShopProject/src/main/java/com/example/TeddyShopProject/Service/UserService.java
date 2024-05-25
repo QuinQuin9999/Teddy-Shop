@@ -1,5 +1,10 @@
 package com.example.TeddyShopProject.Service;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -8,11 +13,6 @@ import com.example.TeddyShopProject.DTO.ApiResponse;
 import com.example.TeddyShopProject.Entity.User;
 import com.example.TeddyShopProject.Repository.UserRepository;
 import com.example.TeddyShopProject.Util.ShippingAddress;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserService {
@@ -55,11 +55,11 @@ public class UserService {
         Map<String, Object> payload = new HashMap<>();
         payload.put("id", checkUser.getId());
         payload.put("issuedAt", issuedAt.getTime());
-        String access_token = jwtService.generateAccessToken(payload);
-        String refresh_token = jwtService.generateRefreshToken(payload);
+        String accessToken = jwtService.generateAccessToken(payload);
+        String refreshToken = jwtService.generateRefreshToken(payload);
 
-        checkUser.setAccessToken(access_token);
-        checkUser.setRefreshToken(refresh_token);
+        checkUser.setAccessToken(accessToken);
+        checkUser.setRefreshToken(refreshToken);
         checkUser.setCreateTokenAt(issuedAt);
         userRepository.save(checkUser);
 

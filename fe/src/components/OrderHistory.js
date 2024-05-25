@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Modal, Button, Space, notification, Popconfirm, Form, Input, Select } from 'antd';
+import { Button, Form, Input, Modal, notification, Popconfirm, Select, Space, Table } from 'antd';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 const { Option } = Select;
 
@@ -15,8 +15,8 @@ const OrderHistory = () => {
   const columns = [
     {
       title: 'ID',
-      dataIndex: '_id',
-      key: '_id',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
       title: 'Sản phẩm',
@@ -126,7 +126,7 @@ const OrderHistory = () => {
   return (
     <div>
       <h1>Lịch sử mua hàng</h1>
-      <Table columns={columns} dataSource={orderHistory} loading={loading} rowKey="_id" />
+      <Table columns={columns} dataSource={orderHistory} loading={loading} rowKey="id" />
 
       <Modal
         title={editMode ? `Sửa đơn hàng #${selectedOrderId}` : 'Chi tiết đơn hàng'}

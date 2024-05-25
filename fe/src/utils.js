@@ -14,7 +14,7 @@ export function getItem(label, key, icon, children, type) {
       type,
   };
 }
-export const renderOptions = (arr) => {
+export const renderOptionsType = (arr) => {
   let results = []
   if(arr) {
       results = arr?.map((opt) => {

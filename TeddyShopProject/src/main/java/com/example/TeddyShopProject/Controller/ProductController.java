@@ -73,6 +73,11 @@ public class ProductController {
     public ArrayList<Product> getProductsBySize(@RequestParam String size) {
         return productServices.getProductsBySize(size);
     }
+
+    @GetMapping("/getAllTypes")
+    private ArrayList<String> getAllTypes() {
+        return productServices.getAllTypes();
+    }
     
     @GetMapping("/getAllSizes")
     private ArrayList<String> getAllSizes() {

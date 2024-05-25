@@ -1,10 +1,12 @@
 package com.example.TeddyShopProject.Entity;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.example.TeddyShopProject.Util.ShippingAddress;
-import java.util.Date;
-import java.util.ArrayList;
 
 @Document(collection = "users")
 public class User {
@@ -17,8 +19,8 @@ public class User {
     private ArrayList<ShippingAddress> shippingAddress;
     private String password;
     private String avatar;
-    private String access_token;
-    private String refresh_token;
+    private String accessToken;
+    private String refreshToken;
     private Date createTokenAt;
 
     // Constructor
@@ -97,19 +99,19 @@ public class User {
     }
 
     public String getAccessToken() {
-        return access_token;
+        return accessToken;
     }
 
-    public void setAccessToken(String access_token) {
-        this.access_token = access_token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public String getRefreshToken() {
-        return refresh_token;
+        return refreshToken;
     }
 
-    public void setRefreshToken(String refresh_token) {
-        this.refresh_token = refresh_token;
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public Date getCreateTokenAt() {
@@ -124,7 +126,7 @@ public class User {
     public String toString() {
         return "User [id=" + id + ",username=" + username + ", email=" + email + ", phone=" + phone + ", address="
                 + address + ", shippingAddress=" + shippingAddress + ", password=" + password + ", avatar=" + avatar
-                + ", access_token=" + access_token + ", refresh_token=" + refresh_token + ", createTokenAt="
+                + ", accessToken=" + accessToken + ", refreshToken=" + refreshToken + ", createTokenAt="
                 + createTokenAt + "]";
     }
 

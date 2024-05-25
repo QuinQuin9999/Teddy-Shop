@@ -5,7 +5,8 @@ import { Excel } from "antd-table-saveas-excel";
 import { useMemo } from 'react';
 
 const TableComponent = (props) => {
-  const { selectionType = 'checkbox', data = [], isLoading = false, columns = [], handleDeleteMany } = props
+  // const { selectionType = 'checkbox', data = [], isLoading = false, columns = [], handleDeleteMany } = props
+  const { selectionType = 'checkbox', data = [], isLoading = false, columns = []} = props
   const [rowSelectedKeys, setRowSelectedKeys] = useState([])
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -16,9 +17,9 @@ const TableComponent = (props) => {
       name: record.name,
     }),
   };
-  const handleDeleteAll = () => {
-    handleDeleteMany(rowSelectedKeys)
-  }
+  // const handleDeleteAll = () => {
+  //   handleDeleteMany(rowSelectedKeys)
+  // }
   console.log('data', data)
   return (
     <div>
@@ -29,7 +30,7 @@ const TableComponent = (props) => {
           cursor: 'pointer',
           margin: '10px 0'
         }}
-          onClick={handleDeleteAll}
+          // onClick={handleDeleteAll}
         >
           Xóa tất cả
         </Button>

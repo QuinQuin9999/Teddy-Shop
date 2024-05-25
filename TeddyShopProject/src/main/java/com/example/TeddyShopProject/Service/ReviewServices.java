@@ -1,10 +1,14 @@
 package com.example.TeddyShopProject.Service;
 
 import com.example.TeddyShopProject.Entity.Feedback;
+import com.example.TeddyShopProject.Entity.Product;
 import com.example.TeddyShopProject.Entity.Review;
+import com.example.TeddyShopProject.Repository.FeedbackRepo;
 import com.example.TeddyShopProject.Repository.ReviewRepo;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +17,9 @@ public class ReviewServices {
 
     @Autowired
     private ReviewRepo repo;
+    
+    @Autowired
+    private FeedbackRepo fbRepo;
 
     public void saveOrUpdate(Review reviews) {
         repo.save(reviews);
@@ -22,8 +29,12 @@ public class ReviewServices {
         Review review = repo.findById(reviewId).orElse(null);
 
         if (review == null) {
-            throw new IllegalArgumentException("Review not found for id: " + reviewId);
+            throw new IllegalArgumentException("Không tìm thấy đánh giá với id: " + reviewId);
         }
+
+        feedback.setFeedbackDate(new Date());  
+        feedback = fbRepo.save(feedback);  
+
         if (review.getFeedback() == null) {
             review.setFeedback(new ArrayList<>());
         }
@@ -33,6 +44,10 @@ public class ReviewServices {
 
     public void deleteReview(String reviewId) {
         repo.deleteById(reviewId);
+    }
+
+    public Iterable<Review> listAll() {
+        return this.repo.findAll();
     }
 
     public Review getReviewById(String reviewId) {
@@ -61,6 +76,26 @@ public class ReviewServices {
             }
         }
         return list;
+    }
+
+    public Review removeFeedbackFromReview(String reviewId, String feedbackId) {
+        Review review = repo.findById(reviewId).orElse(null);
+
+        if (review == null) {
+            throw new IllegalArgumentException("Không tìm thấy đánh giá với ID: " + reviewId);
+        }
+
+        if (review.getFeedback() != null) {
+            ArrayList<Feedback> updatedFeedbackList = new ArrayList<>();
+            for (Feedback feedback : review.getFeedback()) {
+                if (!feedback.getId().equals(feedbackId)) {
+                    updatedFeedbackList.add(feedback);
+                }
+            }
+            review.setFeedback(updatedFeedbackList);
+        }
+
+        return repo.save(review);
     }
 
 }

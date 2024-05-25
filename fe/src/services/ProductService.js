@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { axiosJWT } from "./UserService";
 
 const BASE_URL = 'http://localhost:8083/api/v1/product';
 
@@ -9,12 +10,21 @@ export const getAllCollections = async () => {
 
 export const saveOrUpdate = async (product) => {
     try {
-      const response = await axios.post(`${BASE_URL}/saveOrUpdate`, product);
+      const response = await axios.post(`${BASE_URL}/save`, product,);
       return response.data;
     } catch (error) {
       console.error("Error saving or updating product:", error);
       throw error;
     }
+}
+
+export const update = async (id, accessToken, data) => {
+  const res = await axiosJWT.put(`${BASE_URL}/edit/${id}`, data, {
+      headers: {
+          token: `Bearer ${accessToken}`,
+      }
+  })
+  return res.data
 }
 
 export const listAll = async () => {
@@ -27,14 +37,13 @@ export const listAll = async () => {
     }
 }
 
-export const deleteProduct = async (id) => {
-    try {
-      const response = await axios.delete(`${BASE_URL}/delete/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      throw error;
-    }
+export const deleteProduct = async (id, accessToken) => {
+  const res = await axiosJWT.delete(`${BASE_URL}/delete/${id}`, {
+      headers: {
+          token: `Bearer ${accessToken}`,
+      }
+  })
+  return res.data
 }
 
 export const getProductByID = async (id) => {

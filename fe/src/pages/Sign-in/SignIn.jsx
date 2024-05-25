@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Form, message, Checkbox } from 'antd';
-import { StyleContainer, StyleLeftCon, StyleRightCon, StyleInput, StyleInputPassword } from './style';
+import { Button, Checkbox, Form, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { updateUser } from '../../redux/slices/userSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import { StyleContainer, StyleInput, StyleInputPassword, StyleLeftCon, StyleRightCon } from './style';
 const SignIn = () => {
     const location = useLocation();
     const [loading, setLoading] = useState(false);
@@ -36,12 +36,12 @@ const SignIn = () => {
             if (data.status === 'OK') {
                 //setCheck(true);
                 message.success('Login success');
-                const { access_token, refresh_token, _id } = data.data;
-                localStorage.setItem('accessToken', access_token);
-                localStorage.setItem('refreshToken', refresh_token);
+                const { accessToken, refreshToken, id } = data.data;
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('refreshToken', refreshToken);
                 //setCheck(true);
-                //const { _id } = data.data; // Lấy _id từ dữ liệu trả về
-                //localStorage.setItem('userID', _id);
+                //const { id } = data.data; // Lấy id từ dữ liệu trả về
+                //localStorage.setItem('userID', id);
                 if (rememberMe) { // Kiểm tra trạng thái của checkbox
                     localStorage.setItem('rememberMe', 'true');
                     localStorage.setItem('email', email); // Lưu lại thông tin đăng nhập nếu được chọn
@@ -49,7 +49,7 @@ const SignIn = () => {
                     localStorage.removeItem('rememberMe');
                     localStorage.removeItem('email'); // Xóa thông tin đăng nhập nếu không được chọn
                 }
-                if (_id === "665077eba8c8ec39d663256b"){
+                if (id === "665077eba8c8ec39d663256b"){
                     data.data.isAdmin = true;
                 }
                 console.log(data.data);

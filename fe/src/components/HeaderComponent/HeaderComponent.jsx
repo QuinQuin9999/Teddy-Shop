@@ -75,7 +75,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Row, Col, Input, Badge, Popover } from "antd";
-import { WrapperHeader, Logo, Nav, DropdownMenu, DropdownItem, WrapperContentPopup } from "./style"; // Thêm các styled-components
+import { WrapperHeader, Logo, Nav, DropdownMenu, DropdownItem, WrapperContentPopup, SubCategoryMenu, CategorySection } from "./style"; // Thêm các styled-components
 import { DownOutlined, ShoppingCartOutlined, ShoppingTwoTone } from '@ant-design/icons';
 import axios from 'axios';
 import { useQuery } from "@tanstack/react-query";
@@ -99,6 +99,7 @@ const HeaderComponent = () => {
   const [isOpenPopup, setIsOpenPopup] = useState("");
   const [search, setSearch] = useState("");
   const [isHovered, setIsHovered] = useState(false);
+  const [hoveredCategory, setHoveredCategory] = useState(null);
 
   useEffect(() => {
     if (user?.id) {
@@ -284,17 +285,33 @@ const HeaderComponent = () => {
       <Nav>
         <Link to="/">TRANG CHỦ</Link>
         <div
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          style={{ display: 'inline-block', position: 'relative' }}
+          onMouseEnter={() => setHoveredCategory(true)}
+          onMouseLeave={() => setHoveredCategory(false)}
+          style={{ display: "inline-block", position: "relative" }}
         >
-          <Link>DANH MỤC<DownOutlined style={{ fontSize: '10px', marginLeft: '4px' }} /></Link>
-          {isHovered && categories && (
+          <Link to="#">
+            DANH MỤC
+            <DownOutlined style={{ fontSize: "10px", marginLeft: "4px" }} />
+          </Link>
+          {hoveredCategory && (
             <DropdownMenu>
-              {categories.map((category) => (
-                <DropdownItem key={category.id}>
-                  <Link onClick={() => handleCategoryClick(category.href)}>{category.categoryName}</Link>
-                </DropdownItem>
+              {categories && categories.map((category) => (
+                <CategorySection key={category.id}>
+                  <DropdownItem>
+                    <Link to="#" onClick={() => handleCategoryClick(category.href)}>
+                      {category.categoryName.toUpperCase()}
+                    </Link>
+                  </DropdownItem>
+                  {category.subCategories.map((subCategory) => (
+                    <SubCategoryMenu key={subCategory.id}>
+                      <DropdownItem>
+                        <Link to="#" onClick={() => handleCategoryClick(subCategory.href)}>
+                          {subCategory.subCategoryName}
+                        </Link>
+                      </DropdownItem>
+                    </SubCategoryMenu>
+                  ))}
+                </CategorySection>
               ))}
             </DropdownMenu>
           )}

@@ -26,5 +26,5 @@ export const ColorButton = styled(Button)`
         border-color: #BF8B70 !important;
         color: #BF8B70 !important;
     }   
-    width: 95px;
+    width: 90px;
 `
