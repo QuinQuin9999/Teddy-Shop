@@ -107,10 +107,12 @@ const AdminCategory = () => {
       render: (subCategories, record) => (
         <ul>
           {subCategories.map(sub => (
-            <li key={sub.id}>
+            <li key={sub.id} style={{display: 'flex',justifyContent: 'space-between',alignItems: 'center'}}>
               {sub.subCategoryName} 
-              <Button onClick={() => showSubModal(record, sub)}>Sửa</Button>
+              <diV>
+              <Button style={{marginRight: '10px'}} onClick={() => showSubModal(record, sub)}>Sửa</Button>
               <Button onClick={() => handleDeleteSubCategory(record.id, sub.id)} danger>Xóa</Button>
+              </diV>
             </li>
           ))}
           <Button onClick={() => showSubModal(record)}>Thêm Danh mục con</Button>

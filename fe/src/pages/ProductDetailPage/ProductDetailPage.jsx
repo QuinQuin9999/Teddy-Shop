@@ -69,7 +69,7 @@ function ProductDetailPage() {
       </div>
       <FlexContainer>
         <ReviewContainer>
-          <h3 style={{ fontSize: '20px', marginTop: '8px', marginLeft: '20px', marginBottom: '0px'}}>Reviews</h3>
+          <h3 style={{ fontSize: '20px', marginTop: '8px', marginLeft: '20px', marginBottom: '0px'}}> Đánh giá</h3>
           <ReviewComponent productId={productId} />
         </ReviewContainer>
         <RelatedProductsContainer>

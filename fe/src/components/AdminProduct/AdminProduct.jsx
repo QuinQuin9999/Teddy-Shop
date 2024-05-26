@@ -393,53 +393,105 @@ const AdminProduct = () =>
         form.resetFields()
       };
 
-      const handlePriceChange = (prices) => {
-        const newProductPrice = prices.reduce((acc, { size, price }) => {
-            acc[size] = price;
-            return acc;
-        }, {});
-        setStateProduct((prevState) => ({
-            ...prevState,
-            productPrice: newProductPrice,
-        }));
-    };
-
-    const handleStockChange = (stocks) => {
-      const newCountInStock = stocks.reduce((acc, { color, size, quantity }) => {
-          if (!acc[color]) {
-              acc[color] = {};
-          }
-          acc[color][size] = quantity;
-          return acc;
-      }, {});
-      setStateProduct((prevState) => ({
-          ...prevState,
-          countInStock: newCountInStock,
-      }));
+  const handlePriceChange = (size, price) => {
+    setStateProductDetails((prevState) => ({
+      ...prevState,
+      productPrice: {
+        ...prevState.productPrice,
+        [size]: price
+      }
+    }));
   };
 
-  const onFinish = (values) => {
-    handlePriceChange(values.productPrice);
-    handleStockChange(values.countInStock);
-        const params = {
-            productName: stateProduct.productName,
-            productPrice: stateProduct.productPrice,
-            description: stateProduct.description,
-            countInStock: stateProduct.countInStock,
-            productImg: imageUrl,
-            productType: stateProduct.productType,
-            discount: stateProduct.discount,
-        };
+  const handleStockChange = (color, size, quantity) => {
+
     
-        mutation.mutate(params, {
-            onSettled: () => {
-                queryProduct.refetch();
-                handleCancel();
-            },
-        });
-    };
-    
-    
+    setStateProductDetails((prevState) => ({
+      ...prevState,
+      countInStock: {
+        ...prevState.countInStock,
+        [color]: {
+          ...prevState.countInStock[color],
+          [size]: quantity
+        }
+      }
+    }));
+  };
+
+  const handleUpload = async (files, isDetail = false) => {
+    if (!files || files.length === 0) {
+        console.error('No file selected for upload.');
+        message.error('Please select a file to upload.');
+        return;
+    }
+  const file = files[0];
+  const formData = new FormData();
+
+  formData.append('file', file);
+  formData.append('upload_preset', 'ml_default'); 
+
+  try {
+    const response = await axios.post('https://api.cloudinary.com/v1_1/dsbigrnvs/image/upload', formData);
+    setImageUrl(response.data.secure_url);
+    setStateProduct((prevState) => ({
+      ...prevState,
+      productImg: response.data.secure_url
+  }));
+    setStateProductDetails((prevState) => ({
+        ...prevState,
+        productImg: response.data.secure_url
+    }));
+    message.success('Image uploaded successfully!');
+} catch (error) {
+    console.error('Error uploading image to Cloudinary:', error);
+    message.error('Error uploading image!');
+}
+};
+
+const handlePriceChangeProduct = (prices, returnProcessed = false) => {
+  if (!Array.isArray(prices)) {
+    prices = Object.entries(prices).map(([size, price]) => ({ size, price }));
+  }
+
+  const newPrices = prices.reduce((acc, { size, price }) => {
+    acc[size] = price;
+    return acc;
+  }, {});
+
+  if (returnProcessed) {
+    return newPrices;
+  } else {
+    setStateProduct((prevState) => ({
+      ...prevState,
+      productPrice: newPrices,
+    }));
+  }
+};
+
+const handleStockChangeProduct = (stocks, returnProcessed = false) => {
+  if (!Array.isArray(stocks)) {
+    throw new Error("Expected an array for stocks");
+  }
+
+  const newStocks = stocks.reduce((acc, { color, size, quantity }) => {
+    if (!acc[color]) {
+      acc[color] = {};
+    }
+    acc[color][size] = quantity;
+    return acc;
+  }, {});
+
+  if (returnProcessed) {
+    return newStocks;
+  } else {
+    setStateProduct((prevState) => ({
+      ...prevState,
+      countInStock: newStocks,
+    }));
+  }
+};
+
+
     const handleOnchange = (e) => {
       const { name, value } = e.target;
       setStateProduct((prevState) => ({
@@ -464,121 +516,125 @@ const AdminProduct = () =>
         setIsOpenDrawer(false);
       }
 
-    const handleChangeSelect = (value) => {
-        setStateProduct({
-          ...stateProduct,
-          type: value
-        })
-    }
-
   console.log("Type moi", typeProduct?.data?.data)
   
-  const handleUpload = async (files) => {
-    const file = files[0];
-    const formData = new FormData();
 
-    formData.append('file', file);
-    formData.append('upload_preset', 'ml_default'); 
+const handleAttributeChange = (key, value, isDetail = false) => {
+  const newValue = Array.isArray(value) ? [...value] : value;
 
-    try {
-      const response = await axios.post('https://api.cloudinary.com/v1_1/dsbigrnvs/image/upload', formData); // Replace with your Cloudinary URL
-      setImageUrl(response.data.secure_url);
+  if (isDetail) {
       setStateProductDetails((prevState) => ({
           ...prevState,
-          productImg: response.data.secure_url
+          description: {
+              ...prevState.description,
+              [key]: newValue,
+          },
       }));
-      message.success('Image uploaded successfully!');
-  } catch (error) {
-      console.error('Error uploading image to Cloudinary:', error);
-      message.error('Error uploading image!');
+  } else {
+      setStateProduct((prevState) => ({
+          ...prevState,
+          description: {
+              ...prevState.description,
+              [key]: newValue,
+          },
+      }));
   }
 };
 
-const customUpload = {
-    async beforeUpload(file) {
-        await handleUpload(file);
-        return false; // Ngăn hành vi tải lên mặc định
-    },
-};
-
-
-    const handleAttributeChange = (key, value, isDetail = false) => {
-      const newValue = Array.isArray(value) ? [...value] : value;
-  
-      if (isDetail) {
-          setStateProductDetails((prevState) => ({
-              ...prevState,
-              description: {
-                  ...prevState.description,
-                  [key]: newValue,
-              },
-          }));
-      } else {
-          setStateProduct((prevState) => ({
-              ...prevState,
-              description: {
-                  ...prevState.description,
-                  [key]: newValue,
-              },
-          }));
-      }
-  };
-
-  const renderDescription = (description) => {
-    return (
-        <>
-            <Form.Item label="Chất liệu" name={['description', 'Material']}>
-                <Input value={description.Material.join(', ')} onChange={handleOnchangeDetails} name="Material" />
-            </Form.Item>
-            <Form.Item label="Màu sắc" name={['description', 'Color']}>
-                <Input value={description.Color.join(', ')} onChange={handleOnchangeDetails} name="Color" />
-            </Form.Item>
-            <Form.Item label="Kích thước" name={['description', 'Size']}>
-                <Input value={description.Size.join(', ')} onChange={handleOnchangeDetails} name="Size" />
-            </Form.Item>
-        </>
-    );
-};
 const renderProductPriceFields = (productPrice) => {
   return Object.keys(productPrice).map((key) => (
-      <div key={key} style={{ display: 'flex', marginBottom: 8 }}>
-          <Input
-              style={{ marginRight: 8 }}
-              value={key}
-              readOnly
-          />
-          <Input
-              value={productPrice[key]}
-              onChange={(e) => handlePriceChange(key, e.target.value)}
-              placeholder="Giá"
-          />
-      </div>
+    <div key={key} style={{ display: 'flex', marginBottom: 8 }}>
+      <Input
+        style={{ marginRight: 8 }}
+        value={key}
+        readOnly
+      />
+      <Input
+        value={productPrice[key]}
+        onChange={(e) => handlePriceChange(key, e.target.value)}
+        placeholder="Giá"
+      />
+    </div>
   ));
 };
 
 const renderCountInStockFields = (countInStock) => {
   return Object.keys(countInStock).map((color) => (
-      <div key={color}>
-          <h4 style={{fontSize: '14px'}}>{color}</h4>
-          {Object.keys(countInStock[color]).map((size) => (
-              <div key={size} style={{ display: 'flex', marginBottom: 8 }}>
-                  <Input
-                      style={{ marginRight: 8 }}
-                      value={size}
-                      readOnly
-                  />
-                  <Input
-                      value={countInStock[color][size]}
-                      onChange={(e) => handleStockChange(color, size, e.target.value)}
-                      placeholder="Số lượng"
-                  />
-              </div>
-          ))}
-      </div>
+    <div key={color}>
+      <h4 style={{ fontSize: '14px' }}>{color}</h4>
+      {Object.keys(countInStock[color]).map((size) => (
+        <div key={size} style={{ display: 'flex', marginBottom: 8 }}>
+          <Input
+            style={{ marginRight: 8 }}
+            value={size}
+            readOnly
+          />
+          <Input
+            value={countInStock[color][size]}
+            onChange={(e) => handleStockChange(color, size, e.target.value)}
+            placeholder="Số lượng"
+          />
+        </div>
+      ))}
+    </div>
   ));
 };
 
-console.log('detail',stateProductDetails)
+const renderDescription = (description) => {
+  return (
+    <>
+      <Form.Item label="Chất liệu" name={['description', 'Material']}>
+        <Input value={description.Material.join(', ')} onChange={(e) => handleAttributeChange('Material', e.target.value.split(', '))} />
+      </Form.Item>
+      <Form.Item label="Màu sắc" name={['description', 'Color']}>
+        <Input value={description.Color.join(', ')} onChange={(e) => handleAttributeChange('Color', e.target.value.split(', '))} />
+      </Form.Item>
+      <Form.Item label="Kích thước" name={['description', 'Size']}>
+        <Input value={description.Size.join(', ')} onChange={(e) => handleAttributeChange('Size', e.target.value.split(', '))} />
+      </Form.Item>
+    </>
+  );
+};
+
+const onFinish = (values) => {
+  // Xử lý giá sản phẩm và lưu vào biến tạm thời
+  const processedPrices = handlePriceChangeProduct(values.productPrice, true); // Thêm tham số flag để chỉ định trả về giá trị
+  const processedStocks = handleStockChangeProduct(values.countInStock, true); // Thêm tham số flag để chỉ định trả về giá trị
+
+  // Cập nhật trạng thái với giá trị đã xử lý
+  setStateProduct((prevState) => ({
+    ...prevState,
+    productPrice: processedPrices,
+    countInStock: processedStocks,
+  }));
+
+  // Tạo params sau khi trạng thái được cập nhật
+  const params = {
+    productName: values.productName,
+    productPrice: processedPrices,
+    description: stateProduct.description,
+    countInStock: processedStocks,
+    productImg: imageUrl,
+    productType: values.productType,
+    discount: values.discount,
+  };
+
+  console.log('Processed Prices:', processedPrices);
+  console.log('Processed Stocks:', processedStocks);
+  console.log('Params:', params);
+
+  // Gọi mutation với params đã xử lý
+  mutation.mutate(params, {
+    onSettled: () => {
+      queryProduct.refetch();
+      handleCancel();
+    },
+  });
+};
+
+  
+
+
 
 
 return(
@@ -594,7 +650,7 @@ return(
                 </Button>
             </div>
             <div style={{ marginTop: '20px' }}>
-                <TableComponent
+            <TableComponent
                     isLoading={isLoadingProducts}
                     columns={columns}
                     data={dataTable}
@@ -758,7 +814,7 @@ return(
             <Form.Item label="Hình ảnh" name="productImg">
                     <input
                         type="file"
-                        onChange={(e) => handleUpload(e.target.files)}
+                        onChange={(e) =>{e.preventDefault(); handleUpload(e.target.files);}}
                         accept="image/*"
                     />
                     {imageUrl && (

@@ -5,7 +5,7 @@ export const SliderContainer = styled.div`
   position: relative;
   width: 80%;
   margin: auto;
-  padding: 20px 0;
+  padding-bottom: 20px;
 `;
 
 export const SliderItem = styled.div`

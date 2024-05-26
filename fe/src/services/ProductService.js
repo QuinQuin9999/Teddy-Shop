@@ -10,7 +10,7 @@ export const getAllCollections = async () => {
 
 export const saveOrUpdate = async (product) => {
     try {
-      const response = await axios.post(`${BASE_URL}/save`, product,);
+      const response = await axios.post(`${BASE_URL}/save`, product);
       return response.data;
     } catch (error) {
       console.error("Error saving or updating product:", error);
