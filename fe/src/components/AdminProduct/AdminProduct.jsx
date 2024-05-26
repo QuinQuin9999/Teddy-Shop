@@ -339,7 +339,7 @@ const AdminProduct = () =>
       }
 
     const handleDeleteProduct = () => {
-        mutationDeleted.mutate({ id: rowSelected, token: user?.access_token }, {
+        mutationDeleted.mutate({ id: rowSelected, token: user?.accessToken }, {
           onSettled: () => {
             queryProduct.refetch()
           }
@@ -456,7 +456,7 @@ const AdminProduct = () =>
 }
   
     const onUpdateProduct = () => {
-        mutationUpdate.mutate({ _id: rowSelected, token: user?.access_token, ...stateProductDetails }, {
+        mutationUpdate.mutate({ _id: rowSelected, token: user?.accessToken, ...stateProductDetails }, {
           onSettled: () => {
             queryProduct.refetch()
           }

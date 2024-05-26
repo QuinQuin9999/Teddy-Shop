@@ -48,4 +48,21 @@ public class OrderService {
         return new ApiResponse("OK", "SUCCESS", orders);
     }
 
+    public ApiResponse updateOrder(String orderId, Order updateData) {
+        Order updatedOrder = orderRepository.save(updateData);
+        if (updatedOrder == null) {
+            return new ApiResponse("ERR", "The order is not defined");
+        }
+        return new ApiResponse("OK", "Order updated successfully", updatedOrder);
+    }
+
+    public ApiResponse deleteOrder(String orderId) {
+        Order checkOrder = orderRepository.findById(orderId).orElse(null);
+        if (checkOrder == null) {
+            return new ApiResponse("ERR", "The order is not defined");
+        }
+        orderRepository.deleteById(orderId);
+        return new ApiResponse("OK", "Order deleted successfully");
+    }
+
 }

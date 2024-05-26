@@ -1,23 +1,17 @@
 package com.example.TeddyShopProject.Service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.SecretKey;
-
-// import io.jsonwebtoken.security.Keys;
-// import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-
 @Service
 public class JwtService {
 
-    // private static final String ACCESS_TOKEN_SECRET = "access-token";
-    // private static final String REFRESH_TOKEN_SECRET = "refresh-token";
     private static final int ACCESS_TOKEN_EXPIRATION = 3600;
     private static final int REFRESH_TOKEN_EXPIRATION = 31536000;
 
@@ -27,11 +21,6 @@ public class JwtService {
                 .claims(payload)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION * 1000))
-                // .setClaims(payload)
-                // .setIssuedAt(new Date(System.currentTimeMillis()))
-                // .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION
-                // *
-                // 1000))
                 .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }

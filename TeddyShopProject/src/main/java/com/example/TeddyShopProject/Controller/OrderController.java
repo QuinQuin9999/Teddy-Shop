@@ -35,9 +35,12 @@ public class OrderController {
             double shippingPrice = ((Number) obj.get("shippingPrice")).doubleValue();
             double totalPrice = ((Number) obj.get("totalPrice")).doubleValue();
             String shipmentMethod = obj.get("shipmentMethod").toString();
+            // if (id == "") {
+            // id = "000000000000000000000000";
+            // }
             ObjectId userInfo = new ObjectId(id);
             boolean isPaid = (boolean) obj.get("isPaid");
-            boolean isDelivered = (boolean) obj.get("isDelivered");
+            // boolean isDelivered = (boolean) obj.get("isDelivered");
 
             Map<String, String> shippingAddress = new HashMap<>();
             shippingAddress.put("fullName", fullName);
@@ -45,8 +48,7 @@ public class OrderController {
             shippingAddress.put("phone", phone);
 
             Order order = new Order(orderItems, shippingAddress, paymentMethod, shipmentMethod, itemsPrice,
-                    shippingPrice, totalPrice, userInfo, isPaid, isDelivered);
-
+                    shippingPrice, totalPrice, userInfo, isPaid);
             ApiResponse response = orderService.createOrder(order);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -89,6 +91,37 @@ public class OrderController {
                         .body(new ErrorResponse("The userInfo is required", "ERR"));
             }
             ApiResponse response = orderService.getAllUserOrder(userInfo);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/update-order/{id}")
+    public ResponseEntity<Object> updateOrder(@PathVariable("id") String orderId,
+            @RequestBody Order updateData) {
+        try {
+            if (orderId == null) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ErrorResponse("The orderId is required", "ERR"));
+            }
+            ApiResponse response = orderService.updateOrder(orderId, updateData);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/delete-order/{id}")
+    public ResponseEntity<Object> deleteOrder(@PathVariable("id") String orderId) {
+        try {
+            if (orderId == null) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ErrorResponse("The orderId is required", "ERR"));
+            }
+            ApiResponse response = orderService.deleteOrder(orderId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

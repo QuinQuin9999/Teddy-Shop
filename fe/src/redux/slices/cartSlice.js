@@ -41,6 +41,9 @@ const cartSlice = createSlice({
       state.deliveredAt = "";
       state.tempChecklist = [];
     },
+    importCart: (state, action) => {
+      state.orderItems = action.payload
+    },
     addCartProduct: (state, action) => {
       const product = action.payload;
       const productFind = state.orderItems.find(
@@ -68,6 +71,9 @@ const cartSlice = createSlice({
       }
       console.log("product filter: ", productFilter);
       state.orderItems = productFilter;
+    },
+    removeItems: (state, action) => {
+      state.orderItems = state.orderItems.filter((item) => !action.payload.includes(item.id))
     },
     increaseProductAmount: (state, action) => {
       const idProduct = action.payload.idProduct;
@@ -100,8 +106,10 @@ const cartSlice = createSlice({
   },
 });
 export const {
+  importCart,
   addCartProduct,
   removeCartProduct,
+  removeItems,
   increaseProductAmount,
   decreaseProductAmount,
   resetCart,

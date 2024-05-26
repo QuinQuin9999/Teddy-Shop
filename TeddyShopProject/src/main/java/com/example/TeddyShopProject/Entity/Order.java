@@ -28,14 +28,15 @@ public class Order {
     private ObjectId userInfo;
     private boolean isPaid;
     private Date paidAt;
-    private boolean isDelivered;
+    // private boolean isDelivered;
+    private String status;
 
     public Order() {
     }
 
     public Order(ArrayList<Map<String, Object>> orderItems, Map<String, String> shippingAddress, String paymentMethod,
             String shipmentMethod, double itemsPrice, double shippingPrice, double totalPrice, ObjectId userInfo,
-            boolean isPaid, boolean isDelivered) {
+            boolean isPaid) {
         this.orderItems = orderItems;
         this.shippingAddress = shippingAddress;
         this.paymentMethod = paymentMethod;
@@ -45,8 +46,27 @@ public class Order {
         this.totalPrice = totalPrice;
         this.userInfo = userInfo;
         this.isPaid = isPaid;
-        this.isDelivered = isDelivered;
+        // this.isDelivered = isDelivered;
+        this.status = "Pending";
     }
+
+    // public Order(ArrayList<Map<String, Object>> orderItems, Map<String, String>
+    // shippingAddress, String paymentMethod,
+    // String shipmentMethod, double itemsPrice, double shippingPrice, double
+    // totalPrice,
+    // boolean isPaid) {
+    // this.orderItems = orderItems;
+    // this.shippingAddress = shippingAddress;
+    // this.paymentMethod = paymentMethod;
+    // this.shipmentMethod = shipmentMethod;
+    // this.itemsPrice = itemsPrice;
+    // this.shippingPrice = shippingPrice;
+    // this.totalPrice = totalPrice;
+    // this.userInfo = null;
+    // this.isPaid = isPaid;
+    // // this.isDelivered = isDelivered;
+    // this.status = "Pending";
+    // }
 
     public String getId() {
         return id;
@@ -132,12 +152,20 @@ public class Order {
         this.paidAt = paidAt;
     }
 
-    public boolean isDelivered() {
-        return isDelivered;
+    // public boolean isDelivered() {
+    // return isDelivered;
+    // }
+
+    // public void setDelivered(boolean isDelivered) {
+    // this.isDelivered = isDelivered;
+    // }
+
+    public String getStatus() {
+        return status;
     }
 
-    public void setDelivered(boolean isDelivered) {
-        this.isDelivered = isDelivered;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

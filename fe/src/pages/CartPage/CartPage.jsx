@@ -18,6 +18,7 @@ import {
     deleteTempOther,
     increaseProductAmount,
     removeCartProduct,
+    removeItems,
     saveTempChecklist,
     saveTempOther
 } from "../../redux/slices/cartSlice";
@@ -65,8 +66,8 @@ const CartPage = () => {
 
   const mutationAddOrder = useMutationHook((data) => {
     console.log("data from mutation order: ", data)
-    const { token, ...rest } = data;
-    const res = OrderService.createOrder({ ...rest }, token);
+    // const { id, ...rest } = data;
+    const res = OrderService.createOrder(user.id === ''? ('000000000000000000000000'): (user.id), data);
     return res;
   });
 
@@ -129,9 +130,9 @@ const CartPage = () => {
     if (orderSuccess) {
       const a = async () => {
         await delay(5000);
+        dispatch(removeItems(listChecked));
         setListChecked([]);
         setProcessState(0);
-        dispatch(removeCartProduct({ idProduct: -1 }));
         setOrderSuccess(false);
       };
       a();
@@ -141,7 +142,7 @@ const CartPage = () => {
     const queryParameters = new URLSearchParams(window.location.search)
     let params = new URL(document.location.toString()).searchParams;
     console.log("cart", cart);
-    console.log("cart", user);
+    console.log("user", user);
     console.log("queryParameters: ",queryParameters.get("vnp_ResponseCode"))
     console.log("useSearchParms: ",searchParams.get("vnp_ResponseCode"))
     console.log("Parms: ",params.toString())
@@ -246,16 +247,17 @@ const CartPage = () => {
     const savedListCheck = cart?.tempChecklist;
     console.log("after get from saved ship address: ", user?.tempShipAddr, "  -  ", shipAddress)    
     console.log("saved temp other: ", cart?.tempOther.paymentMethod ,"  -  ", cart?.tempOther.shipmentMethod,"  -  ", cart?.tempOther.priceMemo,"  -  ", cart?.tempOther.deliveryPriceMemo,"  -  ", cart?.tempOther.totalPriceMemo);
-    const pay = (!cart?.tempOther.paymentMethod)? paymentMethod : cart?.tempOther.paymentMethod;
-    const ship = (!cart?.tempOther.shipmentMethod)? shipmentMethod : cart?.tempOther.shipmentMethod;
-    const price = (!cart?.tempOther.priceMemo)? priceMemo : cart?.tempOther.priceMemo;
-    const delivery = (!cart?.tempOther.deliveryPriceMemo)? shipmentMethod : cart?.tempOther.deliveryPriceMemo;
-    const total = (!cart?.tempOther.totalPriceMemo)? shipmentMethod : cart?.tempOther.totalPriceMemo;
-    const shippingAddressNone = (!user?.tempShipAddrNone)? {} : user?.tempShipAddrNone
-    console.log("shippingAddressNoneUser got: ",shippingAddressNone);
+    // const pay = (!cart?.tempOther.paymentMethod)? paymentMethod : cart?.tempOther.paymentMethod;
+    // const ship = (!cart?.tempOther.shipmentMethod)? shipmentMethod : cart?.tempOther.shipmentMethod;
+    // const price = (!cart?.tempOther.priceMemo)? priceMemo : cart?.tempOther.priceMemo;
+    // const delivery = (!cart?.tempOther.deliveryPriceMemo)? shipmentMethod : cart?.tempOther.deliveryPriceMemo;
+    // const total = (!cart?.tempOther.totalPriceMemo)? shipmentMethod : cart?.tempOther.totalPriceMemo;
+    
+    // const shippingAddressNone = (!user?.tempShipAddrNone)? {} : user?.tempShipAddrNone
+    // console.log("shippingAddressNoneUser got: ",shippingAddressNone);
     //if( Object.keys(shippingAddressNoneUser).length === 0 && Object.keys(shippingAddressNone).length !== 0) setShippingAddressNoneUser(shippingAddressNone);
-    let shippingAddressNoneUser = shippingAddressNone;
-    console.log("state shippingAddressNoneUser got: ",shippingAddressNoneUser);
+    // let shippingAddressNoneUser = shippingAddressNone;
+    // console.log("state shippingAddressNoneUser got: ",shippingAddressNoneUser);
     if (
       user?.accessToken &&
       cart?.orderItems.filter((item) => savedListCheck.includes(item.id))
@@ -263,33 +265,34 @@ const CartPage = () => {
       console.log("check pass(with user) ");
 
       const addr = user?.shippingAddress[user?.tempShipAddr];
-      console.log("addr shipaddress: ", user?.shippingAddress)
-      console.log("addr: ", addr)
+      console.log("user?.tempShipAddr  ", user?.tempShipAddr)
+      console.log("shippingAddress: ", user?.shippingAddress)
+      console.log("selected address: ", addr)
       mutationAddOrder.mutate(
         {
-          token: user?.accessToken,
+          // token: user?.accessToken,
           orderItems: cart?.orderItems.filter((item) =>
             savedListCheck.includes(item.id)
           ),
-          fullname: addr.addressName,
+          fullName: addr.addressName,
           address: addr.addressNumber + ", " + addr.addressWard + ", " + addr.addressDistrict + ", " + addr.addressProvince,
           phone: addr.addressPhone,
-          city: user?.city,
+          // city: user?.city,
           paymentMethod:
-            pay == 1 ? "COD" : pay == 2 ? "Bank" : "Vnpay",
+            paymentMethod == 1 ? "COD" : paymentMethod == 2 ? "Bank" : "Vnpay",
           shipmentMethod:
-          ship == 1
+            shipmentMethod == 1
               ? "standard"
-              : ship == 2
+              : shipmentMethod == 2
               ? "fast"
-              : ship == 3
+              : shipmentMethod == 3
               ? "inTPHCM"
               : "store",
-          itemsPrice: price,
-          shippingPrice: delivery,
-          totalPrice: total,
-          user: user?.id,
-          email: user?.email,
+          itemsPrice: priceMemo,
+          shippingPrice: deliveryPriceMemo,
+          totalPrice: totalPriceMemo,
+          // user: user?.id,
+          // email: user?.email,
           isPaid: isPaid,
         },
         {
@@ -306,38 +309,33 @@ const CartPage = () => {
       );
     } else if (!user?.id) {
       console.log("check pass(without user) ");
-
+      const noUserAddress = user?.tempShipAddrNone
+      console.log("noUserAddress ", noUserAddress)
       mutationAddOrder.mutate(
         {
-          token: "none",
+          // token: user?.accessToken,
           orderItems: cart?.orderItems.filter((item) =>
             savedListCheck.includes(item.id)
           ),
-          fullname: shippingAddressNoneUser?.addressName,
-          address:
-            shippingAddressNoneUser?.addressNumber +
-            ", " +
-            shippingAddressNoneUser?.addressWard +
-            ", " +
-            shippingAddressNoneUser?.addressDistrict +
-            ", " +
-            shippingAddressNoneUser?.addressProvince,
-          phone: shippingAddressNoneUser?.addressPhone,
+          fullName: noUserAddress.addressName,
+          address: noUserAddress.addressNumber + ", " + noUserAddress.addressWard + ", " + noUserAddress.addressDistrict + ", " + noUserAddress.addressProvince,
+          phone: noUserAddress.addressPhone,
+          // city: user?.city,
           paymentMethod:
-            cart?.tempOther.paymentMethod == 1 ? "COD" : cart?.tempOther.paymentMethod == 2 ? "Bank" : "VNPay",
+            paymentMethod == 1 ? "COD" : paymentMethod == 2 ? "Bank" : "Vnpay",
           shipmentMethod:
-            cart?.tempOther.shipmentMethod == 1
+            shipmentMethod == 1
               ? "standard"
-              : cart?.tempOther.shipmentMethod == 2
+              : shipmentMethod == 2
               ? "fast"
-              : cart?.tempOther.shipmentMethod == 3
+              : shipmentMethod == 3
               ? "inTPHCM"
               : "store",
           itemsPrice: priceMemo,
           shippingPrice: deliveryPriceMemo,
           totalPrice: totalPriceMemo,
-          user: "none",
-          email: "none",
+          // user: user?.id,
+          // email: user?.email,
           isPaid: isPaid,
         },
         {
@@ -362,25 +360,32 @@ const CartPage = () => {
     } else if (processState == 1) {
       console.log("state: ",user?.id," - ",shipmentMethod," - ",shipAddress);
       dispatch(saveTempChecklist(listChecked));
-      dispatch(saveTempShipAddr(shipAddress));
+      // dispatch(saveTempShipAddr(shipAddress));
       dispatch(saveTempOther({paymentMethod, shipmentMethod, priceMemo, deliveryPriceMemo, totalPriceMemo}));
 
-      if (!user?.id) {
+      if (user?.id === '') {
         // khong co user
+        
         if (shipmentMethod != 4) {
-          if (
-            !shippingAddressNoneUser?.addressName ||
-            !shippingAddressNoneUser?.addressNumber ||
-            !shippingAddressNoneUser?.addressPhone ||
-            !shippingAddressNoneUser?.addressWard ||
-            !shippingAddressNoneUser?.addressDistrict ||
-            !shippingAddressNoneUser?.addressProvince
-          )
-            handleChangeAddress();
-          else{
-            dispatch(saveTempShipAddrNone(shippingAddressNoneUser));
+          
+          // if (
+          //   !shippingAddressNoneUser?.addressName ||
+          //   !shippingAddressNoneUser?.addressNumber ||
+          //   !shippingAddressNoneUser?.addressPhone ||
+          //   !shippingAddressNoneUser?.addressWard ||
+          //   !shippingAddressNoneUser?.addressDistrict ||
+          //   !shippingAddressNoneUser?.addressProvince
+          // )
+          //   handleChangeAddress();
+          // else{
+          //   dispatch(saveTempShipAddrNone(shippingAddressNoneUser));
+          // } 
+          if (user?.tempShipAddrNone) {
             checkAndCreateOrder();
-          } 
+          }
+          else {
+            setIsOpenInputShipment(true);
+          }
         } else {
           checkAndCreateOrder();
         }
@@ -675,7 +680,7 @@ const CartPage = () => {
                   }}
                 />
                 <span style={{ fontSize: "40px", fontWeight: "500" }}>
-                  Đơn hàng đã được tạo thành công
+                  Đặt hàng thành công
                 </span>
               </div>
             )}

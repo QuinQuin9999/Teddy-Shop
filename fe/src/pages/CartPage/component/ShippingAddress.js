@@ -14,6 +14,9 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../../components/LoadingComponent/Loading";
 import ModalComponent from "../../../components/ModalComponent/ModalComponent";
 import { toSlug } from "../../../utils";
+import * as UserService from "../../../services/UserService";
+import { addShippingAddressUser, saveTempShipAddr, saveTempShipAddrNone } from "../../../redux/slices/userSlice";
+
 
 export const ShippingAddress = (props) => {
   const stateUserDetails = props.stateUserDetails;
@@ -40,19 +43,22 @@ export const ShippingAddress = (props) => {
       open={props?.open}
       onCancel={props?.onCancel}
       footer={[
-        <Button key="submit" loading={loading} onClick={props?.onCancel}>
+        <Button key="close" loading={loading} onClick={props?.onCancel}>
           Đóng
         </Button>,
         <Button
-          key="submit"
+          key="select"
           type="primary"
           loading={loading}
-          onClick={() => props?.onOk(value)}
+          onClick={() => {
+            dispatch(saveTempShipAddr(value))
+            props?.onOk(value)}
+          }
         >
           Chọn
         </Button>,
         <Button
-          key="submit"
+          key="add"
           type="primary"
           loading={loading}
           onClick={handleAdd}
@@ -64,8 +70,13 @@ export const ShippingAddress = (props) => {
       <Loading isLoading={props.isLoading}>
         <Radio.Group onChange={onChange} value={value}>
           <Space direction="vertical">
-            {user?.shippingAddress?.map((item, index) => (
-              <>{ShippingAddressItem(item, index, value)}</>
+          {user?.shippingAddress?.map((item, index) => (
+              <ShippingAddressItem
+                key={index}
+                item={item}
+                value={value}
+                index={index}
+              ></ShippingAddressItem>
             ))}
           </Space>
         </Radio.Group>
@@ -79,10 +90,9 @@ export const ShippingAddress = (props) => {
   );
 };
 
-const ShippingAddressItem = (item, index, value) => {
+const ShippingAddressItem = ({item, value, index}) => {
   return (
     <div
-      key={index}
       style={{
         height: "fit-content",
         width: "100%",
@@ -162,7 +172,7 @@ export const AddShippingAddress = (props) => {
           let t = item;
           let sl = toSlug(item?.province_name);
           temp.push({
-            value: t.provinceid,
+            value: t.province_id,
             slug: sl,
             label: t.province_name,
           });
@@ -188,7 +198,7 @@ export const AddShippingAddress = (props) => {
           let t = item;
           let sl = toSlug(item?.district_name);
           temp.push({
-            value: t.districtid,
+            value: t.district_id,
             slug: sl,
             label: t.district_name,
           });
@@ -214,7 +224,7 @@ export const AddShippingAddress = (props) => {
           let t = item;
           let sl = toSlug(item?.ward_name);
           temp.push({
-            value: t.wardid,
+            value: t.ward_id,
             slug: sl,
             label: t.ward_name,
           });
@@ -237,7 +247,7 @@ export const AddShippingAddress = (props) => {
   const onChangeSelectWard = (e) => {
     setWardSelected(e);
   };
-  const handleSendAddress = () => {
+  const handleSendAddress = async () => {
     if (
       !addressName ||
       !addressPhone ||
@@ -248,19 +258,19 @@ export const AddShippingAddress = (props) => {
     ) {
       message.error("Cần điền đủ thông tin");
     }
-    let check = false;
-    user?.shippingAddress.forEach((item) => {
-      let b = toSlug(item.addressName);
-      let c = toSlug(addressName);
-      if (b == c) {
-        check = true;
-        return;
-      }
-    });
-    if (check && user?.id != '') {
-      message.error("địa chỉ giao hàng này đã tồn tại");
-      return;
-    }
+    // let check = false;
+    // user?.shippingAddress.forEach((item) => {
+    //   let b = toSlug(item.addressName);
+    //   let c = toSlug(addressName);
+    //   if (b == c) {
+    //     check = true;
+    //     return;
+    //   }
+    // });
+    // if (check && user?.id != '') {
+    //   message.error("địa chỉ giao hàng này đã tồn tại");
+    //   return;
+    // }
     const sa = {
       addressName: addressName,
       addressPhone: addressPhone,
@@ -274,7 +284,13 @@ export const AddShippingAddress = (props) => {
       addressNumber: addressAddress,
     };
     // dispatch(addShippingAddressUser(sa));
-    props?.setShippingAddressNoneUser(sa)
+    // props?.setShippingAddressNoneUser(sa)
+    if (user?.id != '') {
+      dispatch(addShippingAddressUser(sa));
+      const addShippingUser = await UserService.addShippingAddress(user.id, sa, user.accessToken)
+    } else {
+      dispatch(saveTempShipAddrNone(sa))
+    }
     props?.setIsOpenAddAddress(false);
   }
   return (

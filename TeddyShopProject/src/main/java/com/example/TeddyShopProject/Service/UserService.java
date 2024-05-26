@@ -1,10 +1,5 @@
 package com.example.TeddyShopProject.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +8,11 @@ import com.example.TeddyShopProject.DTO.ApiResponse;
 import com.example.TeddyShopProject.Entity.User;
 import com.example.TeddyShopProject.Repository.UserRepository;
 import com.example.TeddyShopProject.Util.ShippingAddress;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {

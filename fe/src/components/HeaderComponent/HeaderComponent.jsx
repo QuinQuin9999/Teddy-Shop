@@ -83,7 +83,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { resetUser } from "../../redux/slices/userSlice";
 import { resetCart } from "../../redux/slices/cartSlice";
-import * as UserService from "../../services/UserService";
+import * as CartService from "../../services/CartService";
 import { FaUserCircle } from "react-icons/fa";
 
 
@@ -129,7 +129,7 @@ const HeaderComponent = () => {
       navigate("/my-order", {
         state: {
           id: user?.id,
-          token: user?.access_token,
+          token: user?.accessToken,
         },
       });
     } else {
@@ -140,9 +140,10 @@ const HeaderComponent = () => {
 
   const handleLogout = async () => {
     setLoading(true);
-    // await UserService.logoutUser()
+    const saveCart = await CartService.updateCart(user.id, cart.orderItems)
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem('tokenExpiration')
     dispatch(resetUser());
     dispatch(resetCart());
     setLoading(false);
@@ -219,7 +220,7 @@ const HeaderComponent = () => {
             onClick={goToCart}
           />
         </Badge>
-        {user?.access_token ? (
+        {user?.accessToken ? (
           <>
             {console.log("is admin? : ", user?.isAdmin)}
             <Popover content={content} trigger="click" open={isOpenPopup}>

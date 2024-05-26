@@ -2,6 +2,8 @@ import React, {useState} from 'react'
 import { Button, Form, message} from 'antd';
 import { StyleInput, StyleInputPassword, StyleContainer, StyleLeftCon, StyleRightCon} from './style';
 import { Link } from 'react-router-dom';
+import * as CartService from '../../services/CartService'
+
 const Register = () => {
     const [formData, setFormData] = useState({
         username: '',
@@ -49,7 +51,7 @@ const Register = () => {
             body: JSON.stringify(formData),
           });
           const data = await response.json();
-          console.log(data); 
+          const cart = await CartService.createCart(data.data.id);
           if (response.ok) {
             if (data.status === 'ERR' && data.message === 'The username is already') {
                 setUsernameExistError(false); 

@@ -9,10 +9,10 @@ const initialState = {
   accessToken: "",
   id: "",
   isAdmin: false,
-  city: "",
+  // city: "",
   refreshToken: "",
   tempShipAddr: 0,
-  tempShipAddrNone: {},
+  tempShipAddrNone: null,
 };
 
 export const userSlice = createSlice({
@@ -31,7 +31,7 @@ export const userSlice = createSlice({
         avatar = "",
         id = "",
         isAdmin,
-        city = "",
+        // city = "",
         refreshToken = "",
         shippingAddress = [],
       } = action.payload.data;
@@ -43,7 +43,7 @@ export const userSlice = createSlice({
       state.id = id ? id : state.id;
       state.accessToken = accessToken ? accessToken : state.accessToken;
       state.isAdmin = isAdmin ? isAdmin : state.isAdmin;
-      state.city = city ? city : state.city;
+      // state.city = city ? city : state.city;
       state.refreshToken = refreshToken ? refreshToken : state.refreshToken;
       state.shippingAddress =
         shippingAddress.length != 0 ? shippingAddress : state.shippingAddress;
@@ -58,10 +58,11 @@ export const userSlice = createSlice({
       state.id = "";
       state.accessToken = "";
       state.isAdmin = false;
-      state.city = "";
+      // state.city = "";
       state.refreshToken = "";
       state.shippingAddress = [];
       state.tempShipAddr = -1;
+      state.tempShipAddrNone = null;
     },
     addShippingAddressUser: (state, action) => {
       const sa = action.payload;

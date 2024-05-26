@@ -1,5 +1,8 @@
 package com.example.TeddyShopProject.Controller;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +19,14 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @GetMapping("")
-    public ResponseEntity<Object> getItems() {
+    @PostMapping("/create/{id}")
+    public ResponseEntity<Object> createCart(@PathVariable("id") String userId) {
         try {
-            ApiResponse res = cartService.getItems();
+            if (userId == null) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ErrorResponse("The userId is required", "ERR"));
+            }
+            ApiResponse res = cartService.createCart(userId);
             return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -27,14 +34,14 @@ public class CartController {
         }
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<Object> addItems(@PathVariable("id") String id, @RequestParam int sl) {
+    @GetMapping("getCart/{id}")
+    public ResponseEntity<Object> getCart(@PathVariable("id") String id) {
         try {
             if (id == null) {
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ErrorResponse("The userId is required", "ERR"));
+                        .body(new ErrorResponse("The id is required", "ERR"));
             }
-            ApiResponse res = cartService.addItems(id, sl);
+            ApiResponse res = cartService.getCart(id);
             return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -42,30 +49,19 @@ public class CartController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateItems(@PathVariable("id") String id, @RequestParam int sl) {
+    @PutMapping("update/{id}")
+    public ResponseEntity<Object> updateCart(@PathVariable("id") String id, @RequestBody Map<String, Object> obj) {
         try {
             if (id == null) {
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new ErrorResponse("The userId is required", "ERR"));
             }
-            ApiResponse res = cartService.updateItems(id, sl);
-            return ResponseEntity.status(HttpStatus.OK).body(res);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse(e.getMessage(), null));
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteItems(@PathVariable("id") String id) {
-        try {
-            if (id == null) {
+            if (obj == null) {
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ErrorResponse("The userId is required", "ERR"));
+                        .body(new ErrorResponse("The input is required", "ERR"));
             }
-
-            ApiResponse res = cartService.deleteItems(id);
+            ArrayList<Map<String, Object>> items = (ArrayList<Map<String, Object>>) obj.get("cartItems");
+            ApiResponse res = cartService.updateCart(id, items);
             return ResponseEntity.status(HttpStatus.OK).body(res);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

@@ -2,8 +2,12 @@ import { Button, Checkbox, Form, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { updateUser } from '../../redux/slices/userSlice';
 import { StyleContainer, StyleInput, StyleInputPassword, StyleLeftCon, StyleRightCon } from './style';
+import * as CartService from '../../services/CartService'
+import { jwtDecode } from 'jwt-decode'
+import { updateUser, resetUser } from '../../redux/slices/userSlice'
+import { importCart, resetCart } from '../../redux/slices/cartSlice'
+
 const SignIn = () => {
     const location = useLocation();
     const [loading, setLoading] = useState(false);
@@ -12,7 +16,47 @@ const SignIn = () => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const user = useSelector((state) => state.user)
+    const cart = useSelector((state) => state.cart)
     const [check, setCheck] = useState(false);
+
+    const getTokenExpiration = (accessToken) => {
+        try {
+            const decodedToken = jwtDecode(accessToken);
+            return decodedToken.exp ? new Date(decodedToken.exp * 1000) : null;
+        } catch (error) {
+            console.error('Invalid token:', error);
+            return null;
+        }
+    }
+
+    const logoutUser = async () => {
+        // setLoading(true);
+        const updateCartResponse = await CartService.updateCart(user.id, cart.orderItems)
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem('tokenExpiration')
+        dispatch(resetUser());
+        dispatch(resetCart());
+        // setLoading(false);
+        navigate("/");
+      };
+
+    const checkTokenExpiration = () => {
+        const tokenExpiration = localStorage.getItem('tokenExpiration');
+        if (tokenExpiration) {
+            const currentTime = Date.now();
+            const sessionTime = tokenExpiration - currentTime;
+    
+            if (sessionTime > 0) {
+                setTimeout(logoutUser, sessionTime);
+            } else {
+                logoutUser(); // Token đã hết hạn, đăng xuất ngay lập tức
+            }
+        } else {
+            console.error('No token expiration found in localStorage');
+        }
+    }
+
     useEffect(() => {
         // Xóa trạng thái lỗi email khi người dùng thay đổi giá trị email
         setCheck(false);
@@ -39,6 +83,18 @@ const SignIn = () => {
                 const { accessToken, refreshToken, id } = data.data;
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('refreshToken', refreshToken);
+
+                const expirationDate = getTokenExpiration(accessToken);
+                if (expirationDate) {
+                    const tokenExpiration = expirationDate.getTime();
+                    localStorage.setItem('tokenExpiration', tokenExpiration);
+                } else {
+                    console.error('Could not get token expiration');
+                }
+                checkTokenExpiration()
+                const getCartResponse = await CartService.getCart(id)
+                // console.log(cart)
+                dispatch(importCart(getCartResponse.data.cartItems))
                 //setCheck(true);
                 //const { id } = data.data; // Lấy id từ dữ liệu trả về
                 //localStorage.setItem('userID', id);

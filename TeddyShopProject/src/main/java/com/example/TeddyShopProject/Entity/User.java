@@ -1,12 +1,10 @@
 package com.example.TeddyShopProject.Entity;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import com.example.TeddyShopProject.Util.ShippingAddress;
+import java.util.Date;
+import java.util.ArrayList;
 
 @Document(collection = "users")
 public class User {
@@ -35,6 +33,7 @@ public class User {
         this.phone = phone;
         this.address = address;
         this.password = password;
+        this.shippingAddress = new ArrayList<ShippingAddress>();
     }
 
     // Getters and setters

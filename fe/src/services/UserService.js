@@ -70,20 +70,20 @@ export const updateUser = async (id, data, accessToken) => {
     return res.data
 }
 
-export const addShippingAddress = async (body) => {
-    console.log("add shipping address serviec: ", body);
-    const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/user/shipping-address`,body,{
+export const addShippingAddress = async (id, addData, accessToken) => {
+    // console.log("add shipping address service: ", body);
+    const res = await axiosJWT.post(`http://localhost:8083/api/user/shipping-address/${id}`,addData,{
         headers: {
-            token: `Bearer ${body.accessToken}`,
+            token: `Bearer ${accessToken}`,
         }
     });
     return res.data;
 }
-export const getShippingAddress = async (body) => {
-    console.log("get shipping address serviec: ", body.userId);
-    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/shipping-address`,body.userId,{
+export const getShippingAddress = async (id, accessToken) => {
+    // console.log("get shipping address serviec: ", body.userId);
+    const res = await axiosJWT.get(`http://localhost:8083/api/user/shipping-address/${id}`,{
         headers: {
-            token: `Bearer ${body.accessToken}`,
+            token: `Bearer ${accessToken}`,
         }
     });
     return res.data;

@@ -142,10 +142,9 @@ public class UserController {
         }
     }
 
-    @GetMapping("/shipping-address")
-    public ResponseEntity<Object> getShippingAddress(@RequestBody Map<String, Object> obj) {
+    @GetMapping("/shipping-address/{id}")
+    public ResponseEntity<Object> getShippingAddress(@PathVariable("id") String userId) {
         try {
-            String userId = obj.get("id").toString();
             ApiResponse shippingAddress = userService.getShippingAddress(userId);
             return ResponseEntity.status(HttpStatus.OK).body(shippingAddress);
         } catch (Exception e) {
@@ -154,17 +153,15 @@ public class UserController {
         }
     }
 
-    @PostMapping("/shipping-address")
-    public ResponseEntity<Object> addShippingAddress(@RequestBody Map<String, Object> obj) {
+    @PostMapping("/shipping-address/{id}")
+    public ResponseEntity<Object> addShippingAddress(@PathVariable("id") String id,
+            @RequestBody ShippingAddress shippingAddress) {
         try {
-            String id = obj.get("id").toString();
-            ShippingAddress shippingAddress = (ShippingAddress) obj.get("shippingAddress");
             if (id == null || shippingAddress == null) {
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ErrorResponse("The userId and shippingAddress are required",
+                        .body(new ErrorResponse("The input are required",
                                 "ERR"));
             }
-
             ApiResponse result = userService.addShippingAddress(id, shippingAddress);
             return ResponseEntity.status(HttpStatus.OK).body(result);
         } catch (Exception e) {

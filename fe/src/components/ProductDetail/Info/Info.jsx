@@ -193,7 +193,17 @@ const Info = ({ productId }) => {
   }, [productData]);
 
   const handleBuyNow = () => {
-    dispatch(addCartProduct({...productData, price: productData.productPrice[selectedSize], amount: quantity}));
+    const {countInStock, productPrice, ...rest} = productData
+    const addCartData = rest
+    dispatch(addCartProduct({...addCartData, 
+                              // productPrice: {[size]}
+                              price: productData.productPrice[selectedSize], 
+                              description: {
+                                Color: selectedColor,
+                                Material: selectedMaterial,
+                                Size: selectedSize,
+                              },
+                              amount: quantity}));
   };
 
   if (!productData) {
