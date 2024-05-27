@@ -20,7 +20,7 @@ const FooterComponent = () => (
         <p>Chuyên cung cấp Gấu Bông & Thú Nhồi Bông chính hãng.</p>
         <Info>
           <PhoneOutlined style = {{color: '#BF8B70', marginRight: '4px'}} />
-          <span>HCM: 098 467 5474</span>
+          <span>HCM: 037 804 2260</span>
         </Info>
         <Info>
           <MailOutlined style = {{color: '#BF8B70', marginRight: '4px'}} />

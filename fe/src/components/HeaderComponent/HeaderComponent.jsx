@@ -121,7 +121,7 @@ const HeaderComponent = () => {
   };
 
   return (
-    <WrapperHeader>
+<WrapperHeader>
       <Row align="middle" justify="space-between" style={{ width: '100%' }}>
         <Col span={6} style={{ textAlign: 'center' }}>
           <Link to="/#">
@@ -138,25 +138,20 @@ const HeaderComponent = () => {
           />
         </Col>
         <Col span={6} style={{ textAlign: 'center' }}>
-        {/* <ShoppingCartOutlined style={{fontSize: '36px', color: '#994C00'}}/> */}
-        {/* <ShoppingTwoTone  twoToneColor= "#994C00" style={{fontSize: '36px'}}/> */}
-        <Badge count={cart?.orderItems?.length} size="small">
-          <ShoppingCartOutlined
-            style={{ fontSize: "36px", color: "#fff" }}
-            onClick={goToCart}
-          />
-        </Badge>
-        {user?.accessToken ? (
-          <>
-            {console.log("is admin? : ", user?.isAdmin)}
+          <Badge count={cart?.orderItems?.length} size="small" style={{marginTop: '4px', marginRight: '16px'}}>
+            <ShoppingCartOutlined
+              style={{fontSize: "36px", color: "#994C00", cursor: 'pointer', marginRight: '16px' }}
+              onClick={goToCart}
+            />
+          </Badge>
+          {user?.accessToken ? (
             <Popover content={content} trigger="click" open={isOpenPopup}>
               <div
                 style={{
                   cursor: "pointer",
-                  maxWidth: 150,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  display: "flex",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  marginLeft: '32px',
                 }}
                 onClick={() => setIsOpenPopup((prev) => !prev)}
               >
@@ -170,43 +165,41 @@ const HeaderComponent = () => {
                   }}
                 >
                   {user?.avatar ? (
-                    <img src={user?.avatar} alt="" />
+                    <img src={user?.avatar} alt="" style={{ width: '100%', borderRadius: '50%' }} />
                   ) : (
                     <FaUserCircle
                       style={{
                         width: "inherit",
                         height: "inherit",
-                        color: "#fff",
+                        color: "#CC7A33",
+                        marginBottom: '16px'
                       }}
                     />
                   )}
                 </div>
-                <span style={{ color: "#fff" }}>
+                <span style={{ color: "#CC7A33", fontWeight: "bold"}}>
                   {userName?.length ? userName : user?.email}
                 </span>
               </div>
             </Popover>
-          </>
-        ) : (
-          <div
-            style={{
-              cursor: "pointer",
-              maxWidth: 150,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              padding: "8px 16px",
-              backgroundColor: "#fff",
-              maxHeight: 36,
-              borderRadius: "8px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onClick={handleNavigateLogin}
-          >
-            <span style={{ color: "#000" }}>Đăng nhập</span>
-          </div>
-        )}
+          ) : (
+            <div
+              style={{
+                cursor: "pointer",
+                padding: "8px 16px",
+                backgroundColor: "#fff",
+                borderRadius: "8px",
+                display: "inline-flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginLeft: '16px',
+                marginBottom: '8px'
+              }}
+              onClick={handleNavigateLogin}
+            >
+              <span style={{ color: "#000" }}>Đăng nhập</span>
+            </div>
+          )}
         </Col>
       </Row>
       <Nav>

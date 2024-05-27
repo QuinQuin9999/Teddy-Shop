@@ -147,13 +147,13 @@ const SignIn = () => {
     return (
         <StyleContainer>
             <StyleLeftCon>
-            <img src='https://i.pinimg.com/564x/64/c3/6b/64c36b10d3e8904e6a23fc59ed3ca060.jpg' alt='gear'
+            <img src='/logo1.jpg' alt='BabyBear'
             style={{width:'300px', height:'300px', borderRadius: '50%'}}/>
-            <h4 style={{textAlign:'center', color: '#1677FF'}}>Chào mừng đến với GearShop</h4>
-            <h6 style={{textAlign:'center', margin: '0', color: '#1677FF'}}>Chất lượng tốt, giá thành tốt, ưu đãi cực vui</h6>
+            <h4 style={{textAlign:'center', color: '#CC7A33', marginTop: '16px'}}>Chào mừng đến với BabyBear!</h4>
+            <h6 style={{textAlign:'center', margin: '0', color: '#CC7A33'}}>Chất lượng tốt, giá thành tốt, ưu đãi cực vui!</h6>
             </StyleLeftCon>
             <StyleRightCon>
-            <h4 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1A93FF' }}>Đăng nhập</h4>
+            <h4 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#CC7A33' }}>Đăng nhập</h4>
             <Form form={form}>
                 <Form.Item
                     label="Email"

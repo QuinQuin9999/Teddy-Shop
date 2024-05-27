@@ -12,7 +12,7 @@ export const StyleContainer = styled.div`
     align-items: center;
     height: 600px;
     margin: 1% 10%;
-    border: 2px solid #1A93FF;
+    border: 2px solid #CC7A33;
     border-radius: 25px;
 
     @media (max-width: 1024px)
@@ -27,9 +27,9 @@ export const StyleLeftCon = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-right: 2px solid #1A93FF; 
+    border-right: 2px solid #CC7A33; 
     @media (max-width: 968px) {
-        display: none; /* Ẩn nội dung trên màn hình nhỏ hơn 968px */
+        display: none; 
     }
 `
 
@@ -39,6 +39,6 @@ export const StyleRightCon = styled.div`
     justify-content: center;
     align-items: center;
     @media (max-width: 968px) {
-        padding: 20px; /* Thêm padding để nội dung không bị sát với mép màn hình */
+        padding: 20px; 
     }
 `

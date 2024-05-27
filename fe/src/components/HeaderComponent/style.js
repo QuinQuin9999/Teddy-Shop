@@ -3,11 +3,11 @@ import styled from "styled-components";
 export const WrapperHeader = styled.div`
   background: #F0DACD;
   padding: 10px 20px;
-  box-shadow: 0 2px 8px #f0f1f2;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 export const Logo = styled.img`
-  width: 100px;
+  width: 200px;
 `;
 
 export const Nav = styled.nav`
