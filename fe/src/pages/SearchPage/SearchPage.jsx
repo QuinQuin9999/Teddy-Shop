@@ -9,6 +9,7 @@ import SelectPriceComponent from '../../components/SelectPriceComponent/SelectPr
 import SelectSizeComponent from '../../components/SelectSizeComponent/SelectSizeComponent';
 import SelectColorComponent from '../../components/SelectColorComponent/SelectColorComponent';
 import SelectMaterialComponent from '../../components/SelectMaterialComponent/SelectMaterialComponent';
+import { Pagination } from 'antd';
 
 const SearchPage = () => {
     const location = useLocation();
@@ -20,6 +21,7 @@ const SearchPage = () => {
     const size = searchParams.get('size') || null;
     const color = searchParams.get('color') || null;
     const material = searchParams.get('material') || null;
+    const [currentPage, setCurrentPage] = useState(1);
 
     const fetchProductsSearchAPI = async (name, minPrice, maxPrice,size, color, material) => {
         const response = await axios.get(`http://localhost:8083/api/v1/product/search`, {
@@ -42,7 +44,9 @@ const SearchPage = () => {
         retryDelay: 1000
     });
 
-    console.log('name', products)
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error fetching products: {error.message}</div>;
@@ -56,6 +60,9 @@ const SearchPage = () => {
             <div style={{ margin: '20px 0', fontSize: '20px', marginLeft: '24px' }}>Không tìm thấy sản phẩm.</div>
         );
     };
+    const startIndex = (currentPage - 1) * 12;
+    const endIndex = startIndex + 12;
+    const productsOnCurrentPage = products.slice(startIndex, endIndex);
 
     return (
         <WrapperDiv>
@@ -73,10 +80,17 @@ const SearchPage = () => {
                 )}
             </div>
             <WrapperProducts>
-                {products?.map(product => (
+                {productsOnCurrentPage?.map(product => (
                     <CardProductComponent key={product.id} {...product} />
                 ))}
             </WrapperProducts>
+            <Pagination
+                current={currentPage}
+                onChange={handlePageChange}
+                total={products.length}
+                pageSize={12}
+                style={{ textAlign: 'center', marginTop: '20px' }}
+            />
         </WrapperDiv>
     );
 };

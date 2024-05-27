@@ -70,7 +70,7 @@ const ChangePassword = () => {
 
   return (
     <div>
-      <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Chỉnh sửa mật khẩu</h1>
+      <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '32px' }}>Chỉnh sửa mật khẩu</h1>
       <WrapperContainer>
         <Form onSubmit={handleSubmit} name="basic" labelCol={{span: 8,}} wrapperCol={{span: 16,}} style={{maxWidth: 600,}}>
           <Form.Item label="Mật khẩu cũ" >
