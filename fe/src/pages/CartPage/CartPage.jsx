@@ -200,7 +200,7 @@ const CartPage = () => {
     if (priceMemo > 1000000 || listChecked.length === 0) {
       return 0;
     } else {
-      return 50000;
+      return 12000;
     }
   }, [priceMemo, listChecked]);
 

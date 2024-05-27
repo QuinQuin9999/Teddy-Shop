@@ -131,10 +131,10 @@ const OrderHistory = () => {
               itemLayout="horizontal"
               dataSource={selectedOrder.orderItems}
               renderItem={(item) => (
-                <List.Item key={item.idProduct}>
+                <List.Item key={item.id}>
                   <List.Item.Meta
-                    avatar={<Image src={item.image} alt={item.name} width={100} />}
-                    title={item.name}
+                    avatar={<Image src={item.productImg} alt={item.productName} width={100} />}
+                    title={item.productName}
                   />
                   <Space direction="vertical">
                     <p>Số lượng: {item.amount}</p>

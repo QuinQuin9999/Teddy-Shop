@@ -74,8 +74,8 @@ const OrderDetail = () => {
         renderItem={(item) => (
           <List.Item>
             <List.Item.Meta
-              avatar={<Image src={item.image} alt={item.name} width={64} />}
-              title={item.name}
+              avatar={<Image src={item.productImg} alt={item.productName} width={64} />}
+              title={item.productName}
             />
             <Space direction="vertical">
               <p>Số lượng: {item.amount}</p>
