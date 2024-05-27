@@ -114,9 +114,9 @@ const HeaderComponent = () => {
 
   console.log(categories)
 
-  const handleCategoryClick = (categoryHref) => {
+  const handleCategoryClick = (subCategoryName) => {
     setIsHovered(false); 
-    navigate(`/category/${categoryHref}`, { replace: true });
+    navigate(`/category/${subCategoryName}`, { replace: true });
     window.location.reload(); 
   };
 
@@ -218,14 +218,14 @@ const HeaderComponent = () => {
               {categories && categories.map((category) => (
                 <CategorySection key={category.id}>
                   <DropdownItem>
-                    <Link to="#" onClick={() => handleCategoryClick(category.href)}>
+                    <Link to="#" onClick={() => handleCategoryClick(category.categoryName)}>
                       {category.categoryName.toUpperCase()}
                     </Link>
                   </DropdownItem>
                   {category.subCategories.map((subCategory) => (
                     <SubCategoryMenu key={subCategory.id}>
                       <DropdownItem>
-                        <Link to="#" onClick={() => handleCategoryClick(subCategory.href)}>
+                        <Link to="#" onClick={() => handleCategoryClick(subCategory.subCategoryName)}>
                           {subCategory.subCategoryName}
                         </Link>
                       </DropdownItem>

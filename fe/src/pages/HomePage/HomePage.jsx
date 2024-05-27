@@ -3,10 +3,13 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import ImageSlider from '../../components/ImageSlider/ImageSlider';
 import ProductListByCategory from './ProductListByCategory/ProductListByCategory';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
   const handleViewMore = (category) => {
-    
+    navigate(`/category/${category}`);
   };
 
   const fetchProductsAPI = async () => {

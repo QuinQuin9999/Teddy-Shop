@@ -1,7 +1,6 @@
 import HomePage from "../pages/HomePage/HomePage";
 import ProductDetailPage from "../pages/ProductDetailPage/ProductDetailPage";
 import SearchPage from "../pages/SearchPage/SearchPage";
-import CategoryPage from "../pages/CategoryPage/CategoryPage";
 
 import CartPage from "../pages/CartPage/CartPage";
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
@@ -12,6 +11,7 @@ import ForgotPassword from '../pages/ForgotPassword/ForgotPassword'
 import AdminPage from '../pages/AdminPage/AdminPage'
 import AdminUser from '../components/AdminUser/AdminUser'
 import CollectionPage from '../pages/CollectionPage/CollectionPage'
+import ProductListByCategoryPage from "../pages/ProductListByCategoryPage/ProductListByCategoryPage";
 
 export const routes = [
     {
@@ -27,11 +27,6 @@ export const routes = [
     {
       path: "/search",
       page: SearchPage,
-      isShowHeader: true,
-    },
-    {
-      path: "/category/:href",
-      page: CategoryPage,
       isShowHeader: true,
     },
     {
@@ -75,4 +70,9 @@ export const routes = [
       page: CollectionPage,
       isShowHeader: true,
     },
+    {
+      path: "/category/:category",
+      page: ProductListByCategoryPage,
+      isShowHeader: true,
+    }
 ]
