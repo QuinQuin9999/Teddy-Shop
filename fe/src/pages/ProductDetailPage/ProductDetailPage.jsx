@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import CardProductComponent from "../../components/CardProductComponent/CardProductComponent";
 import ReviewComponent from "../../components/ReviewComponent/ReviewComponent";
-// import Review from "../../components/Review";
 
 function ProductDetailPage() {
   const navigate = useNavigate();
@@ -69,7 +68,7 @@ function ProductDetailPage() {
       </div>
       <FlexContainer>
         <ReviewContainer>
-          <h3 style={{ fontSize: '20px', marginTop: '8px', marginLeft: '20px', marginBottom: '0px'}}>Reviews</h3>
+          <h3 style={{ fontSize: '20px', marginTop: '8px', marginLeft: '20px', marginBottom: '0px'}}> Đánh giá</h3>
           <ReviewComponent productId={productId} />
         </ReviewContainer>
         <RelatedProductsContainer>

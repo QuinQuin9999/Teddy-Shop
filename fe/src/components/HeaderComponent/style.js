@@ -30,7 +30,8 @@ export const Nav = styled.nav`
 export const DropdownMenu = styled.div`
   position: absolute;
   top: 100%;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   background: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #ddd;
@@ -45,7 +46,6 @@ export const DropdownItem = styled.div`
   padding: 4px 8px;
   white-space: nowrap;
 `;
-
 
 export const SubCategoryMenu = styled.div`
   padding-left: 16px;
