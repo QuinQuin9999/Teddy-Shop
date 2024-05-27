@@ -2,7 +2,7 @@ import { Button, Checkbox, Form, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { StyleContainer, StyleInput, StyleInputPassword, StyleLeftCon, StyleRightCon } from './style';
+import { StyleContainer, StyleInput, StyleInputPassword, InlineWrapper, StyleRightCon } from './style';
 import * as CartService from '../../services/CartService'
 import * as UserService from '../../services/UserService'
 import { jwtDecode } from 'jwt-decode'
@@ -144,14 +144,8 @@ const SignIn = () => {
     }, []);
     return (
         <StyleContainer>
-            <StyleLeftCon>
-            <img src='/logo1.jpg' alt='BabyBear'
-            style={{width:'300px', height:'300px', borderRadius: '50%'}}/>
-            <h4 style={{textAlign:'center', color: '#CC7A33', marginTop: '16px'}}>Chào mừng đến với BabyBear!</h4>
-            <h6 style={{textAlign:'center', margin: '0', color: '#CC7A33'}}>Chất lượng tốt, giá thành tốt, ưu đãi cực vui!</h6>
-            </StyleLeftCon>
             <StyleRightCon>
-            <h4 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#CC7A33' }}>Đăng nhập</h4>
+            <h4 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#CC7A33', marginBottom: '32px' }}>Đăng nhập</h4>
             <Form form={form}>
                 <Form.Item
                     label="Email"
@@ -162,8 +156,8 @@ const SignIn = () => {
                             message: 'Vui lòng nhập tên tài khoản!',
                         },
                     ]}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 20 }}>
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 18 }}>
                     <StyleInput />
                 </Form.Item>
 
@@ -176,15 +170,17 @@ const SignIn = () => {
                             message: 'Vui lòng nhập mật khẩu!',
                         },
                     ]}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 20 }}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 18}}
                     validateStatus={check ? 'error' : ''} 
                     help={check && 'Tài khoản hoặc mật khẩu không chính xác'}>
                     <StyleInputPassword />
                 </Form.Item>
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
+                <InlineWrapper>
                     <Checkbox checked={rememberMe} onChange={handleCheckboxChange}>Ghi nhớ thông tin đăng nhập</Checkbox>
-                    <p><Link to="/ForgotPassword">Quên mật khẩu?</Link></p>
+                    <Link to="/ForgotPassword">Quên mật khẩu?</Link>
+                </InlineWrapper>
                 </Form.Item>
                 
                 <Form.Item wrapperCol={{ offset: 10, span: 14 }}>

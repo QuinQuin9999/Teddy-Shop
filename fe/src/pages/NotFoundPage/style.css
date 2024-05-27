@@ -1,28 +1,57 @@
-.page_404{ padding:40px 0; background:#fff; font-family: 'Arvo', serif;
-}
-
-.page_404  img{ width:100%;}
-
-.four_zero_four_bg{
- 
- background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
-    height: 400px;
-    background-position: center;
- }
- 
- 
- .four_zero_four_bg h1{
- font-size:80px;
- }
- 
-  .four_zero_four_bg h3{
-			 font-size:80px;
-			 }
-			 
-			 .link_404{			 
-	color: #fff!important;
+.page_404 {
+    padding: 40px 0;
+    background: #f1f1f1;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+  }
+  
+  .page_404 h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .page_404 p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    line-height: 1.6;
+  }
+  
+  .page_404 .highlight {
+    font-weight: bold;
+    color: red;
+  }
+  
+  .link_404 {
+    color: #007bff;
     padding: 10px 20px;
-    background: #39ac31;
-    margin: 20px 0;
-    display: inline-block;}
-	.contant_box_404{ margin-top:-50px;}
+    background: transparent;
+    border: 2px solid #007bff;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    transition: background 0.3s, color 0.3s;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .link_404:hover {
+    background: #007bff;
+    color: #fff;
+  }
+  
+  .link_404:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  

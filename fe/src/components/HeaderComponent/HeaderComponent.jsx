@@ -112,9 +112,9 @@ const HeaderComponent = () => {
 
   console.log(categories)
 
-  const handleCategoryClick = (subCategoryName) => {
+  const handleCategoryClick = (href) => {
     setIsHovered(false); 
-    navigate(`/category/${subCategoryName}`, { replace: true });
+    navigate(`/collection/${href}`, { replace: true });
     window.location.reload(); 
   };
 
@@ -135,13 +135,7 @@ const HeaderComponent = () => {
             enterButton
           />
         </Col>
-        <Col span={6} style={{ textAlign: 'center' }}>
-          <Badge count={cart?.orderItems?.length} size="small" style={{marginTop: '4px', marginRight: '16px'}}>
-            <ShoppingCartOutlined
-              style={{fontSize: "36px", color: "#994C00", cursor: 'pointer', marginRight: '16px' }}
-              onClick={goToCart}
-            />
-          </Badge>
+        <Col span={4} style={{ textAlign: 'right' }}>
           {user?.accessToken ? (
             <Popover content={content} trigger="click" open={isOpenPopup}>
               <div
@@ -149,7 +143,10 @@ const HeaderComponent = () => {
                   cursor: "pointer",
                   display: "inline-flex",
                   alignItems: "center",
-                  marginLeft: '32px',
+                  marginRight: '32px',
+                  border: '2px solid #CC7A33',
+                  borderRadius: '25px',
+                  paddingRight: '25px'
                 }}
                 onClick={() => setIsOpenPopup((prev) => !prev)}
               >
@@ -185,19 +182,26 @@ const HeaderComponent = () => {
               style={{
                 cursor: "pointer",
                 padding: "8px 16px",
-                backgroundColor: "#fff",
+                backgroundColor: "#CC7A33",
                 borderRadius: "8px",
                 display: "inline-flex",
                 justifyContent: "center",
                 alignItems: "center",
                 marginLeft: '16px',
-                marginBottom: '8px'
               }}
               onClick={handleNavigateLogin}
             >
-              <span style={{ color: "#000" }}>Đăng nhập</span>
+              <span style={{ color: "#fff" , fontWeight: '600'}}>Đăng nhập</span>
             </div>
           )}
+        </Col>
+        <Col span={2}>
+        <Badge count={cart?.orderItems?.length} size="small" style={{marginTop: '4px', marginLeft: '16px'}}>
+            <ShoppingCartOutlined
+              style={{fontSize: "36px", color: "#994C00", cursor: 'pointer', marginLeft: '16px' }}
+              onClick={goToCart}
+            />
+          </Badge>
         </Col>
       </Row>
       <Nav>

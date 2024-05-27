@@ -92,7 +92,7 @@ const OrderHistory = () => {
 
   return (
     <div style={{ }}>
-      <h1 style={{marginBottom: '32px'}}>Lịch sử mua hàng</h1>
+      <h1 style={{marginBottom: '32px', fontSize: '32px'}}>Lịch sử mua hàng</h1>
       <Table columns={columns} dataSource={orderHistory} loading={loading} rowKey="id" />
 
       <Modal

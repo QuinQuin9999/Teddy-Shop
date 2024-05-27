@@ -28,12 +28,6 @@ const Register = () => {
       };
       const handleSubmit = async (e) => {
         e.preventDefault();
-        // if (formData.password !== formData.confirmPassword) {
-        //   //message.error('Mật khẩu xác nhận không khớp');
-        //   //alert("not match")
-        //   setPasswordMatch(false);
-        //   return;
-        // }
         if (!passwordRegex.test(formData.password)) {
           //message.error('Mật khẩu phải chứa ít nhất 8 kí tự bao gồm kí tự hoa, kí tự thường, chữ số và kí tự đặc biệt');
           setValidatePass(false);
@@ -102,12 +96,6 @@ const Register = () => {
       };    
   return (
     <StyleContainer>
-      <StyleLeftCon>
-        <img src='/logo1.jpg' alt='BabyBear'
-        style={{width:'300px', height:'300px', borderRadius: '50%'}}/>
-        <h4 style={{textAlign:'center', color: '#CC7A33', marginTop: '16px'}}>Chào mừng đến với BabyBear!</h4>
-        <h6 style={{textAlign:'center', margin: '0', color: '#CC7A33'}}>Chất lượng tốt, giá thành tốt, ưu đãi cực vui!</h6>
-      </StyleLeftCon>
       <StyleRightCon>
       <h4 style={{display:'flex', alignItems: 'center', justifyContent:'center', color: '#CC7A33'}}>Đăng ký</h4>
       <Form>
@@ -120,8 +108,8 @@ const Register = () => {
                 message: 'Please input your username!',
                 },
             ]}
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17 }}>
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}>
             <>
               <StyleInput name="username" value={formData.username} onChange={handleChange}/>
               {!usernameExistError && <p style={{ color: 'red', margin: '5px 0 0 0' }}>tài khoản đã tồn tại</p>}
@@ -137,8 +125,8 @@ const Register = () => {
                 message: 'Please input your email!',
                 },
             ]}
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17 }}>
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}>
             <>
               <StyleInput name="email" value={formData.email} onChange={handleChange}/>
               {!emailExistError && <p style={{ color: 'red', margin: '5px 0 0 0' }}>Email đã tồn tại</p>}
@@ -155,8 +143,8 @@ const Register = () => {
                 message: 'Please input your phone!',
                 },
             ]}
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17 }}>
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}>
               <StyleInput name="phone" value={formData.phone} onChange={handleChange}/>
         </Form.Item>
 
@@ -169,8 +157,8 @@ const Register = () => {
                 message: 'Please input your address!',
                 },
             ]}
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17 }}>      
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}>      
               <StyleInput name="address" value={formData.address} onChange={handleChange} />
         </Form.Item>
 
@@ -183,8 +171,8 @@ const Register = () => {
                 message: 'Please input your password!',
             },
             ]}
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17 }}>
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}>
             <>
               <StyleInputPassword name="password" value={formData.password} onChange={handleChange}/>
               {!validatePass && <p style={{ color: 'red', margin: '5px 0 0 0' }}>Mật khẩu phải chứa ít nhất 8 kí tự bao gồm kí tự hoa, kí tự thường, chữ số và kí tự đặc biệt</p>}
@@ -199,8 +187,8 @@ const Register = () => {
                 message: 'Please input your confirm pasword!',
                 },
             ]}
-            labelCol={{ span: 7 }}
-            wrapperCol={{ span: 17}}>
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16}}>
             <>
               <StyleInputPassword name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
               {!passwordMatch && <p style={{ color: 'red', margin: '5px 0 0 0' }}>Mật khẩu xác nhận không khớp</p>}

@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import ImageSlider from '../../components/ImageSlider/ImageSlider';
-import ProductListByCategory from './ProductListByCategory/ProductListByCategory';
+import ProductListByCategory from './ProductLisrByCategory/ProductListByCategory';
 import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {

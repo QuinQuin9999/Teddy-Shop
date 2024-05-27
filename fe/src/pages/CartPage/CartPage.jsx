@@ -683,10 +683,10 @@ const CartPage = () => {
                   style={{
                     background: "#fff",
                     color: "#5dbb63",
-                    fontSize: "250px",
+                    fontSize: "100px",
                   }}
                 />
-                <span style={{ fontSize: "40px", fontWeight: "500" }}>
+                <span style={{ fontSize: "32px", fontWeight: "500" }}>
                   Đặt hàng thành công
                 </span>
               </div>

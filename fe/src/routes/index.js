@@ -42,10 +42,12 @@ export const routes = [
     {
       path: "/SignIn",
       page: SignIn,
+      isShowHeader: true,
     },
     {
       path: "/Register",
       page: Register,
+      isShowHeader: true,
     },
     {
       path: "/UserPage",

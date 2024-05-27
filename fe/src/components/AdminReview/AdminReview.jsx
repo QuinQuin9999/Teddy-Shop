@@ -235,7 +235,7 @@ const AdminReview = () => {
 
   return (
     <div>
-      <h1>Quản lý đánh giá</h1>
+      <h1 style={{fontSize: '24px'}}>Quản lý đánh giá</h1>
       <Table
         columns={columns}
         expandable={{ expandedRowRender }}

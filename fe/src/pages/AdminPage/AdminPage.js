@@ -19,15 +19,12 @@ const AdminPage = () => {
   const [keySelected, setKeySelected] = useState("");
 
   const items = [
-    getItem("Đánh giá", "reviews", <FormOutlined />),
+    getItem("Quản lý đơn hàng", "orders", <ShoppingCartOutlined />), 
     getItem("Sản phẩm", "products", <ProductOutlined />),
-    getItem("Media", "medias", <FileImageOutlined />),
-    getItem("Carousel", "carousels",<DeliveredProcedureOutlined />),
     getItem("User", "users",<UserOutlined />),
+    getItem("Đánh giá", "reviews", <FormOutlined />),
     getItem("Danh mục", "categories",<MenuOutlined />),
     getItem("Collection", "collections",<GroupOutlined />),
-    getItem("Chatbox", "chat" ,<WechatOutlined />),
-    getItem("Quản lý đơn hàng", "orders", <ShoppingCartOutlined />), 
   ];
 
   const handleOnClick = ({ key }) => {
@@ -40,16 +37,12 @@ const AdminPage = () => {
         return <AdminReview />;
       case "products":
         return <AdminProduct />;
-      // case "carousels":
-      //   return <AdminCarousel />;
       case "users":
         return <AdminUser />;
       case "collections": 
         return <AdminCollectionPage />;
       case "categories": 
         return <AdminCategory/>;
-      case "chat": 
-        return <AdminChatBox/>;
       case "orders":
         return <OrderHistory />; 
       default:

@@ -4,12 +4,14 @@ import { useQuery } from "@tanstack/react-query"
 import { useNavigate, useParams } from "react-router-dom"
 import * as CollectionService from '../../services/CollectionService'
 import CardProductComponent from '../../components/CardProductComponent/CardProductComponent';
+import { Pagination } from "antd";
 
 const CollectionPage = () => {
 
     const navigate = useNavigate();
     const params = useParams();
     const collectionName = params.name;
+    const [currentPage, setCurrentPage] = useState(1);
 
     // const [isFetchGetCollection, setIsFetchGetCollection] = useState(false)
 
@@ -29,14 +31,27 @@ const CollectionPage = () => {
     //         }
     //     }
     // }, [collection])
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+    const startIndex = (currentPage - 1) * 12;
+    const endIndex = startIndex + 12;
+    const productsOnCurrentPage = collection.slice(startIndex, endIndex);
 
     return (
-        <WrapperDiv>
+        <WrapperDiv style={{margin: '0 120px'}}>
             <WrapperProducts>
-                {collection?.data?.productList?.map(product => (
+                {productsOnCurrentPage?.data?.productList?.map(product => (
                     <CardProductComponent key={product.id} {...product} />
                 ))}
             </WrapperProducts>
+            <Pagination
+                current={currentPage}
+                onChange={handlePageChange}
+                total={collection.length}
+                pageSize={12}
+                style={{ textAlign: 'center', marginTop: '20px', marginBottom: '20px' }}
+            />
         </WrapperDiv>
     )
 }
