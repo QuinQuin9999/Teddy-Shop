@@ -15,9 +15,10 @@ const Register = () => {
       });
       const [passwordMatch, setPasswordMatch] = useState(true);
       const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{8,}$/;
-      const [validatePass, setvalidatePass] = useState(true);
+      const [validatePass, setValidatePass] = useState(true);
       const [emailExistError, setEmailExistError] = useState(true); 
       const [usernameExistError, setUsernameExistError] = useState(true);
+      const [validateEmail, setValidateEmail] = useState(true);
       const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -35,9 +36,10 @@ const Register = () => {
         // }
         if (!passwordRegex.test(formData.password)) {
           //message.error('Mật khẩu phải chứa ít nhất 8 kí tự bao gồm kí tự hoa, kí tự thường, chữ số và kí tự đặc biệt');
-          setvalidatePass(false);
+          setValidatePass(false);
           setUsernameExistError(true); 
           setEmailExistError(true);
+          setValidateEmail(true)
           setPasswordMatch(true);
           return;
         }
@@ -51,25 +53,35 @@ const Register = () => {
             body: JSON.stringify(formData),
           });
           const data = await response.json();
-          const cart = await CartService.createCart(data.data.id);
+          
           if (response.ok) {
             if (data.status === 'ERR' && data.message === 'The username is already') {
                 setUsernameExistError(false); 
                 setEmailExistError(true);
                 setPasswordMatch(true);
-                setvalidatePass(true);
+                setValidatePass(true);
+                setValidateEmail(true)
             }else if (data.status === 'ERR' && data.message === 'The email is already'){
                 setEmailExistError(false);
                 setUsernameExistError(true); 
                 setPasswordMatch(true);
-                setvalidatePass(true);
+                setValidatePass(true);
+                setValidateEmail(true)
             }else if(data.status === 'ERR' && data.message === 'The password is not match confirmPassword'){
               setPasswordMatch(false);
               setEmailExistError(true);
-                setUsernameExistError(true); 
-                setvalidatePass(true);
+              setUsernameExistError(true); 
+              setValidatePass(true);
+              setValidateEmail(true)
+            } else if(data.status === 'ERR' && data.message === 'The email is invalid') {
+              setValidateEmail(false)
+              setEmailExistError(true);
+              setUsernameExistError(true); 
+              setPasswordMatch(true);
+              setValidatePass(true);
             } else {
             //message.success('Đăng ký thành công');
+            const cart = await CartService.createCart(data.data.id);
             setFormData({
               username: '',
               email: '',
@@ -130,6 +142,7 @@ const Register = () => {
             <>
               <StyleInput name="email" value={formData.email} onChange={handleChange}/>
               {!emailExistError && <p style={{ color: 'red', margin: '5px 0 0 0' }}>Email đã tồn tại</p>}
+              {!validateEmail && <p style={{ color:'red', margin: '5px 0 0 0' }}>Email không hợp lệ</p>}
             </>
         </Form.Item>
         

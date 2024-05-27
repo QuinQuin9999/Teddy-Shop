@@ -2,7 +2,7 @@ package com.example.TeddyShopProject.Entity;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -27,7 +27,8 @@ public class Order {
     @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId userInfo;
     private boolean isPaid;
-    private Date paidAt;
+    private LocalDate orderDate;
+    private LocalDate deliveredDate;
     // private boolean isDelivered;
     private String status;
 
@@ -46,6 +47,7 @@ public class Order {
         this.totalPrice = totalPrice;
         this.userInfo = userInfo;
         this.isPaid = isPaid;
+        this.orderDate = LocalDate.now();
         // this.isDelivered = isDelivered;
         this.status = "Pending";
     }
@@ -144,13 +146,13 @@ public class Order {
         this.isPaid = isPaid;
     }
 
-    public Date getPaidAt() {
-        return paidAt;
-    }
+    // public Date getPaidAt() {
+    // return paidAt;
+    // }
 
-    public void setPaidAt(Date paidAt) {
-        this.paidAt = paidAt;
-    }
+    // public void setPaidAt(Date paidAt) {
+    // this.paidAt = paidAt;
+    // }
 
     // public boolean isDelivered() {
     // return isDelivered;
@@ -166,6 +168,22 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public LocalDate getDeliveredDate() {
+        return deliveredDate;
+    }
+
+    public void setDeliveredDate(LocalDate deliveredDate) {
+        this.deliveredDate = deliveredDate;
     }
 
 }

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  name: "",
+  username: "",
   email: "",
   phone: "",
   address: "",
@@ -23,7 +23,7 @@ export const userSlice = createSlice({
       console.log("action.payload:", action.payload);
       const {
         username = "",
-        name = "",
+        // name = "",
         email = "",
         accessToken = "",
         address = "",
@@ -35,7 +35,7 @@ export const userSlice = createSlice({
         refreshToken = "",
         shippingAddress = [],
       } = action.payload.data;
-      state.name = username ? username : state.name;
+      state.username = username ? username : state.username;
       state.email = email ? email : state.email;
       state.address = address ? address : state.address;
       state.phone = phone ? phone : state.phone;
@@ -50,7 +50,7 @@ export const userSlice = createSlice({
       console.log(action, state.name);
     },
     resetUser: (state) => {
-      state.name = "";
+      state.username = "";
       state.email = "";
       state.address = "";
       state.phone = "";

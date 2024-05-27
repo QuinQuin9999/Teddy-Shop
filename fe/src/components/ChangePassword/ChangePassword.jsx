@@ -4,12 +4,17 @@ import { WrapperContainer, StyleInputPassword} from './style';
 import bcrypt from 'bcryptjs';
 import { useSelector } from 'react-redux';
 import * as UserService from '../../services/UserService'
+import { useDispatch } from "react-redux";
+import { resetUser } from "../../redux/slices/userSlice";
+import { resetCart } from "../../redux/slices/cartSlice";
 
 const ChangePassword = () => {
+  const dispatch = useDispatch();
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const user = useSelector(state => state.user);
+  const cart = useSelector(state => state.cart);
   const userId = useSelector(state => state.user.id);
 
   //console.log(user); 
@@ -22,7 +27,9 @@ const ChangePassword = () => {
   };
   const handleLogout = async () => {
     try {
-      await UserService.logoutUser();
+      const logout = await UserService.logoutUser(userId, cart.orderItems)
+      dispatch(resetUser());
+      dispatch(resetCart());
       window.location.href = '/SignIn';
     } catch (error) {
       console.error('Lỗi khi đăng xuất:', error);

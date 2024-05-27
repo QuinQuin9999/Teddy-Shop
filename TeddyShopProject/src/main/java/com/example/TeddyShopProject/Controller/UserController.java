@@ -56,7 +56,7 @@ public class UserController {
                         .body(new ErrorResponse("The input is required", "ERR"));
             } else if (!isValidEmail(email)) {
                 return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ErrorResponse("The input is not a email", "ERR"));
+                        .body(new ErrorResponse("The email is invalid", "ERR"));
             } else if (!password.equals(confirmPassword)) {
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(new ErrorResponse("The password is not match confirmPassword", "ERR"));

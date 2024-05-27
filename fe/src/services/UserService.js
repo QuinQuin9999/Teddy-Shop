@@ -1,4 +1,5 @@
 import axios from "axios"
+import * as CartService from './CartService'
 export const axiosJWT = axios.create()
 
 // export const loginUser = async (data) => {
@@ -55,9 +56,10 @@ export const getAllUser = async (accessToken) => {
 //     return res.data
 // }
 
-export const logoutUser = async () => {
+export const logoutUser = async (id, cartItems) => {
     localStorage.clear();
-    //return res.data
+    const updateCartResponse = await CartService.updateCart(id, cartItems)
+    return updateCartResponse.data
 }
 
 export const updateUser = async (id, data, accessToken) => {

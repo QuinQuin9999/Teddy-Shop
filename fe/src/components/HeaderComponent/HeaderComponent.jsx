@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom";
 import { resetUser } from "../../redux/slices/userSlice";
 import { resetCart } from "../../redux/slices/cartSlice";
 import * as CartService from "../../services/CartService";
+import * as UserService from "../../services/UserService";
 import { FaUserCircle } from "react-icons/fa";
 
 
@@ -30,11 +31,11 @@ const HeaderComponent = () => {
   useEffect(() => {
     if (user?.id) {
       setLoading(true);
-      setUserName(user?.name);
+      setUserName(user?.username);
       setAvatar(user?.avatar);
       setLoading(false);
     }
-  }, [user?.name, user?.avatar]);
+  }, [user?.username, user?.avatar]);
 
   // Navigate to cart page
   const goToCart = () => {
@@ -66,10 +67,7 @@ const HeaderComponent = () => {
 
   const handleLogout = async () => {
     setLoading(true);
-    const saveCart = await CartService.updateCart(user.id, cart.orderItems)
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem('tokenExpiration')
+    const logout  = await UserService.logoutUser(user.id, cart.orderItems)
     dispatch(resetUser());
     dispatch(resetCart());
     setLoading(false);
@@ -121,7 +119,7 @@ const HeaderComponent = () => {
   };
 
   return (
-<WrapperHeader>
+    <WrapperHeader>
       <Row align="middle" justify="space-between" style={{ width: '100%' }}>
         <Col span={6} style={{ textAlign: 'center' }}>
           <Link to="/#">

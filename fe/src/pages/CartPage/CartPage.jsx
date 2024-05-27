@@ -1,9 +1,9 @@
 import {
-    CheckCircleFilled,
-    DeleteOutlined,
-    InboxOutlined,
-    MinusOutlined,
-    PlusOutlined,
+  CheckCircleFilled,
+  DeleteOutlined,
+  InboxOutlined,
+  MinusOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import { Form, message, Radio, Space } from "antd";
 import { useEffect, useMemo, useState } from "react";
@@ -13,35 +13,35 @@ import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import StepComponent from "../../components/StepConponent/StepComponent";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import {
-    decreaseProductAmount,
-    deleteTempChecklist,
-    deleteTempOther,
-    increaseProductAmount,
-    removeCartProduct,
-    removeItems,
-    saveTempChecklist,
-    saveTempOther
+  decreaseProductAmount,
+  deleteTempChecklist,
+  deleteTempOther,
+  increaseProductAmount,
+  removeCartProduct,
+  removeItems,
+  saveTempChecklist,
+  saveTempOther
 } from "../../redux/slices/cartSlice";
 import { deleteTempShipAddr, resetUser, saveTempShipAddr, saveTempShipAddrNone } from "../../redux/slices/userSlice";
 import * as OrderService from "../../services/OrderService";
 import * as UserService from "../../services/UserService";
 import { convertPrice } from "../../utils";
 import {
-    AddShippingAddress,
-    ShippingAddress,
+  AddShippingAddress,
+  ShippingAddress,
 } from "./component/ShippingAddress";
 import {
-    CustomCheckbox,
-    WrapperCountOrder,
-    WrapperInfo,
-    WrapperInputNumber,
-    WrapperItemOrder,
-    WrapperLeft,
-    WrapperListOrder,
-    WrapperRight,
-    WrapperStyleHeader,
-    WrapperStyleHeaderDelivery,
-    WrapperTotal,
+  CustomCheckbox,
+  WrapperCountOrder,
+  WrapperInfo,
+  WrapperInputNumber,
+  WrapperItemOrder,
+  WrapperLeft,
+  WrapperListOrder,
+  WrapperRight,
+  WrapperStyleHeader,
+  WrapperStyleHeaderDelivery,
+  WrapperTotal,
 } from "./style";
 
 const CartPage = () => {
@@ -53,7 +53,7 @@ const CartPage = () => {
   const [isPaying, setIsPaying] = useState(false);
   const [processState, setProcessState] = useState(0);
   const [getAtStore, setGetAtStore] = useState(false);
-  const [shipAddress, setShipAddress] = useState(-1);
+  const [shipAddressIndex, setShipAddressIndex] = useState(-1);
   const [shippingAddressNoneUser, setShippingAddressNoneUser] = useState({});
   const [paymentMethod, setPaymentMethod] = useState(1);
   const [shipmentMethod, setShipmentMethod] = useState(1);
@@ -63,6 +63,7 @@ const CartPage = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams()
+  // const [shipAddress, setShipAddress] = useState(user?.shippingAddress[user?.tempShipAddr])
 
   const mutationAddOrder = useMutationHook((data) => {
     console.log("data from mutation order: ", data)
@@ -157,7 +158,7 @@ const CartPage = () => {
 
   useEffect(() => {
     if (isOpenModalUpdateInfo) {
-      console.log(user.name);
+      console.log(user.username);
     }
   }, [isOpenModalUpdateInfo]);
 
@@ -245,7 +246,7 @@ const CartPage = () => {
   };
   const createOrder = async (isPaid) => {
     const savedListCheck = cart?.tempChecklist;
-    console.log("after get from saved ship address: ", user?.tempShipAddr, "  -  ", shipAddress)    
+    console.log("after get from saved ship address: ", user?.tempShipAddr, "  -  ", shipAddressIndex)    
     console.log("saved temp other: ", cart?.tempOther.paymentMethod ,"  -  ", cart?.tempOther.shipmentMethod,"  -  ", cart?.tempOther.priceMemo,"  -  ", cart?.tempOther.deliveryPriceMemo,"  -  ", cart?.tempOther.totalPriceMemo);
     // const pay = (!cart?.tempOther.paymentMethod)? paymentMethod : cart?.tempOther.paymentMethod;
     // const ship = (!cart?.tempOther.shipmentMethod)? shipmentMethod : cart?.tempOther.shipmentMethod;
@@ -262,51 +263,57 @@ const CartPage = () => {
       user?.accessToken &&
       cart?.orderItems.filter((item) => savedListCheck.includes(item.id))
     ) {
-      console.log("check pass(with user) ");
+      if (user?.shippingAddress.length > 0) {
 
-      const addr = user?.shippingAddress[user?.tempShipAddr];
-      console.log("user?.tempShipAddr  ", user?.tempShipAddr)
-      console.log("shippingAddress: ", user?.shippingAddress)
-      console.log("selected address: ", addr)
-      mutationAddOrder.mutate(
-        {
-          // token: user?.accessToken,
-          orderItems: cart?.orderItems.filter((item) =>
-            savedListCheck.includes(item.id)
-          ),
-          fullName: addr.addressName,
-          address: addr.addressNumber + ", " + addr.addressWard + ", " + addr.addressDistrict + ", " + addr.addressProvince,
-          phone: addr.addressPhone,
-          // city: user?.city,
-          paymentMethod:
-            paymentMethod == 1 ? "COD" : paymentMethod == 2 ? "Bank" : "Vnpay",
-          shipmentMethod:
-            shipmentMethod == 1
-              ? "standard"
-              : shipmentMethod == 2
-              ? "fast"
-              : shipmentMethod == 3
-              ? "inTPHCM"
-              : "store",
-          itemsPrice: priceMemo,
-          shippingPrice: deliveryPriceMemo,
-          totalPrice: totalPriceMemo,
-          // user: user?.id,
-          // email: user?.email,
-          isPaid: isPaid,
-        },
-        {
-          onSuccess: (data) => {
-            setOrderSuccess(true);
-            setProcessState(2);
-            setIsPaying(false);
-            dispatch(deleteTempChecklist());
-            dispatch(deleteTempOther());
-            dispatch(deleteTempShipAddr());
-    
+        console.log("check pass(with user) ");
+
+        const addr = user?.shippingAddress[user?.tempShipAddr];
+        console.log("user?.tempShipAddr  ", user?.tempShipAddr)
+        console.log("shippingAddress: ", user?.shippingAddress)
+        console.log("selected address: ", addr)
+        mutationAddOrder.mutate(
+          {
+            // token: user?.accessToken,
+            orderItems: cart?.orderItems.filter((item) =>
+              listChecked.includes(item.id)
+            ),
+            fullName: addr.addressName,
+            address: addr.addressNumber + ", " + addr.addressWard + ", " + addr.addressDistrict + ", " + addr.addressProvince,
+            phone: addr.addressPhone,
+            // city: user?.city,
+            paymentMethod:
+              paymentMethod == 1 ? "COD" : paymentMethod == 2 ? "Bank" : "Vnpay",
+            shipmentMethod:
+              shipmentMethod == 1
+                ? "standard"
+                : shipmentMethod == 2
+                ? "fast"
+                : shipmentMethod == 3
+                ? "inTPHCM"
+                : "store",
+            itemsPrice: priceMemo,
+            shippingPrice: deliveryPriceMemo,
+            totalPrice: totalPriceMemo,
+            // user: user?.id,
+            // email: user?.email,
+            isPaid: isPaid,
           },
-        }
-      );
+          {
+            onSuccess: (data) => {
+              setOrderSuccess(true);
+              setProcessState(2);
+              setIsPaying(false);
+              setShipAddressIndex(-1);
+              dispatch(deleteTempChecklist());
+              dispatch(deleteTempOther());
+              dispatch(deleteTempShipAddr());
+      
+            },
+          }
+        );
+      } else {
+        message.error("Vui lòng cung cấp địa chỉ giao hàng")
+      }
     } else if (!user?.id) {
       console.log("check pass(without user) ");
       const noUserAddress = user?.tempShipAddrNone
@@ -315,7 +322,7 @@ const CartPage = () => {
         {
           // token: user?.accessToken,
           orderItems: cart?.orderItems.filter((item) =>
-            savedListCheck.includes(item.id)
+            listChecked.includes(item.id)
           ),
           fullName: noUserAddress.addressName,
           address: noUserAddress.addressNumber + ", " + noUserAddress.addressWard + ", " + noUserAddress.addressDistrict + ", " + noUserAddress.addressProvince,
@@ -352,13 +359,13 @@ const CartPage = () => {
         }
       );
       
-    } else message.error("thiếu thông tin");
+    } else message.error("Vui lòng điền đầy đủ thông tin");
   }
   const handleAddCard = () => {
     if (listChecked.length == 0) {
       message.error("Vui lòng chọn sản phẩm");
     } else if (processState == 1) {
-      console.log("state: ",user?.id," - ",shipmentMethod," - ",shipAddress);
+      console.log("state: ",user?.id," - ",shipmentMethod," - ",shipAddressIndex);
       dispatch(saveTempChecklist(listChecked));
       // dispatch(saveTempShipAddr(shipAddress));
       dispatch(saveTempOther({paymentMethod, shipmentMethod, priceMemo, deliveryPriceMemo, totalPriceMemo}));
@@ -391,7 +398,7 @@ const CartPage = () => {
         }
       } else {
         if (shipmentMethod != 4) {
-          if (shipAddress == -1) setIsOpenModalUpdateInfo(true);
+          if (shipAddressIndex == -1) setIsOpenModalUpdateInfo(true);
           else checkAndCreateOrder();
         } else {
           checkAndCreateOrder();
@@ -416,7 +423,7 @@ const CartPage = () => {
 
   const handleUpdateShipAddress = (val) => {
     console.log("index ship selected: ", val);
-    setShipAddress(val);
+    setShipAddressIndex(val);
     setIsOpenModalUpdateInfo(false);
   };
 
@@ -695,7 +702,14 @@ const CartPage = () => {
                   ) : (
                     <>
                       <span style={{ fontWeight: "bold" }}>
-                        {`${user?.address} ${user?.city}`}{" "}
+                        {/* {`${user?.address}`}{" "} */}
+                        {/* {
+                          const address = user?.shippingAddress[user?.tempShipAddr]
+                          return `${address.addressNumber}, ${address.addressWard}, ${address.addressDistrict}, ${address.addressProvince},`
+                        }{" "} */}
+                        {user?.id !== ''? 
+                          (user?.shippingAddress[user?.tempShipAddr]?.addressNumber + ", " + user?.shippingAddress[user?.tempShipAddr]?.addressWard + ", " + user?.shippingAddress[user?.tempShipAddr]?.addressDistrict + ", " + user?.shippingAddress[user?.tempShipAddr]?.addressProvince) 
+                          : (user?.tempShipAddrNone?.addressNumber + ", " + user?.tempShipAddrNone?.addressWard + ", " + user?.tempShipAddrNone?.addressDistrict + ", " + user?.tempShipAddrNone?.addressProvince)}
                       </span>
                       <span
                         onClick={getAtStore ? () => {} : handleChangeAddress}

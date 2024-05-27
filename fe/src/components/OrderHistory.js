@@ -24,8 +24,8 @@ const OrderHistory = () => {
       key: 'orderItems',
       render: (orderItems) => (
         <span>
-          {orderItems.map((item) => (
-            <div key={item.id}>{item.name}</div>
+          {orderItems.map((item, index) => (
+            <div key={index}>{item.productName}</div>
           ))}
         </span>
       ),
@@ -38,13 +38,15 @@ const OrderHistory = () => {
     },
     {
       title: 'Ngày đặt',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'orderDate',
+      key: 'orderDate',
+      render: (orderDate) => new Date(orderDate).toLocaleDateString(),
     },
     {
       title: 'Ngày giao',
-      dataIndex: 'deliveredAt',
-      key: 'deliveredAt',
+      dataIndex: 'deliveredDate',
+      key: 'deliveredDate',
+      render: (deliveredDate) => new Date(deliveredDate).toLocaleDateString(),
     },
     {
       title: '',

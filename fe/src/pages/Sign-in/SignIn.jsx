@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { StyleContainer, StyleInput, StyleInputPassword, StyleLeftCon, StyleRightCon } from './style';
 import * as CartService from '../../services/CartService'
+import * as UserService from '../../services/UserService'
 import { jwtDecode } from 'jwt-decode'
 import { updateUser, resetUser } from '../../redux/slices/userSlice'
 import { importCart, resetCart } from '../../redux/slices/cartSlice'
@@ -30,14 +31,11 @@ const SignIn = () => {
     }
 
     const logoutUser = async () => {
-        // setLoading(true);
-        const updateCartResponse = await CartService.updateCart(user.id, cart.orderItems)
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem('tokenExpiration')
+        setLoading(true);
+        const logout = await UserService.logoutUser(user.id, cart.orderItems)
         dispatch(resetUser());
         dispatch(resetCart());
-        // setLoading(false);
+        setLoading(false);
         navigate("/");
       };
 

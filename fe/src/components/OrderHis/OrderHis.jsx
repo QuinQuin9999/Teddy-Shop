@@ -21,8 +21,8 @@ const OrderHistory = () => {
       key: 'orderItems',
       render: (orderItems) => (
         <span>
-          {orderItems.map((item) => (
-            <div key={item.id}>{item.name}</div>
+          {orderItems.map((item, index) => (
+            <div key={index}>{item.productName}</div>
           ))}
         </span>
       ),
@@ -35,13 +35,21 @@ const OrderHistory = () => {
     },
     {
       title: 'Ngày đặt',
-      dataIndex: 'paidAt',
-      key: 'paidAt',
+      dataIndex: 'orderDate',
+      key: 'orderDate',
+      render: (orderDate) => new Date(orderDate).toLocaleDateString(),
     },
     {
-      title: 'Ngày giao',
-      dataIndex: 'deliveredAt',
-      key: 'deliveredAt',
+      title: 'Tình trạng',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => 
+        (status === "Pending"? <span>Đang xử lý</span> 
+          : status === "Shipped"? <span>Đã gửi</span>
+          : status === "Delivered"? <span>Đã giao</span>
+          : status === "Cancelled"? <span>Đã hủy</span>
+          : null
+        )
     },
     {
       title: '',
@@ -63,7 +71,7 @@ const OrderHistory = () => {
   const fetchOrderHistory = async () => {
     try {
       //await fetchUserId();
-      const response = await fetch(`http://localhost:8083/api/OrderDetail/get-all-userOrder/${userId}`);
+      const response = await fetch(`http://localhost:8083/api/order/get-all-userOrder/${userId}`);
       const data = await response.json();
       setOrderHistory(data.data);
       setLoading(false);

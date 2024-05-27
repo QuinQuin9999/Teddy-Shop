@@ -19,15 +19,15 @@ const UserPage = () => {
   };
   const [isLoggedIn, setIsLoggedIn] = useState(true); 
 
-  const handleLogout = async () => {
-    try {
-      await UserService.logoutUser(); 
-      setIsLoggedIn(false);
+  // const handleLogout = async () => {
+  //   try {
+  //     await UserService.logoutUser(); 
+  //     setIsLoggedIn(false);
       
-    } catch (error) {
-      console.error('Lỗi khi đăng xuất:', error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Lỗi khi đăng xuất:', error);
+  //   }
+  // };
   if (!isLoggedIn) {
     return window.location.href = '/SignIn';
   }

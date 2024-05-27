@@ -5,7 +5,7 @@ const OrderDetail = () => {
   // const [orderDetail, setOrderDetail] = useState(null);
 
   // useEffect(() => {
-  //   fetch(`http://localhost:8083/api/orderDetail/get-details-order/66299c5f3a8b7a497434512a`, {
+  //   fetch(`http://localhost:8083/api/order/get-details-order/66299c5f3a8b7a497434512a`, {
   //     mode: 'cors',
   //     credentials: 'include',
   //   })
