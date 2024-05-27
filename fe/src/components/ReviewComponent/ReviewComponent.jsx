@@ -5,7 +5,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { getDetailsUser } from '../../services/UserService';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const { TextArea } = Input;
 
@@ -48,9 +48,11 @@ const ReviewComponent = ({ productId }) => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [feedbackSubmitting, setFeedbackSubmitting] = useState({});
+  const [feedbackForms] = useState({}); // Initialize feedback forms state
   const [form] = Form.useForm();
 
   const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const fetchReviews = async () => {
     try {
@@ -75,7 +77,7 @@ const ReviewComponent = ({ productId }) => {
   const handleSubmit = async (values) => {
     if (!user.id) {
       message.error('Vui lòng đăng nhập để viết đánh giá.');
-      window.location.href = '/signin';
+      navigate('/signin');
       return;
     }
 
@@ -105,7 +107,7 @@ const ReviewComponent = ({ productId }) => {
   const handleFeedbackSubmit = async (reviewId, values) => {
     if (!user.id) {
       message.error('Vui lòng đăng nhập để phản hồi.');
-      window.location.href = '/signin';
+      navigate('/signin');
       return;
     }
 
@@ -121,7 +123,7 @@ const ReviewComponent = ({ productId }) => {
           Authorization: `Bearer ${user.token}`,
         },
       });
-      form.resetFields();
+      feedbackForms[reviewId].resetFields(); // Clear the specific feedback form
       fetchReviews();
     } catch (error) {
       console.error('Error submitting feedback:', error);
@@ -133,8 +135,6 @@ const ReviewComponent = ({ productId }) => {
   if (loading) {
     return <Skeleton active />;
   }
-
-  console.log('user', user)
 
   return (
     <div>
@@ -169,7 +169,7 @@ const ReviewComponent = ({ productId }) => {
                 avatar={<Avatar icon={<UserOutlined />} />}
                 title={
                   <div>
-                    {review.userName} <Rate style={{marginLeft: '10px'}} disabled defaultValue={review.rating} />
+                    {review.userName} <Rate style={{ marginLeft: '10px' }} disabled defaultValue={review.rating} />
                   </div>
                 }
                 description={
@@ -195,6 +195,7 @@ const ReviewComponent = ({ productId }) => {
                     )}
                     <div style={{ marginTop: '10px' }}>
                       <Form
+                        ref={(formInstance) => { feedbackForms[review.reviewId] = formInstance; }}
                         onFinish={(values) => handleFeedbackSubmit(review.reviewId, values)}
                         style={{ marginTop: '10px' }}
                       >
