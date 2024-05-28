@@ -10,7 +10,7 @@ import AdminUser from "../../components/AdminUser/AdminUser";
 import AdminCollectionPage from "../../components/AdminCollection/AdminCollectionComponent/AdminCollectionComponent";
 // import CategoryManager from "../../components/CategoryManager/CategoryManager";
 import AdminChatBox from "../../components/AdminChatbox/AdminChatBox";
-import OrderHistory from "../../components/OrderHistory"; 
+import OrderHistory from "../../components/AdminOrder/OrderHistory"; 
 import AdminProduct from "../../components/AdminProduct/AdminProduct";
 import AdminReview from "../../components/AdminReview/AdminReview";
 import AdminCategory from "../../components/AdminCategory/AdminCategory";

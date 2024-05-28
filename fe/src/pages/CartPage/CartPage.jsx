@@ -248,17 +248,6 @@ const CartPage = () => {
     const savedListCheck = cart?.tempChecklist;
     console.log("after get from saved ship address: ", user?.tempShipAddr, "  -  ", shipAddressIndex)    
     console.log("saved temp other: ", cart?.tempOther.paymentMethod ,"  -  ", cart?.tempOther.shipmentMethod,"  -  ", cart?.tempOther.priceMemo,"  -  ", cart?.tempOther.deliveryPriceMemo,"  -  ", cart?.tempOther.totalPriceMemo);
-    // const pay = (!cart?.tempOther.paymentMethod)? paymentMethod : cart?.tempOther.paymentMethod;
-    // const ship = (!cart?.tempOther.shipmentMethod)? shipmentMethod : cart?.tempOther.shipmentMethod;
-    // const price = (!cart?.tempOther.priceMemo)? priceMemo : cart?.tempOther.priceMemo;
-    // const delivery = (!cart?.tempOther.deliveryPriceMemo)? shipmentMethod : cart?.tempOther.deliveryPriceMemo;
-    // const total = (!cart?.tempOther.totalPriceMemo)? shipmentMethod : cart?.tempOther.totalPriceMemo;
-    
-    // const shippingAddressNone = (!user?.tempShipAddrNone)? {} : user?.tempShipAddrNone
-    // console.log("shippingAddressNoneUser got: ",shippingAddressNone);
-    //if( Object.keys(shippingAddressNoneUser).length === 0 && Object.keys(shippingAddressNone).length !== 0) setShippingAddressNoneUser(shippingAddressNone);
-    // let shippingAddressNoneUser = shippingAddressNone;
-    // console.log("state shippingAddressNoneUser got: ",shippingAddressNoneUser);
     if (
       user?.accessToken &&
       cart?.orderItems.filter((item) => savedListCheck.includes(item.id))
@@ -374,19 +363,6 @@ const CartPage = () => {
         // khong co user
         
         if (shipmentMethod != 4) {
-          
-          // if (
-          //   !shippingAddressNoneUser?.addressName ||
-          //   !shippingAddressNoneUser?.addressNumber ||
-          //   !shippingAddressNoneUser?.addressPhone ||
-          //   !shippingAddressNoneUser?.addressWard ||
-          //   !shippingAddressNoneUser?.addressDistrict ||
-          //   !shippingAddressNoneUser?.addressProvince
-          // )
-          //   handleChangeAddress();
-          // else{
-          //   dispatch(saveTempShipAddrNone(shippingAddressNoneUser));
-          // } 
           if (user?.tempShipAddrNone) {
             checkAndCreateOrder();
           }
