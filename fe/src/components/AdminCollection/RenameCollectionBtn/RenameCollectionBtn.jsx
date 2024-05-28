@@ -5,7 +5,7 @@ import * as CollectionService from '../../../services/CollectionService'
 import * as ProductService from '../../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import ProductList from '../ProductList_Add/ProductList'
-// import { renameCollection } from '../../../redux/slices/collectionSlice';
+import { renameCollection } from '../../../redux/slices/collectionSlice';
 import { useDispatch } from 'react-redux';
 
 const RenameCollectionBtn = ({ collectionId }) => {
