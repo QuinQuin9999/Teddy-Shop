@@ -7,7 +7,7 @@ import ProductList from '../ProductList_Remove/ProductList'
 import { useSelector } from 'react-redux';
 import { getAllCollections, removeCollection } from '../../../redux/slices/collectionSlice';
 import { useDispatch } from 'react-redux';
-import RenameCollectionBtn from '../RenameCollectionBtn/RenameCollectionBtn'
+// import RenameCollectionBtn from '../RenameCollectionBtn/RenameCollectionBtn'
 import ExportExcelComponent from '../ExportExcelComponent/ExportExcelComponent'
 
 const CollectionList = () => {
@@ -26,14 +26,14 @@ const CollectionList = () => {
 
     const { data: allCollections, isLoading, error } = useQuery({
         queryKey: ['getAllCollections'],
-        queryFn: () => CollectionService.getAllCollections(),
+        queryFn: async () => await CollectionService.getAllCollections(),
     });
 
     const { data: deleteResponse } = useQuery({
         queryKey: ['deleteCollection'],
-        queryFn: () => {
+        queryFn: async () => {
             setIsFetchDeleteCollection(false)
-            return CollectionService.deleteCollection(deleteId)
+            return await CollectionService.deleteCollection(deleteId)
         },
         enabled: isFetchDeleteCollection && !!deleteId
     })
@@ -41,6 +41,7 @@ const CollectionList = () => {
     useEffect(() => {
         if(allCollections) {
             if (allCollections.status === 'OK') {
+                console.log(allCollections.data)
                 setCollections(allCollections.data)
                 dispatch(getAllCollections(allCollections.data))
             }
@@ -63,16 +64,16 @@ const CollectionList = () => {
                     label: 
                         <>
                         <Flex justify = 'space-between'>
-                            <strong>{collection.name}</strong>
+                            <strong>{collection?.id}</strong>
                             <Flex>
-                                <RenameCollectionBtn collectionId={collection.id} />
+                                {/* <RenameCollectionBtn collectionId={collection?.id} /> */}
                                 <Popconfirm
                                     placement="topRight"
                                     title="Delete the Collection"
-                                    description={`Are you sure to delete the Collection "${collection.name}"?`}
+                                    description={`Are you sure to delete the Collection "${collection?.id}"?`}
                                     onConfirm={() => {
-                                        setDeleteId(collection.id)
-                                        setCollections(collections.filter(item => item.id !== collection.id))
+                                        setDeleteId(collection?.id)
+                                        setCollections(collections.filter(item => item?.id !== collection?.id))
                                         setIsFetchDeleteCollection(true)
                                         message.success('Delete Collection Success')
                                     }}
@@ -86,9 +87,9 @@ const CollectionList = () => {
                         </Flex>
                         </>,
                     children: <ProductList 
-                                collectionId={collection.id}
-                                collectionName={collection.name}
-                                productList={collection.productList}
+                                collectionId={collection?.id}
+                                // collectionName={collection?.id}
+                                productList={collection?.productList}
                                 />
                 }
             )))
@@ -101,7 +102,7 @@ const CollectionList = () => {
         <Divider></Divider> 
         <ExportExcelComponent collections={collections.map(collection => ({
             ...collection,
-            productList: JSON.stringify(collection.productList)
+            productList: JSON.stringify(collection?.productList)
         }))} />
         </>
     )

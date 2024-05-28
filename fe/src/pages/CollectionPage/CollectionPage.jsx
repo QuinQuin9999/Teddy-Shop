@@ -10,45 +10,52 @@ const CollectionPage = () => {
 
     const navigate = useNavigate();
     const params = useParams();
-    const collectionName = params.name;
+    const collectionName = params.id;
     const [currentPage, setCurrentPage] = useState(1);
 
-    // const [isFetchGetCollection, setIsFetchGetCollection] = useState(false)
+    const [isFetchGetCollection, setIsFetchGetCollection] = useState(false)
 
     const { data: collection } = useQuery({
         queryKey: ['getCollectionByName'],
-        queryFn: () => {
-            // setIsFetchGetCollection(false)
-            return CollectionService.getByName(collectionName)
+        queryFn: async () => {
+            setIsFetchGetCollection(false)
+
+            console.log('collectionName', collectionName)
+            return await CollectionService.getById(collectionName)
         }
         // enabled: isFetchDeleteCollection && !!deleteId
     })
 
-    // useEffect(() => {
-    //     if (collection) {
-    //         if (collection.status === 'OK') {
-    //             console.log(collection.data)
-    //         }
-    //     }
-    // }, [collection])
+    useEffect(() => {
+        console.log('collectionName', collectionName)
+        setIsFetchGetCollection(true)
+    }, [])
+
+    useEffect(() => {
+        if (collection) {
+            if (collection?.status === 'OK') {
+                console.log(collection?.data)
+            }
+        }
+    }, [collection])
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
     const startIndex = (currentPage - 1) * 12;
     const endIndex = startIndex + 12;
-    const productsOnCurrentPage = collection.slice(startIndex, endIndex);
+    const productsOnCurrentPage = collection?.data?.productList?.slice(startIndex, endIndex);
 
     return (
         <WrapperDiv style={{margin: '0 120px'}}>
             <WrapperProducts>
-                {productsOnCurrentPage?.data?.productList?.map(product => (
+                {productsOnCurrentPage?.map(product => (
                     <CardProductComponent key={product.id} {...product} />
                 ))}
             </WrapperProducts>
             <Pagination
                 current={currentPage}
                 onChange={handlePageChange}
-                total={collection.length}
+                total={collection?.data?.length}
                 pageSize={12}
                 style={{ textAlign: 'center', marginTop: '20px', marginBottom: '20px' }}
             />

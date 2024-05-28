@@ -45,7 +45,7 @@ const OrderHistory = () => {
       key: 'status',
       render: (status) => 
         (status === "Pending"? <span>Đang xử lý</span> 
-          : status === "Shipped"? <span>Đã gửi</span>
+          : status === "Shipping"? <span>Đang giao</span>
           : status === "Delivered"? <span>Đã giao</span>
           : status === "Cancelled"? <span>Đã hủy</span>
           : null

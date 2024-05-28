@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { List, Divider, Button, message, Checkbox } from 'antd'
+import { Tag, List, Divider, Button, message, Checkbox } from 'antd'
 import { DeleteFilled } from '@ant-design/icons'
 import * as CollectionService from '../../../services/CollectionService'
 import { useQuery } from '@tanstack/react-query'
@@ -24,8 +24,29 @@ const ProductList = ({collectionId, collectionName, productList}) => {
 
     const handleCheckboxChange = (id) => {
         setData(data.map(product =>
-          product._id === id ? { ...product, checked: !product.checked } : product
+          product.id === id ? { ...product, checked: !product.checked } : product
         ));
+    };
+
+    const renderProductPrice = (productPrice) => {
+        if (!productPrice || typeof productPrice !== 'object') {
+            return <Tag>Không có giá</Tag>;
+        }
+        return Object.entries(productPrice).map(([size, price]) => (
+            <div><Tag key={size}>{size}: {price} đ</Tag></div> 
+        ));
+    };
+
+    const renderProductDescription = (description) => {
+        if (!description || typeof description !== 'object') {
+            return null;
+        }
+        return  (
+            <>
+                <div><Tag>Material: {description.Material}</Tag></div> 
+                <div><Tag>Color: {description.Color}</Tag></div>        
+            </>
+        )
     };
 
     const handleDelete = () => {
@@ -39,9 +60,9 @@ const ProductList = ({collectionId, collectionName, productList}) => {
 
     const { data: removeResponse, isLoading, error } = useQuery({
         queryKey: ['removeProducts'],
-        queryFn: () => {
+        queryFn: async () => {
             setIsFetchRemoveProducts(false)
-            return CollectionService.removeProducts(collectionId, {name: collectionName, productList: data})
+            return await CollectionService.removeProducts(collectionId, { productList: data})
         },
         enabled: isFetchRemoveProducts,
     });
@@ -61,7 +82,7 @@ const ProductList = ({collectionId, collectionName, productList}) => {
             <List.Item>
                 <div style={{flex: '1', textAlign: 'center'}}><strong>TÊN</strong></div>
                 <div style={{flex: '1', textAlign: 'center'}}><strong>LOẠI</strong></div>
-                <div style={{flex: '1', textAlign: 'center'}}><strong>HÃNG</strong></div>
+                <div style={{flex: '1', textAlign: 'center'}}><strong>ĐẶC ĐIỂM</strong></div>
                 <div style={{flex: '1', textAlign: 'center'}}><strong>GIÁ</strong></div>
                 <Button danger type="text" icon={<DeleteFilled style={{color: '#FF4D4F'}} />}
                     onClick={handleDelete}
@@ -74,11 +95,11 @@ const ProductList = ({collectionId, collectionName, productList}) => {
             dataSource={data}
             renderItem={(product) => (
                 <List.Item>
-                    <div style={{flex: '1', textAlign: 'center'}}>{product.name}</div>
-                    <div style={{flex: '1', textAlign: 'center'}}>{product.type}</div>
-                    <div style={{flex: '1', textAlign: 'center'}}>{product.description.Producer}</div>
-                    <div style={{flex: '1', textAlign: 'center'}}>{product.price.toLocaleString()} đ</div>
-                    <Checkbox checked={product.checked} onChange={() => handleCheckboxChange(product._id)} />
+                    <div style={{flex: '1', textAlign: 'center'}}>{product.productName}</div>
+                    <div style={{flex: '1', textAlign: 'center'}}>{product.productType}</div>
+                    <div style={{flex: '1', textAlign: 'center'}}>{renderProductDescription(product.description)}</div>
+                    <div style={{flex: '1', textAlign: 'center'}}>{renderProductPrice(product.productPrice)}</div>
+                    <Checkbox checked={product.checked} onChange={() => handleCheckboxChange(product.id)} />
                 </List.Item>
             )}
         />

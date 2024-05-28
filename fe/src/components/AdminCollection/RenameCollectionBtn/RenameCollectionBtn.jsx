@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { List, Divider, Button, message, Popconfirm, Checkbox, Tooltip, Modal, Input } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
 import * as CollectionService from '../../../services/CollectionService'
-import * as ProductDetailService from '../../../services/ProductService'
+import * as ProductService from '../../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import ProductList from '../ProductList_Add/ProductList'
-import { renameCollection } from '../../../redux/slices/collectionSlice';
+// import { renameCollection } from '../../../redux/slices/collectionSlice';
 import { useDispatch } from 'react-redux';
 
 const RenameCollectionBtn = ({ collectionId }) => {
@@ -37,10 +37,10 @@ const RenameCollectionBtn = ({ collectionId }) => {
 
     const { data: renameResponse, isLoading, error } = useQuery({
         queryKey: ['renameCollection'],
-        queryFn: () => {
+        queryFn: async () => {
             setIsFetchRenameCollection(false)
             dispatch(renameCollection({id: collectionId, newName: nameInput}))
-            return CollectionService.renameCollection(collectionId, nameInput)
+            return await CollectionService.renameCollection(collectionId, nameInput)
         },
         enabled: isFetchRenameCollection
     });

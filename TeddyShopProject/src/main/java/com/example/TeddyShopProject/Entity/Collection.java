@@ -9,29 +9,29 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Collection {
     @Id
     private String id;
-    private String name;
+    // private String name;
     private ArrayList<Product> productList;
 
     public Collection() {
 
     }
 
-    public Collection(String name, ArrayList<Product> productList) {
-        this.name = name;
+    public Collection(String id, ArrayList<Product> productList) {
+        this.id = id;
         this.productList = productList;
     }
+
+    // public String getId() {
+    // return id;
+    // }
 
     public String getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    // public void setName(String name) {
+    // this.name = name;
+    // }
 
     public ArrayList<Product> getProductList() {
         return productList;

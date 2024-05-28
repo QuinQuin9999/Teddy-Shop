@@ -68,7 +68,7 @@ export const routes = [
       page: AdminUser
     },
     {
-      path: "/collection/:name",
+      path: "/collection/:id",
       page: CollectionPage,
       isShowHeader: true,
     },

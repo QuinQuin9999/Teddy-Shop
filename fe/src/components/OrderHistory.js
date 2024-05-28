@@ -1,16 +1,22 @@
-import { Button, Form, Input, Modal, notification, Popconfirm, Select, Space, Table } from 'antd';
+import { Button, Form, Input, Modal, notification, Popconfirm, Select, Space, Table, DatePicker } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 const { Option } = Select;
 
 const OrderHistory = () => {
-  const [orderHistory, setOrderHistory] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [pendingOrders, setPendingOrders] = useState([]);
+  const [shippingOrders, setShippingOrders] = useState([]);
+  const [deliveredOrders, setDeliveredOrders] = useState([]);
+  const [cancelledOrders, setCancelledOrders] = useState([]);
+  const orderStatuses = ["Pending", "Shipping", "Delivered", "Cancelled"];
 
   const columns = [
     {
@@ -23,11 +29,11 @@ const OrderHistory = () => {
       dataIndex: 'orderItems',
       key: 'orderItems',
       render: (orderItems) => (
-        <span>
+        <div>
           {orderItems.map((item, index) => (
             <div key={index}>{item.productName}</div>
           ))}
-        </span>
+        </div>
       ),
     },
     {
@@ -42,11 +48,17 @@ const OrderHistory = () => {
       key: 'orderDate',
       render: (orderDate) => new Date(orderDate).toLocaleDateString(),
     },
+    // {
+    //   title: 'Ngày giao',
+    //   dataIndex: 'deliveredDate',
+    //   key: 'deliveredDate',
+    //   render: (deliveredDate) => new Date(deliveredDate).toLocaleDateString(),
+    // },
     {
-      title: 'Ngày giao',
-      dataIndex: 'deliveredDate',
-      key: 'deliveredDate',
-      render: (deliveredDate) => new Date(deliveredDate).toLocaleDateString(),
+      title: 'Thanh toán',
+      dataIndex: 'paid',
+      key: 'paid',
+      render: (paid) => paid? <span style={{color:"green"}}>Đã thanh toán</span> : <span style={{color:"red"}}>Chưa thanh toán</span>,
     },
     {
       title: '',
@@ -56,12 +68,10 @@ const OrderHistory = () => {
           <Button type="primary" size="small" onClick={() => handleOpenModal(record)}>
             Chi tiết
           </Button>
-          <Button type="default" size="small" onClick={() => handleEditOrder(record)}>
-            Sửa
+          <Button type="default" size="small" icon={ <EditOutlined /> } onClick={() => handleEditOrder(record)}>
           </Button>
-          <Popconfirm title="Bạn có chắc chắn muốn xóa đơn hàng này?" onConfirm={() => handleDeleteOrder(record.id)}>
-            <Button type="danger" size="small">
-              Xóa
+          <Popconfirm title="Bạn có chắc chắn muốn xóa đơn hàng này?" onConfirm={() => handleDeleteOrder(record.id, record.status)}>
+            <Button type="danger" size="small" icon={ <DeleteOutlined style={{color: 'red'}} /> }>
             </Button>
           </Popconfirm>
         </Space>
@@ -70,13 +80,22 @@ const OrderHistory = () => {
   ];
 
   useEffect(() => {
-    fetchOrderHistory();
+    fetchOrders();
   }, []);
+  useEffect(() => {
+    if (!!orders) {
+      setPendingOrders(orders.filter(order => order.status === 'Pending'))
+      setShippingOrders(orders.filter(order => order.status === 'Shipping'))
+      setDeliveredOrders(orders.filter(order => order.status === 'Delivered'))
+      setCancelledOrders(orders.filter(order => order.status === 'Cancelled'))
+    }
+  }, [orders])
 
-  const fetchOrderHistory = async () => {
+  const fetchOrders = async () => {
     try {
-      const response = await axios.get('http://localhost:8083/api/admin/orders/get-all-orders');
-      setOrderHistory(response.data.data); // Đảm bảo rằng response.data.data chứa mảng các đơn hàng
+      const response = await axios.get('http://localhost:8083/api/order/get-all-order');
+      // console.log(response.data.data)
+      setOrders(response.data.data); 
       setLoading(false);
     } catch (error) {
       console.error('Error fetching order history:', error);
@@ -102,10 +121,10 @@ const OrderHistory = () => {
     setModalVisible(false);
   };
 
-  const handleDeleteOrder = async (orderId) => {
+  const handleDeleteOrder = async (orderId, status) => {
     try {
-      await axios.delete(`http://localhost:8083/api/admin/orders/delete-order/${orderId}`);
-      setOrderHistory(orderHistory.filter(order => order.id !== orderId));
+      await axios.delete(`http://localhost:8083/api/order/delete-order/${orderId}`);
+      setOrders(orders.filter(order => order.id !== orderId));
       notification.success({ message: 'Đơn hàng đã được xóa thành công' });
     } catch (error) {
       console.error('Error deleting order:', error);
@@ -115,35 +134,44 @@ const OrderHistory = () => {
 
   const handleSubmit = async (values) => {
     try {
-      await axios.put(`http://localhost:8083/api/admin/orders/update-order/${selectedOrderId}`, values);
-      setOrderHistory(orderHistory.map(order => (order.id === selectedOrderId ? { ...order, ...values } : order)));
+      const updateOrder = {...selectedOrder, ...values};
+      await axios.put(`http://localhost:8083/api/order/update-order/${selectedOrderId}`, updateOrder);
+      setOrders(orders.map(order => (order.id === selectedOrderId ? { ...order, ...values } : order)));
       notification.success({ message: 'Đơn hàng đã được cập nhật thành công' });
       setModalVisible(false);
     } catch (error) {
       console.error('Error submitting order:', error);
-      notification.error({ message: 'Lỗi khi gửi thông tin đơn hàng' });
+      notification.error({ message: 'Lỗi khi cập nhật đơn hàng' });
     }
   };
 
   return (
-    <div>
-      <h1>Lịch sử mua hàng</h1>
-      <Table columns={columns} dataSource={orderHistory} loading={loading} rowKey="id" />
+    orderStatuses.map((orderStatus, index) => (
+      <div key={index}>
+        <h2>
+          Đơn hàng {orderStatus === 'Pending'? 'đang xử lý' : orderStatus === 'Shipping'? 'đang giao' : orderStatus === 'Delivered'? 'đã giao' : 'đã bị huỷ'}
+        </h2>
+        <Table 
+          columns={columns} 
+          dataSource={orderStatus === 'Pending'? pendingOrders : orderStatus === 'Shipping'? shippingOrders : orderStatus === 'Delivered'? deliveredOrders : cancelledOrders} 
+          loading={loading} 
+          rowKey="id" />
 
-      <Modal
-        title={editMode ? `Sửa đơn hàng #${selectedOrderId}` : 'Chi tiết đơn hàng'}
-        open={modalVisible}
-        onCancel={handleCloseModal}
-        footer={null}
-        width={700}
-      >
-        <OrderForm
-          order={editMode ? selectedOrder : selectedOrder}
-          onSubmit={handleSubmit}
-          editMode={editMode}
-        />
-      </Modal>
-    </div>
+        <Modal
+          title={editMode ? `Sửa đơn hàng #${selectedOrderId}` : 'Chi tiết đơn hàng'}
+          open={modalVisible}
+          onCancel={handleCloseModal}
+          footer={null}
+          width={700}
+        >
+          <OrderForm
+            order={selectedOrder}
+            onSubmit={handleSubmit}
+            editMode={editMode}
+          />
+        </Modal>
+      </div>
+    ))
   );
 };
 
@@ -157,6 +185,10 @@ const OrderForm = ({ order, onSubmit, editMode }) => {
       phone: order?.shippingAddress?.phone || '',
       paymentMethod: order?.paymentMethod || '',
       totalPrice: order?.totalPrice || '',
+      orderDate: order?.orderDate || '',
+      deliveredDate: order?.deliveredDate || '',
+      paid: order?.paid,
+      // orderItems: order?.orderItems.map(orderItem => orderItem.productName).join(', ') || '',
       status: order?.status || '',
     });
   }, [order, form]);
@@ -190,10 +222,22 @@ const OrderForm = ({ order, onSubmit, editMode }) => {
       <Form.Item name="totalPrice" label="Tổng tiền" rules={[{ required: true, message: 'Vui lòng nhập tổng tiền' }]}>
         <Input disabled={!editMode} />
       </Form.Item>
+      <Form.Item name="orderDate" label="Ngày đặt" >
+        <Input disabled={true} />
+      </Form.Item>
+      <Form.Item name="deliveredDate" label="Giao" >
+        <DatePicker disabled={!editMode} />
+      </Form.Item>
+      <Form.Item name="paid" label="Tình trạng thanh toán" >
+        <Select disabled={!editMode}>
+          <Option value={true}>Đã thanh toán</Option>
+          <Option value={false}>Chưa thanh toán</Option>
+        </Select>
+      </Form.Item>
       <Form.Item name="status" label="Trạng thái" rules={[{ required: true, message: 'Vui lòng chọn trạng thái đơn hàng' }]}>
         <Select disabled={!editMode}>
           <Option value="Pending">Đang xử lý</Option>
-          <Option value="Shipped">Đã gửi</Option>
+          <Option value="Shipping">Đang giao</Option>
           <Option value="Delivered">Đã giao</Option>
           <Option value="Cancelled">Đã hủy</Option>
         </Select>

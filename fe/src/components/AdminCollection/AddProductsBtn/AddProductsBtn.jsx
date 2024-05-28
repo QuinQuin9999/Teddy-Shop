@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Tooltip, Modal, Input } from 'antd'
-import * as ProductDetailService from '../../../services/ProductService'
+import * as ProductService from '../../../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import ProductList from '../ProductList_Add/ProductList'
 
@@ -36,17 +36,19 @@ const AddProductsBtn = ({collectionId}) => {
 
   const { data: foundProducts, isLoading, error } = useQuery({
     queryKey: ['findProductsByKey'],
-    queryFn: () => {
+    queryFn: async () => {
         setIsFetchFindProductsByKey(false)
-        return ProductDetailService.getProductsByName(inputValue)
+        // console.log("inputValue ", inputValue)
+        return await ProductService.getProductsByName(inputValue)
     },
     enabled: isFetchFindProductsByKey,
 });
 
 useEffect(() => {
   if (foundProducts) {
-    if (foundProducts.status === 'OK') {
+    if (foundProducts.status === 200) {
       setProductList(foundProducts.data)
+      // console.log(foundProducts.data)
     }
   }
 }, [foundProducts])

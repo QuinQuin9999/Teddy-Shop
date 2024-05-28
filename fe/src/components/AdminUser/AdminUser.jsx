@@ -1,6 +1,7 @@
 import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Form, Input, message, Modal, Table } from 'antd';
+import { Flex, Button, Form, Input, message, Modal, Table } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
+import * as UserService from '../../services/UserService'
 
 const AdminUser = () => {
    
@@ -14,21 +15,22 @@ const AdminUser = () => {
   
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
-    
   };
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    
-  };  
+  // const handleReset = (clearFilters) => {
+  //   clearFilters();
+  //   // setSearchText('');
+  //   handleSearch('', confirm, dataIndex)
+  // };  
   useEffect(() => {
-    fetchUserData();
+    fetchUserData()
   }, []);
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch('http://localhost:8083/api/user/getAllUsers');
-      const data = await response.json();
-      setUsers(data);
+      const response = await UserService.getAllUsers()
+      if (response?.status === 'OK') {
+        setUsers(response.data);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -47,7 +49,8 @@ const AdminUser = () => {
       const data = await response.json();
       if (data.status === 'OK') {
         message.success('User deleted successfully');
-        fetchUserData();
+        // fetchUserData();
+        setUsers(users.filter(user => user.id !== deleteUserId))
       } else {
         message.error('Failed to delete user');
       }
@@ -84,7 +87,8 @@ const AdminUser = () => {
       if (data.status === 'OK') {
         message.success('User updated successfully');
         setUpdateModalVisible(false);
-        fetchUserData();
+        // fetchUserData();
+        setUsers(users.map(user => user.id === userData.id? userData : user))
       } else {
         message.error('Failed to update user');
       }
@@ -99,7 +103,6 @@ const AdminUser = () => {
       <div style={{ padding: 8 }}>
         <Input
           ref={searchInput}
-
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -115,7 +118,13 @@ const AdminUser = () => {
         >
           Search
         </Button>
-        <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+        {/* <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}> */}
+        <Button 
+          onClick={() => {
+            clearFilters();
+            handleSearch('', confirm, dataIndex)
+          }} 
+        size="small" style={{ width: 90 }}>
           Reset
         </Button>
       </div>
@@ -133,12 +142,12 @@ const AdminUser = () => {
   });
 
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      ...getColumnSearchProps('id'),
-    },
+    // {
+    //   title: 'ID',
+    //   dataIndex: 'id',
+    //   key: 'id',
+    //   ...getColumnSearchProps('id'),
+    // },
     {
       title: 'Tên người dùng',
       dataIndex: 'username',
@@ -150,7 +159,7 @@ const AdminUser = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      sorter: (a, b) => a.email.length - b.email.length,
+      // sorter: (a, b) => a.email.length - b.email.length,
       ...getColumnSearchProps('email'),
     },
     {
@@ -158,7 +167,7 @@ const AdminUser = () => {
       dataIndex: 'phone',
       key: 'phone',
       ...getColumnSearchProps('phone'),
-      sorter: (a, b) => a.phone - b.phone,
+      // sorter: (a, b) => a.phone - b.phone,
       render: (phone) => phone.toString().replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3'),
 
     },
@@ -166,17 +175,17 @@ const AdminUser = () => {
       title: 'Địa chỉ',
       dataIndex: 'address',
       key: 'address',
-      sorter: (a, b) => a.address.length - b.address.length,
+      // sorter: (a, b) => a.address.length - b.address.length,
       ...getColumnSearchProps('address'),
     },
     {
       title: '',
       key: 'action',
       render: (text, record) => (
-        <span>
-          <EditOutlined style={{ color: 'red', fontSize: '30px', cursor: 'pointer' }} onClick={() => showModal(record)} />
-          <DeleteOutlined style={{ marginLeft: 8, color: 'orange', fontSize: '30px', cursor: 'pointer' }} onClick={() => handleDelete(record.id)} />
-        </span>
+        <Flex gap="small">
+          <EditOutlined onClick={() => showModal(record)} />
+          <DeleteOutlined style={{color: 'red'}} onClick={() => handleDelete(record.id)} />
+        </Flex>
       ),
     },
   ];
@@ -186,7 +195,7 @@ const AdminUser = () => {
       <Table columns={columns} dataSource={users} rowKey="id" />
       <Modal
         title="Cập nhật thông tin"
-        visible={updateModalVisible}
+        open={updateModalVisible}
         onOk={handleUpdate}
         onCancel={handleCancel}
       >

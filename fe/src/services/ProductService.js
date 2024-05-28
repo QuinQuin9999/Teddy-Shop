@@ -68,8 +68,8 @@ export const getProductsByType = async (type) => {
 
 export const getProductsByName = async (name) => {
     try {
-      const response = await axios.get(`${BASE_URL}/searchByName?name=${name}`);
-      return response.data;
+      const response = await axios.get(`${BASE_URL}/searchByName?productName=${name}`);
+      return response;
     } catch (error) {
       console.error("Error getting products by name:", error);
       throw error;
