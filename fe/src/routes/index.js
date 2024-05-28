@@ -56,7 +56,8 @@ export const routes = [
     },
     {
       path: '/ForgotPassword',
-      page: ForgotPassword
+      page: ForgotPassword,
+      isShowHeader: true,
     },
     {
       path: '/system/admin',

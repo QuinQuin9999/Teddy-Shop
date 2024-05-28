@@ -17,7 +17,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("21521374@gm.uit.edu.vn");
         message.setTo(email);
-        message.setSubject("GearShop: Mật khẩu mới");
+        message.setSubject("BabyBear: Mật khẩu mới");
         message.setText(
                 "Cảm ơn bạn vì đã lựa chọn cửa hàng chúng tôi! Mật khẩu mới cho tài khoản của bạn là: " + newPassword);
         mailSender.send(message);
