@@ -10,6 +10,7 @@ const initialState = {
   id: "",
   isAdmin: false,
   // city: "",
+  shippingAddress: [],
   refreshToken: "",
   tempShipAddr: 0,
   tempShipAddrNone: null,

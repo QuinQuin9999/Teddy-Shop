@@ -5,7 +5,7 @@ import {
   MinusOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { Form, message, Radio, Space } from "antd";
+import { Button, Select, Form, message, Radio, Space } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -52,7 +52,7 @@ const CartPage = () => {
   const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
   const [processState, setProcessState] = useState(0);
-  const [getAtStore, setGetAtStore] = useState(false);
+  // const [getAtStore, setGetAtStore] = useState(false);
   const [shipAddressIndex, setShipAddressIndex] = useState(-1);
   const [shippingAddressNoneUser, setShippingAddressNoneUser] = useState({});
   const [paymentMethod, setPaymentMethod] = useState(1);
@@ -63,6 +63,7 @@ const CartPage = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams()
+  const [bank, setBank] = useState('NCB')
   // const [shipAddress, setShipAddress] = useState(user?.shippingAddress[user?.tempShipAddr])
 
   const mutationAddOrder = useMutationHook((data) => {
@@ -81,7 +82,7 @@ const CartPage = () => {
       setListChecked(temp);
     }
   };
-  console.log("list checked: ", listChecked)
+  // console.log("list checked: ", listChecked)
   const handleChangeCount = (type, idProduct, limited) => {
     if (type === "increase") {
       if (!limited) {
@@ -117,21 +118,24 @@ const CartPage = () => {
   const onShipmentMethodChange = (e) => {
     console.log("radio ship checked", e.target.value);
     setShipmentMethod(e.target.value);
-    if (e.target.value == 4) {
-      setGetAtStore(true);
-    } else {
-      setGetAtStore(false);
-    }
+    // if (e.target.value == 4) {
+    //   setGetAtStore(true);
+    // } else {
+    //   setGetAtStore(false);
+    // }
   };
   const onPaymentMethodChange = (e) => {
     console.log("radio pay checked", e.target.value);
     setPaymentMethod(e.target.value);
   };
+  const onBankChange = (value) => {
+    setBank(value)
+  }
   useEffect(() => {
     if (orderSuccess) {
       const a = async () => {
         await delay(5000);
-        dispatch(removeItems(listChecked));
+        // dispatch(removeItems(listChecked));
         setListChecked([]);
         setProcessState(0);
         setOrderSuccess(false);
@@ -210,33 +214,48 @@ const CartPage = () => {
     );
   }, [priceMemo, priceDiscountMemo, deliveryPriceMemo]);
 
-  const fetchPay = async () => {
+  // const fetchPay = async () => {
+  //   try {
+  //     const response = await fetch(`${process.env.REACT_APP_API_URL}/payment/create_payment_url`,{
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body:JSON.stringify({
+  //         "amount": totalPriceMemo,
+  //         "bankCode": "VNBANK",
+  //         "orderDescription": "Thanh toán đơn hàng",
+  //         "orderType": "other", 
+  //         "language": "vn",
+  //       }),
+  //   });
+  //     const data = await response.json()
+  //     return data.redirectLink;
+  //   } catch (error) {
+  //     console.error('Error call vnpay api:', error);
+  //   }
+  // };
+  const fetchPay = async (bankCode) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/payment/create_payment_url`,{
-        method: 'POST',
+      const response = await fetch(`http://localhost:8083/api/vnpay/create_payment?amount=${totalPriceMemo}&bankCode=${bankCode}`,{
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-        },
-        body:JSON.stringify({
-          "amount": totalPriceMemo,
-          "bankCode": "VNBANK",
-          "orderDescription": "Thanh toán đơn hàng",
-          "orderType": "other", 
-          "language": "vn",
-        }),
+        }
     });
       const data = await response.json()
-      return data.redirectLink;
+      // return data.redirectLink;
+      return data.data;
     } catch (error) {
       console.error('Error call vnpay api:', error);
     }
   };
 
   const checkAndCreateOrder = async () => {
-    if(paymentMethod == 3){
+    if(paymentMethod == 2){
       console.log("pay through vnpay");
       setIsPaying(true);
-      let link = await fetchPay();
+      let link = await fetchPay(bank);
       console.log("redirect link: ", link);
       window.open(link, "_self");
       return
@@ -262,29 +281,38 @@ const CartPage = () => {
         console.log("selected address: ", addr)
         mutationAddOrder.mutate(
           {
-            // token: user?.accessToken,
+            // orderItems: cart?.orderItems.filter((item) =>
+            //   listChecked.includes(item.id)
+            // ),
             orderItems: cart?.orderItems.filter((item) =>
-              listChecked.includes(item.id)
+              cart?.tempChecklist.includes(item.id)
             ),
             fullName: addr.addressName,
             address: addr.addressNumber + ", " + addr.addressWard + ", " + addr.addressDistrict + ", " + addr.addressProvince,
             phone: addr.addressPhone,
             // city: user?.city,
             paymentMethod:
-              paymentMethod == 1 ? "COD" : paymentMethod == 2 ? "Bank" : "Vnpay",
+              // paymentMethod == 1 ? "COD" : "Vnpay",
+              cart?.tempOther.paymentMethod == 1 ? "COD" : "Vnpay",
             shipmentMethod:
-              shipmentMethod == 1
+              // shipmentMethod == 1
+              //   ? "standard"
+              //   : shipmentMethod == 2
+              //   ? "fast"
+              //   : shipmentMethod == 3
+              //   ? "inTPHCM"
+              //   : "store",
+              cart?.tempOther.shipmentMethod == 1
                 ? "standard"
-                : shipmentMethod == 2
+                : cart?.tempOther.shipmentMethod == 2
                 ? "fast"
-                : shipmentMethod == 3
-                ? "inTPHCM"
-                : "store",
-            itemsPrice: priceMemo,
-            shippingPrice: deliveryPriceMemo,
-            totalPrice: totalPriceMemo,
-            // user: user?.id,
-            // email: user?.email,
+                : "inTPHCM",
+            // itemsPrice: priceMemo,
+            // shippingPrice: deliveryPriceMemo,
+            // totalPrice: totalPriceMemo,
+            itemsPrice: cart?.tempOther.priceMemo,
+            shippingPrice: cart?.tempOther.deliveryPriceMemo,
+            totalPrice: cart?.tempOther.totalPriceMemo,
             isPaid: isPaid,
           },
           {
@@ -293,9 +321,11 @@ const CartPage = () => {
               setProcessState(2);
               setIsPaying(false);
               setShipAddressIndex(-1);
+              dispatch(removeItems(cart?.tempChecklist))
               dispatch(deleteTempChecklist());
               dispatch(deleteTempOther());
               dispatch(deleteTempShipAddr());
+              navigate('/cart')
       
             },
           }
@@ -309,29 +339,44 @@ const CartPage = () => {
       console.log("noUserAddress ", noUserAddress)
       mutationAddOrder.mutate(
         {
-          // token: user?.accessToken,
+          // orderItems: cart?.orderItems.filter((item) =>
+          //   listChecked.includes(item.id)
+          // ),
+          // fullName: noUserAddress.addressName,
+          // address: noUserAddress.addressNumber + ", " + noUserAddress.addressWard + ", " + noUserAddress.addressDistrict + ", " + noUserAddress.addressProvince,
+          // phone: noUserAddress.addressPhone,
+          // paymentMethod:
+          //   paymentMethod == 1 ? "COD" : "Vnpay",
+          // shipmentMethod:
+          //   shipmentMethod == 1
+          //     ? "standard"
+          //     : shipmentMethod == 2
+          //     ? "fast"
+          //     : shipmentMethod == 3
+          //     ? "inTPHCM"
+          //     : "store",
+          // itemsPrice: priceMemo,
+          // shippingPrice: deliveryPriceMemo,
+          // totalPrice: totalPriceMemo,
+          // isPaid: isPaid,
+
           orderItems: cart?.orderItems.filter((item) =>
-            listChecked.includes(item.id)
+            cart?.tempChecklist.includes(item.id)
           ),
           fullName: noUserAddress.addressName,
           address: noUserAddress.addressNumber + ", " + noUserAddress.addressWard + ", " + noUserAddress.addressDistrict + ", " + noUserAddress.addressProvince,
           phone: noUserAddress.addressPhone,
-          // city: user?.city,
           paymentMethod:
-            paymentMethod == 1 ? "COD" : paymentMethod == 2 ? "Bank" : "Vnpay",
+            cart?.tempOther.paymentMethod == 1 ? "COD" : "Vnpay",
           shipmentMethod:
-            shipmentMethod == 1
+            cart?.tempOther.shipmentMethod == 1
               ? "standard"
-              : shipmentMethod == 2
+              : cart?.tempOther.shipmentMethod == 2
               ? "fast"
-              : shipmentMethod == 3
-              ? "inTPHCM"
-              : "store",
-          itemsPrice: priceMemo,
-          shippingPrice: deliveryPriceMemo,
-          totalPrice: totalPriceMemo,
-          // user: user?.id,
-          // email: user?.email,
+              : "inTPHCM",
+          itemsPrice: cart?.tempOther.priceMemo,
+          shippingPrice: cart?.tempOther.deliveryPriceMemo,
+          totalPrice: cart?.tempOther.totalPriceMemo,
           isPaid: isPaid,
         },
         {
@@ -339,11 +384,12 @@ const CartPage = () => {
             setOrderSuccess(true);
             setProcessState(2);
             setIsPaying(false);
+            dispatch(removeItems(cart?.tempChecklist))
             dispatch(resetUser());
             dispatch(deleteTempChecklist());
             dispatch(deleteTempOther());
             dispatch(deleteTempShipAddr());
-    
+            navigate('/cart')
           },
         }
       );
@@ -362,23 +408,31 @@ const CartPage = () => {
       if (user?.id === '') {
         // khong co user
         
-        if (shipmentMethod != 4) {
-          if (user?.tempShipAddrNone) {
-            checkAndCreateOrder();
-          }
-          else {
-            setIsOpenInputShipment(true);
-          }
-        } else {
+        // if (shipmentMethod != 4) {
+        //   if (user?.tempShipAddrNone) {
+        //     checkAndCreateOrder();
+        //   }
+        //   else {
+        //     setIsOpenInputShipment(true);
+        //   }
+        // } else {
+        //   checkAndCreateOrder();
+        // }
+        if (user?.tempShipAddrNone) {
           checkAndCreateOrder();
+        }
+        else {
+          setIsOpenInputShipment(true);
         }
       } else {
-        if (shipmentMethod != 4) {
-          if (shipAddressIndex == -1) setIsOpenModalUpdateInfo(true);
-          else checkAndCreateOrder();
-        } else {
-          checkAndCreateOrder();
-        }
+        // if (shipmentMethod != 4) {
+        //   if (shipAddressIndex == -1) setIsOpenModalUpdateInfo(true);
+        //   else checkAndCreateOrder();
+        // } else {
+        //   checkAndCreateOrder();
+        // }
+        if (shipAddressIndex == -1) setIsOpenModalUpdateInfo(true);
+        else checkAndCreateOrder();
       }
     } else {
       setProcessState(1);
@@ -625,7 +679,7 @@ const CartPage = () => {
                     <Radio value={1}>Giao hàng tiêu chuẩn</Radio>
                     <Radio value={2}>Giao hàng nhanh</Radio>
                     <Radio value={3}>Ship now (Nội ô TP.HCM)</Radio>
-                    <Radio value={4}>Nhận tại cửa hàng</Radio>
+                    {/* <Radio value={4}>Nhận tại cửa hàng</Radio> */}
                   </Space>
                 </Radio.Group>
                 <WrapperInfo>Lựa chọn phương thức thanh toán</WrapperInfo>
@@ -636,8 +690,48 @@ const CartPage = () => {
                 >
                   <Space direction="vertical">
                     <Radio value={1}>Thanh toán COD</Radio>
-                    <Radio value={2}>Thanh toán qua ngân hàng</Radio>
-                    <Radio value={3}>Thanh toán qua VNPay</Radio>
+                    {/* <Radio value={2}>Thanh toán qua ngân hàng</Radio> */}
+                    <Radio value={2}>Thanh toán qua VNPay</Radio>
+                    {
+                      paymentMethod === 2 && (
+                        <div style={{ display: "flex" }}>
+                          <Button style={{ width: 200, border:"none" }}>Ngân hàng thanh toán: </Button>
+                          <Select
+                            defaultValue="NCB"
+                            style={{ width: 500 }}
+                            onChange={onBankChange}
+                            value={bank}
+                            options={[
+                              { label: "Ngân hàng Quốc Dân (NCB)", value: "NCB" },
+                              { label: "Ngân hàng Nông nghiệp và phát triển nông thôn (AGRIBANK)", value: "Agribank" },
+                              { label: "Ngân hàng TMCP Á Châu (ACB)", value: "ACB" },
+                              { label: "Ngân hàng TMCP Bắc Á (BACABANK)", value: "BacABank" },
+                              { label: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)", value: "BIDV" },
+                              { label: "Ngân hàng TMCP Xuất nhập khẩu Việt Nam (EXIMBANK)", value: "Eximbank" },
+                              { label: "Ngân hàng TMCP Quân đội (MBBANK)", value: "MBBank" },
+                              { label: "Ngân hàng TMCP Nam Á (NAMABANK)", value: "NamABank" },
+                              { label: "Ngân hàng TMCP Phương Đông (OCB)", value: "OCB" },
+                              { label: "Ngân hàng TNHH MTV Đại Dương (OCEANBANK)", value: "OceanBank" },
+                              { label: "Ngân hàng TMCP Đại chúng Việt Nam (PVCOMBANK)", value: "PVcomBank" },
+                              { label: "Ngân hàng TMCP Sài Gòn Công thương (SAIGONBANK)", value: "SaigonBank" },
+                              { label: "Ngân hàng TMCP Thương tín (SACOMBANK)", value: "Sacombank" },
+                              { label: "Ngân hàng TMCP Sài Gòn (SCB)", value: "SCB" },
+                              { label: "Ngân hàng TMCP Sài Gòn-Hà Nội (SHB)", value: "SHB" },
+                              { label: "Ngân hàng TMCP Đông Nam Á (SEABANK)", value: "SeaBank" },
+                              { label: "Ngân hàng TMCP Tiên Phong (TPBANK)", value: "TPBank" },
+                              { label: "Ngân hàng TMCP Quốc tế Việt Nam (VIB)", value: "VIB" },
+                              { label: "Ngân hàng TMCP Ngoại thương Việt Nam (VIETCOMBANK)", value: "Vietcombank" },
+                              { label: "Ngân hàng TMCP Công thương Việt Nam (VIETINBANK)", value: "Vietinbank" },
+                              { label: "Ngân hàng Việt Nam Thịnh Vượng (VPBANK)", value: "VPBank" },
+                              { label: "Ngân hàng TMCP Kỹ Thương Việt Nam (TECHCOMBANK)", value: "Techcombank" },
+                              { label: "Ngân hàng TMCP Hàng Hải Việt Nam (MSB)", value: "MSB" },
+                              { label: "Ngân hàng TMCP An Bình (ABBANK)", value: "ABBank" },
+                              { label: "Ngân hàng TMCP Đông Á (DONGABANK)", value: "DongABank" }
+                            ]}
+                          ></Select>
+                        </div>
+                      )
+                    }
                   </Space>
                 </Radio.Group>
               </div>
@@ -673,7 +767,7 @@ const CartPage = () => {
               <WrapperInfo>
                 <div>
                   <span>Địa chỉ: </span>
-                  {processState == 0 ? (
+                  {processState === 0 ? (
                     <></>
                   ) : (
                     <>
@@ -688,9 +782,9 @@ const CartPage = () => {
                           : (user?.tempShipAddrNone?.addressNumber + ", " + user?.tempShipAddrNone?.addressWard + ", " + user?.tempShipAddrNone?.addressDistrict + ", " + user?.tempShipAddrNone?.addressProvince)}
                       </span>
                       <span
-                        onClick={getAtStore ? () => {} : handleChangeAddress}
+                        onClick={handleChangeAddress}
                         style={{
-                          color: getAtStore ? "#aaa" : "#9255FD",
+                          color: "#9255FD",
                           cursor: "pointer",
                         }}
                       >

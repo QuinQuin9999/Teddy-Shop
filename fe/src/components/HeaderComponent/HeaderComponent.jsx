@@ -110,7 +110,7 @@ const HeaderComponent = () => {
     staleTime: 100,
   });
 
-  console.log(categories)
+  // console.log(categories)
 
   const handleCategoryClick = (href) => {
     setIsHovered(false); 

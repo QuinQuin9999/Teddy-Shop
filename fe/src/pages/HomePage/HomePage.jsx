@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import ImageSlider from '../../components/ImageSlider/ImageSlider';
@@ -18,7 +18,7 @@ const HomePage = () => {
   };
 
   const { isLoading, data: products, error } = useQuery({
-    queryKey: ['products'],
+    queryKey: ['productsHome'],
     queryFn: fetchProductsAPI,
     retry: 3,
     retryDelay: 1000,
@@ -30,6 +30,7 @@ const HomePage = () => {
     (acc[product.productType] = acc[product.productType] || []).push(product);
     return acc;
   }, {});
+
 
   return (
     <div>
