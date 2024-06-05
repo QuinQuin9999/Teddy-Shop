@@ -97,6 +97,7 @@ const HeaderComponent = () => {
   const onSearch = (value) => {
     if (!value.trim()) return;
     navigate(`/search?name=${encodeURIComponent(value)}`);
+    setSearch("");
   };
 
   const fetchAllCategories = async () => {
