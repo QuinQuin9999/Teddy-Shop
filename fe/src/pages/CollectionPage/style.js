@@ -15,11 +15,11 @@ export const WrapperProducts = styled.div`
   display: grid;
   gap: 8px;
   padding: 20px;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 
-  @media (min-width: 1280px)
+  @media (min-width: 1480px)
   {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   @media (max-width: 1280px)
@@ -32,7 +32,7 @@ export const WrapperProducts = styled.div`
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  @media (max-width: 968px)
+  @media (max-width: 768px)
   {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -41,6 +41,6 @@ export const WrapperProducts = styled.div`
   {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
+`;
 
-`
 

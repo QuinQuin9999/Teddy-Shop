@@ -16,7 +16,7 @@ export const SliderItem = styled.div`
 
 export const SliderImage = styled.img`
   width: 100%;
-  height: auto;
+  height: 500px;
 `;
 
 export const CustomSlider = styled(Slider)`

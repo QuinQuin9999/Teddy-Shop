@@ -14,6 +14,7 @@ import OrderHistory from "../../components/AdminOrder/OrderHistory";
 import AdminProduct from "../../components/AdminProduct/AdminProduct";
 import AdminReview from "../../components/AdminReview/AdminReview";
 import AdminCategory from "../../components/AdminCategory/AdminCategory";
+import AdminCarousel from "../../components/AdminCarousel/AdminCarousel";
 
 const AdminPage = () => {
   const [keySelected, setKeySelected] = useState("");
@@ -23,6 +24,7 @@ const AdminPage = () => {
     getItem("Sản phẩm", "products", <ProductOutlined />),
     getItem("User", "users",<UserOutlined />),
     getItem("Đánh giá", "reviews", <FormOutlined />),
+    getItem("Carousel", "carousels",<DeliveredProcedureOutlined />),
     getItem("Danh mục", "categories",<MenuOutlined />),
     getItem("Collection", "collections",<GroupOutlined />),
   ];
@@ -39,6 +41,8 @@ const AdminPage = () => {
         return <AdminProduct />;
       case "users":
         return <AdminUser />;
+      case "carousels":
+        return <AdminCarousel/>
       case "collections": 
         return <AdminCollectionPage />;
       case "categories": 

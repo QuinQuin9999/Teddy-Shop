@@ -1,10 +1,25 @@
-// src/components/ImageSlider.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { SliderContainer, SliderItem, SliderImage, CustomSlider } from './style';
+import axios from 'axios';
 
 const ImageSlider = () => {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:8083/api/v1/carousel/getAll');
+      setImages(response.data);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+  };
+
   const settings = {
     dots: true,
     infinite: true,
@@ -18,19 +33,12 @@ const ImageSlider = () => {
     centerPadding: '0', 
   };
 
-  const images = [
-    '/slider1.jpg',
-    '/slider2.jpg',
-    '/slider3.jpg',
-    '/slider4.jpg'
-  ];
-
   return (
     <SliderContainer>
       <CustomSlider {...settings}>
         {images.map((image, index) => (
           <SliderItem key={index}>
-            <SliderImage src={image} alt={`Slide ${index}`} />
+            <SliderImage src={image.url} alt={`Slide ${index}`} />
           </SliderItem>
         ))}
       </CustomSlider>

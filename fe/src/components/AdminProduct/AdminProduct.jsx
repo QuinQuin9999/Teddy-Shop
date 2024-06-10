@@ -157,9 +157,9 @@ const AdminProduct = () =>
     const {isLoading: isLoadingProducts, data: products} = queryProduct
     const renderAction = () => {
         return (
-          <div>
-            <DeleteOutlined style={{ color: 'red', fontSize: '30px', cursor: 'pointer' }} onClick={() => setIsModalOpenDelete(true)} />
-            <EditOutlined style={{ color: 'orange', fontSize: '30px', cursor: 'pointer' }} onClick={handleDetailsProduct} />
+          <div style={{display: 'flex', alignContent: 'space-between'}}>
+            <EditOutlined style={{ color: 'orange', fontSize: '20px', cursor: 'pointer' }} onClick={handleDetailsProduct} />
+            <DeleteOutlined style={{ color: 'red', fontSize: '20px', cursor: 'pointer', marginLeft: '8px' }} onClick={() => setIsModalOpenDelete(true)} />
           </div>
         )
       }
@@ -309,7 +309,7 @@ const AdminProduct = () =>
         {
             title: '',
             dataIndex: 'action',
-            render: renderAction
+            render: renderAction,
         },
     ];
     
