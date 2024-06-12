@@ -27,6 +27,7 @@ const AdminPage = () => {
     getItem("Carousel", "carousels",<DeliveredProcedureOutlined />),
     getItem("Danh mục", "categories",<MenuOutlined />),
     getItem("Collection", "collections",<GroupOutlined />),
+    getItem("Chatbox", "chat", <WechatOutlined />)
   ];
 
   const handleOnClick = ({ key }) => {
@@ -49,6 +50,8 @@ const AdminPage = () => {
         return <AdminCategory/>;
       case "orders":
         return <OrderHistory />; 
+      case "chat":
+        return <AdminChatBox/>;
       default:
         return null;
     }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import com.example.TeddyShopProject.DTO.ApiResponse;
-// import com.example.TeddyShopProject.Entity.Cart;
 import com.example.TeddyShopProject.Entity.Order;
 import com.example.TeddyShopProject.Repository.OrderRepository;
 
