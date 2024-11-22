@@ -244,7 +244,7 @@ const AdminReview = () => {
         rowKey="reviewId"
       />
       <Modal
-        title="Confirm Deletion"
+        title="Xác nhận"
         visible={open}
         onOk={handleYes}
         onCancel={handleClose}

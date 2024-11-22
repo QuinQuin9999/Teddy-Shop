@@ -1,7 +1,7 @@
 import { Carousel, Menu, message } from "antd";
 import React, { useState } from "react";
 import { getItem } from "../../utils";
-import { FormOutlined, ProductOutlined, FileImageOutlined, DeliveredProcedureOutlined, UserOutlined, MenuOutlined, GroupOutlined, WechatOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { FormOutlined, ProductOutlined, FileImageOutlined, DeliveredProcedureOutlined, UserOutlined, MenuOutlined, GroupOutlined, WechatOutlined, ShoppingCartOutlined, GiftFilled } from "@ant-design/icons";
 // import AdminReview from "../../components/AdminReview/AdminReview";
 // import AdminProduct from "../../components/AdminProduct/AdminProduct";
 // import AdminCarousel from "../../components/AdminCarousel/AdminCarousel";
@@ -15,6 +15,7 @@ import AdminProduct from "../../components/AdminProduct/AdminProduct";
 import AdminReview from "../../components/AdminReview/AdminReview";
 import AdminCategory from "../../components/AdminCategory/AdminCategory";
 import AdminCarousel from "../../components/AdminCarousel/AdminCarousel";
+import AdminVoucher from "../../components/AdminVoucher/AdminVoucher";
 
 const AdminPage = () => {
   const [keySelected, setKeySelected] = useState("");
@@ -27,7 +28,8 @@ const AdminPage = () => {
     getItem("Carousel", "carousels",<DeliveredProcedureOutlined />),
     getItem("Danh mục", "categories",<MenuOutlined />),
     getItem("Collection", "collections",<GroupOutlined />),
-    getItem("Chatbox", "chat", <WechatOutlined />)
+    getItem("Chatbox", "chat", <WechatOutlined />),
+    getItem("Voucher", "vouchers", <GiftFilled />)
   ];
 
   const handleOnClick = ({ key }) => {
@@ -52,6 +54,8 @@ const AdminPage = () => {
         return <OrderHistory />; 
       case "chat":
         return <AdminChatBox/>;
+      case "vouchers":
+        return <AdminVoucher/>;
       default:
         return null;
     }
@@ -63,7 +67,7 @@ const AdminPage = () => {
         <Menu
           mode="inline"
           style={{
-            width: 256,
+            width: 196,
             boxShadow: "1px 1px 2px #ccc",
             height: "100vh",
           }}
