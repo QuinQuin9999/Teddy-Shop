@@ -13,12 +13,15 @@ import {
   message,
   Row,
   Select,
+  Space,
+  Tooltip,
 } from "antd";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import TableComponent from "../TableComponent/TableComponent";
 import ModalComponent from "../ModalComponent/ModalComponent";
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
+import InputComponent from "../InputComponent/InputComponent";
 
 const AdminVoucher = () => {
   const initialVoucher = () => ({
@@ -37,11 +40,14 @@ const AdminVoucher = () => {
   const [stateVoucher, setStateVoucher] = useState(initialVoucher());
   const [voucherToDelete, setVoucherToDelete] = useState(null);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const [rowSelected, setRowSelected] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [form] = Form.useForm();
   const [vouchers, setVouchers] = useState([]);
+  const searchInput = useRef(null);
 
   const handleOnchange = (e) => {
     const { name, value } = e.target;
@@ -64,12 +70,12 @@ const AdminVoucher = () => {
   }, []);
 
   useEffect(() => {
-    if(!isModalOpen) {
-      form.setFieldsValue(stateVoucher)
-    }else {
-      form.setFieldsValue(initialVoucher())
+    if (isModalOpen) {
+      form.setFieldsValue(stateVoucher);
+    } else {
+      form.resetFields();
     }
-  }, [form, stateVoucher, isModalOpen])
+  }, [isModalOpen, stateVoucher, form]);
 
   const handleModal = () => {
     form.resetFields();
@@ -78,14 +84,23 @@ const AdminVoucher = () => {
 
   const handleSubmit = async (values) => {
     try {
-      await axios.post(`http://localhost:8083/api/v1/voucher/save`, values);
-      message.success("Thêm voucher thành công!");
-      fetchVouchers();
-      setStateVoucher(initialVoucher());
+      if (stateVoucher._id) {
+        await axios.put(
+          `http://localhost:8083/api/v1/voucher/update/${stateVoucher._id}`,
+          values
+        );
+        message.success("Cập nhật voucher thành công!");
+      } else {
+        await axios.post(`http://localhost:8083/api/v1/voucher/save`, values);
+        message.success("Thêm voucher thành công!");
+      }
       setIsModalOpen(false);
+      setIsDrawerOpen(false);
       form.resetFields();
+      setStateVoucher(initialVoucher());
+      fetchVouchers();
     } catch (error) {
-      message.error("Lỗi khi thêm voucher!");
+      message.error("Lỗi khi xử lý voucher!");
     }
   };
 
@@ -114,49 +129,152 @@ const AdminVoucher = () => {
     form.setFieldsValue(voucher);
   };
 
-  const handleUpdateVoucher = async () => {
-    try {
-      await axios.put(
-        `http://localhost:8083/api/v1/voucher/update/${stateVoucher._id}`,
-        stateVoucher
-      );
-      message.success("Cập nhật voucher thành công!");
-      console.log("value", stateVoucher);
-      fetchVouchers();
-      setIsDrawerOpen(false);
-      form.resetFields();
-    } catch (error) {
-      message.error("Lỗi khi cập nhật voucher!");
-    }
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
   };
 
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    form.resetFields();
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <InputComponent
+          ref={searchInput}
+          placeholder={`Nhập ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: "block",
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Đặt lại
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            Đóng
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+  });
   const columns = [
     {
       title: "ID",
       dataIndex: "_id",
+      ellipsis: true,
       sorter: (a, b) => a._id.length - b._id.length,
+      ...getColumnSearchProps("_id"),
+      render: (text) => (
+        <Tooltip title={text}>
+          <span style={{ display: "block", marginBottom: "5px" }}>{text}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "Mã voucher",
       dataIndex: "code",
       sorter: (a, b) => a.code.length - b.code.length,
+      ...getColumnSearchProps("code"),
     },
     {
       title: "Tên",
       dataIndex: "name",
       sorter: (a, b) => a.name.length - b.name.length,
+      ...getColumnSearchProps("name"),
     },
     {
-      title: "Phần trăm giảm giá",
+      title: "Giảm giá (%)",
       dataIndex: "percent",
       sorter: (a, b) => a.percent - b.percent,
+      filters: [
+        { text: "<=25%", value: "<=25" },
+        { text: "25%-50%", value: "25-50" },
+        { text: "50%-75%", value: "50-75" },
+        { text: ">=75%", value: ">=75" },
+      ],
+      onFilter: (value, record) => {
+        if (value === "<=25") {
+          return record.percent <= 25;
+        } else if (value === "25-50") {
+          return record.percent >= 25 && record.percent <= 50;
+        } else if (value === "50-75") {
+          return record.percent >= 50 && record.percent <= 75;
+        } else {
+          return record.percent >= 75;
+        }
+      },
+      // ...getColumnSearchProps("percent"),
     },
     {
-      title: "Giá đơn hàng tối thiểu áp dụng",
+      title: "Giá đơn hàng tối thiểu",
       dataIndex: "minPriceOrder",
       render: (price) =>
         price ? `${price.toLocaleString()} VND` : "Không giới hạn",
       sorter: (a, b) => (a.minPriceOrder || 0) - (b.minPriceOrder || 0),
+      ...getColumnSearchProps("minPriceOrder"),
     },
     {
       title: "Giá giảm tối đa",
@@ -164,11 +282,13 @@ const AdminVoucher = () => {
       render: (price) =>
         price ? `${price.toLocaleString()} VND` : "Không giới hạn",
       sorter: (a, b) => (a.maxPrice || 0) - (b.maxPrice || 0),
+      ...getColumnSearchProps("maxPrice"),
     },
     {
       title: "Số lượng",
       dataIndex: "quantity",
       sorter: (a, b) => a.quantity - b.quantity,
+      ...getColumnSearchProps("quantity"),
     },
     {
       title: "Loại",
@@ -182,13 +302,24 @@ const AdminVoucher = () => {
         if (type === undefined || type === null) {
           return 0;
         }
-        return type === 1 ? "Product" : type === 2 ? "Ship" : "Other";
+        return type === 1
+          ? "Dành cho sản phẩm"
+          : type === 2
+          ? "Dành cho phí ship"
+          : "Khác";
       },
     },
     {
       title: "Chi tiết",
       dataIndex: "description",
+      ellipsis: true,
+      render: (text) => (
+        <Tooltip title={text}>
+          <span style={{ display: "block", marginBottom: "5px" }}>{text}</span>
+        </Tooltip>
+      ),
       sorter: (a, b) => a.description.length - b.description.length,
+      ...getColumnSearchProps("description"),
     },
     {
       title: "Ngày bắt đầu",
@@ -234,12 +365,15 @@ const AdminVoucher = () => {
     key: voucher._id,
   }));
 
-  console.log('values', stateVoucher)
-  console.log('valuesdate', new Date(stateVoucher.toDate).toISOString().split("T")[0])
+  console.log("values", stateVoucher);
+  console.log(
+    "valuesdate",
+    new Date(stateVoucher.toDate).toISOString().split("T")[0]
+  );
   return (
-    <div style={{ margin: "10px" }}>
+    <div style={{ margin: "4px" }}>
       <div>
-        <h2>Quản lý Voucher</h2>
+        <h3>Quản lý Voucher</h3>
         <div style={{ marginTop: "10px" }}>
           <Button
             style={{
@@ -269,7 +403,7 @@ const AdminVoucher = () => {
         <ModalComponent
           title="Thêm Voucher"
           open={isModalOpen}
-          onCancel={() => setIsModalOpen(false)}
+          onCancel={handleCancel}
           onOk={form.submit}
         >
           <Form
@@ -294,16 +428,15 @@ const AdminVoucher = () => {
             >
               <Input onChange={handleOnchange} name="name" />
             </Form.Item>
-
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Giá đơn hàng tối thiểu áp dụng"
+                  label="Giá đơn hàng tối thiểu"
                   name="minPriceOrder"
                   rules={[
                     {
                       required: true,
-                      message: "Vui lòng nhập giá đơn hàng tối thiểu áp dụng!",
+                      message: "Vui lòng nhập Giá đơn hàng tối thiểu!",
                     },
                   ]}
                 >
@@ -341,12 +474,12 @@ const AdminVoucher = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Phần trăm giảm giá"
+                  label="Giảm giá (%)"
                   name="percent"
                   rules={[
                     {
                       required: true,
-                      message: "Vui lòng nhập phần trăm giảm giá!",
+                      message: "Vui lòng nhập Giảm giá (%)!",
                     },
                   ]}
                 >
@@ -390,8 +523,8 @@ const AdminVoucher = () => {
                   setStateVoucher({ ...stateVoucher, type: value })
                 }
               >
-                <Select.Option value={1}>Product</Select.Option>
-                <Select.Option value={2}>Ship</Select.Option>
+                <Select.Option value={1}>Dành cho sản phẩm</Select.Option>
+                <Select.Option value={2}>Dành cho phí ship</Select.Option>
               </Select>
             </Form.Item>
             <Form.Item
@@ -416,6 +549,7 @@ const AdminVoucher = () => {
           width="30%"
           onClose={() => {
             setIsDrawerOpen(false);
+            setStateVoucher(initialVoucher);
             form.resetFields();
           }}
           open={isDrawerOpen}
@@ -424,7 +558,7 @@ const AdminVoucher = () => {
             form={form}
             initialValues={stateVoucher}
             layout="vertical"
-            onFinish={handleUpdateVoucher}
+            onFinish={handleSubmit}
           >
             <Form.Item
               label="Mã Voucher"
@@ -445,12 +579,12 @@ const AdminVoucher = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Giá đơn hàng tối thiểu áp dụng"
+                  label="Giá đơn hàng tối thiểu"
                   name="minPriceOrder"
                   rules={[
                     {
                       required: true,
-                      message: "Vui lòng nhập giá đơn hàng tối thiểu áp dụng!",
+                      message: "Vui lòng nhập Giá đơn hàng tối thiểu!",
                     },
                   ]}
                 >
@@ -489,12 +623,12 @@ const AdminVoucher = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label="Phần trăm giảm giá"
+                  label="Giảm giá (%)"
                   name="percent"
                   rules={[
                     {
                       required: true,
-                      message: "Vui lòng nhập phần trăm giảm giá!",
+                      message: "Vui lòng nhập Giảm giá (%)!",
                     },
                   ]}
                 >
@@ -539,8 +673,8 @@ const AdminVoucher = () => {
                   setStateVoucher({ ...stateVoucher, type: value })
                 }
               >
-                <Select.Option value={1}>Product</Select.Option>
-                <Select.Option value={2}>Ship</Select.Option>
+                <Select.Option value={1}>Dành cho sản phẩm</Select.Option>
+                <Select.Option value={2}>Dành cho phí ship</Select.Option>
               </Select>
             </Form.Item>
             <Form.Item
@@ -553,14 +687,28 @@ const AdminVoucher = () => {
               <Input name="description" onChange={handleOnchange} />
             </Form.Item>
             <Form.Item label="Ngày bắt đầu" name="fromDate">
-              <Input
-                type="date" value={new Date(stateVoucher.fromDate).toLocaleDateString()} onChange={handleOnchange} name="fromDate"
-              />
+              <div>
+                <Input
+                  type="date"
+                  value={
+                    new Date(stateVoucher.fromDate).toISOString().split("T")[0]
+                  }
+                  onChange={handleOnchange}
+                  name="fromDate"
+                />
+              </div>
             </Form.Item>
             <Form.Item label="Ngày kết thúc" name="toDate">
-              <Input
-                type="date" value="2021-10-01" onChange={handleOnchange} name="toDate"
-              />
+              <div>
+                <Input
+                  type="date"
+                  value={
+                    new Date(stateVoucher.toDate).toISOString().split("T")[0]
+                  }
+                  onChange={handleOnchange}
+                  name="toDate"
+                />
+              </div>
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">

@@ -1,22 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import { WrapperHeader, WrapperUploadFile } from "./style";
+import { WrapperHeader } from "./style";
 import { Button, Form, Input, InputNumber, Select, Space, Tag } from 'antd'
-import { PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons'
+import { PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons'
 import InputComponent from "../InputComponent/InputComponent";
 import { useMutationHook } from "../../hooks/useMutationHook";
-import Loading from "../LoadingComponent/Loading";
 import * as message from '../Message/Message'
 import { useQuery } from "@tanstack/react-query";
-import { renderOptionsType } from '../../utils'
 import DrawerComponent from "../DrawerComponent/DrawerComponent";
 import { useSelector } from "react-redux";
 import ModalComponent from "../ModalComponent/ModalComponent";
 import TableComponent from "../TableComponent/TableComponent";
 import axios from "axios";
 import { deleteProduct, saveOrUpdate, update } from "../../services/ProductService";
-import {Cloudinary} from "@cloudinary/url-gen";
-import Upload from "antd/es/upload/Upload";
-
 
 const AdminProduct = () =>
 {
@@ -123,11 +118,6 @@ const AdminProduct = () =>
         }
         setIsLoadingUpdate(false)
       }
-    
-    const fetchAllTypeProduct = async () => {
-        const res = await axios.get(`http://localhost:8083/api/v1/product/getAllTypes`);
-        return res
-      }
   
     useEffect(() => {
         if(!isModalOpen) {
@@ -152,7 +142,6 @@ const AdminProduct = () =>
     const { data: dataUpdated, isLoading: isLoadingUpdated, isSuccess: isSuccessUpdated, isError: isErrorUpdated} = mutationUpdate
     const { data: dataDeleted, isLoading: isLoadingDeleted, isSuccess: isSuccessDeleted, isError: isErrorDeleted} = mutationDeleted 
     const queryProduct = useQuery({queryKey: ['products'], queryFn: getAllProducts})
-    const typeProduct = useQuery({ queryKey: ['type-product'], queryFn: fetchAllTypeProduct })
 
     const {isLoading: isLoadingProducts, data: products} = queryProduct
     const renderAction = () => {
@@ -374,23 +363,11 @@ const AdminProduct = () =>
         }
       }, [isSuccessUpdated])
 
-    const handleCancel = () => {
+      const handleCancel = () => {
         setIsModalOpen(false);
-        setStateProduct({
-    productName: '',
-    productImg: '',
-    productType: '',
-    productPrice: [],
-    discount: '',
-    countInStock: [],
-    description: {
-        Material: [],
-        Color: [],
-        Size: []
-    }
-        })
+        setStateProduct(initial());
         setImageUrl('');
-        form.resetFields()
+        form.resetFields();
       };
 
   const handlePriceChange = (size, price) => {
@@ -516,9 +493,6 @@ const handleStockChangeProduct = (stocks, returnProcessed = false) => {
         setIsOpenDrawer(false);
       }
 
-  console.log("Type moi", typeProduct?.data?.data)
-  
-
 const handleAttributeChange = (key, value, isDetail = false) => {
   const newValue = Array.isArray(value) ? [...value] : value;
 
@@ -638,7 +612,7 @@ const onFinish = (values) => {
 
 
 return(
-      <div style={{margin: '20px 20px'}}>
+      <div style={{margin: '10px 20px'}}>
         <div>
             <WrapperHeader>Quản lý sản phẩm</WrapperHeader>
             <div style={{ marginTop: '10px' }}>
