@@ -12,7 +12,7 @@ import AdminPage from '../pages/AdminPage/AdminPage'
 import AdminUser from '../components/AdminUser/AdminUser'
 import CollectionPage from '../pages/CollectionPage/CollectionPage'
 import ProductListByCategoryPage from "../pages/ProductListByCategoryPage/ProductListByCategoryPage";
-
+import VoucherPage from "../pages/VoucherPage/VoucherPage";
 export const routes = [
     {
       path: "/",
@@ -76,6 +76,11 @@ export const routes = [
     {
       path: "/category/:category",
       page: ProductListByCategoryPage,
+      isShowHeader: true,
+    },
+    {
+      path: "/voucher",
+      page: VoucherPage,
       isShowHeader: true,
     }
 ]

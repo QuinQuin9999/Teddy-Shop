@@ -240,6 +240,7 @@ const HeaderComponent = () => {
           )}
         </div>
         <Link to="/search">TẤT CẢ SẢN PHẨM</Link>
+        <Link to="/voucher">ƯU ĐÃI</Link>
       </Nav>
     </WrapperHeader>
   );
