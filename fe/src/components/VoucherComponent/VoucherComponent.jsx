@@ -10,7 +10,7 @@ const VoucherComponent = ({ voucher, onSave, onUse, onClick }) => {
         marginBottom: 16,
         padding: 10,
         borderRadius: 8,
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+        // boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
         position: "relative",
         overflow: "hidden",
       }}
