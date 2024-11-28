@@ -21,9 +21,9 @@ public class VnpayConfig {
     public static String vnp_Command = "pay";
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_ReturnUrl = "http://localhost:3000/cart";
-    public static String vnp_TmnCode = "I1FKIVSW";
-    public static String secretKey = "A2X5RSTSD041WPUTERFK8D8N99OSPW4S";
-    public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
+    public static String vnp_TmnCode = "5037O4BA";
+    public static String secretKey = "LQLTG6DHBF6Z0ZAVE5XXA9ZNE8WV7PL7";
+    public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchantv2/";
 
     public static String md5(String message) {
         String digest = null;
@@ -61,7 +61,7 @@ public class VnpayConfig {
         return digest;
     }
 
-    //Util for VNPAY
+    // Util for VNPAY
     public static String hashAllFields(Map fields) {
         List fieldNames = new ArrayList(fields.keySet());
         Collections.sort(fieldNames);
@@ -79,9 +79,9 @@ public class VnpayConfig {
                 sb.append("&");
             }
         }
-        return hmacSHA512(secretKey,sb.toString());
+        return hmacSHA512(secretKey, sb.toString());
     }
-    
+
     public static String hmacSHA512(final String key, final String data) {
         try {
 
@@ -104,7 +104,7 @@ public class VnpayConfig {
             return "";
         }
     }
-    
+
     public static String getIpAddress(HttpServletRequest request) {
         String ipAdress;
         try {

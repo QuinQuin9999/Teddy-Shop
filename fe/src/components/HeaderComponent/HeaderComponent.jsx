@@ -12,6 +12,7 @@ import { resetCart } from "../../redux/slices/cartSlice";
 import * as CartService from "../../services/CartService";
 import * as UserService from "../../services/UserService";
 import { FaUserCircle } from "react-icons/fa";
+import Cookies from "js-cookie";
 
 
 const HeaderComponent = () => {
@@ -71,6 +72,7 @@ const HeaderComponent = () => {
     dispatch(resetUser());
     dispatch(resetCart());
     setLoading(false);
+    Cookies.remove("savedVouchers")
     navigate("/");
   };
 

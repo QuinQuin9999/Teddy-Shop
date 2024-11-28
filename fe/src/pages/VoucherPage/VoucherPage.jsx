@@ -4,14 +4,14 @@ import { Button, message, Row, Col, Input, Select, Divider, Modal } from "antd";
 import axios from "axios";
 import VoucherComponent from "../../components/VoucherComponent/VoucherComponent";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";  // Thêm import này
+// import { useNavigate } from "react-router-dom";  // Thêm import này
 
 const { Search } = Input;
 const { Option } = Select;
 
-const saveVouchersToCookie = (vouchers) => {
-  Cookies.set("savedVouchers", JSON.stringify(vouchers), { expires: 7 });
-};
+// const saveVouchersToCookie = (vouchers) => {
+//   Cookies.set("savedVouchers", JSON.stringify(vouchers), { expires: 7 });
+// };
 
 const getVouchersFromCookie = () => {
   const saved = Cookies.get("savedVouchers");
@@ -24,26 +24,26 @@ const VoucherPage = () => {
   const [savedVouchers, setSavedVouchers] = useState(getVouchersFromCookie());
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
-  const [selectedVoucher, setSelectedVoucher] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  // const [selectedVoucher, setSelectedVoucher] = useState(null);
+  // const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const navigate = useNavigate();  // Khai báo hook useNavigate
+  // const navigate = useNavigate();  // Khai báo hook useNavigate
 
-  const showVoucherDetails = (voucher) => {
-    setSelectedVoucher(voucher);
-    setIsModalVisible(true);
-  };
+  // const showVoucherDetails = (voucher) => {
+  //   setSelectedVoucher(voucher);
+  //   setIsModalVisible(true);
+  // };
 
-  const closeModal = () => {
-    setSelectedVoucher(null);
-    setIsModalVisible(false);
-  };
+  // const closeModal = () => {
+  //   setSelectedVoucher(null);
+  //   setIsModalVisible(false);
+  // };
 
   const fetchVouchers = async () => {
     try {
       setLoading(true);
       const response = await axios.get("http://localhost:8083/api/v1/voucher/getAll");
-      setVouchers(response.data);
+      setVouchers(response.data.filter(item => new Date(item.toDate) >= new Date() && item.quantity > 0));
     } catch (error) {
       message.error("Không thể tải danh sách voucher!");
     } finally {
@@ -51,22 +51,22 @@ const VoucherPage = () => {
     }
   };
 
-  const handleSave = (voucher) => {
-    if (savedVouchers.some((v) => v._id === voucher._id)) {
-      message.warning("Voucher này đã được lưu!");
-    } else {
-      const updatedVouchers = [...savedVouchers, voucher];
-      setSavedVouchers(updatedVouchers);
-      saveVouchersToCookie(updatedVouchers);
-      message.success(`Đã lưu mã giảm giá ${voucher.name}!`);
-    }
-  };
+  // const handleSave = (voucher) => {
+  //   if (savedVouchers.some((v) => v._id === voucher._id)) {
+  //     message.warning("Voucher này đã được lưu!");
+  //   } else {
+  //     const updatedVouchers = [...savedVouchers, voucher];
+  //     setSavedVouchers(updatedVouchers);
+  //     saveVouchersToCookie(updatedVouchers);
+  //     message.success(`Đã lưu mã giảm giá ${voucher.name}!`);
+  //   }
+  // };
 
-  const handleUse = (voucher) => {
-    console.log("Dùng ngay voucher:", voucher);
+  // const handleUse = (voucher) => {
+  //   console.log("Dùng ngay voucher:", voucher);
 
-    navigate("/search");
-  };
+  //   navigate("/search");
+  // };
 
   const handleSearch = (value) => {
     setSearchTerm(value.toLowerCase());
@@ -91,7 +91,7 @@ const VoucherPage = () => {
 
   return (
     <div>
-      <Modal
+      {/* <Modal
         visible={isModalVisible}
         onCancel={closeModal}
         footer={null}
@@ -110,7 +110,7 @@ const VoucherPage = () => {
             <p><strong>Xem chi tiết:</strong> {selectedVoucher.description}</p>
           </div>
         )}
-      </Modal>
+      </Modal> */}
 
       <div style={{ padding: "20px", textAlign: "center" }}>
         <h2>Khám phá Ưu đãi Hấp dẫn!</h2>
@@ -167,7 +167,8 @@ const VoucherPage = () => {
           <Row gutter={[16, 16]} justify="center">
             {filteredVouchers.map((voucher) => (
               <Col key={voucher._id} span={12}>
-                <VoucherComponent voucher={voucher} onSave={handleSave} onUse={handleUse} onClick={() => showVoucherDetails(voucher)} />
+                {/* <VoucherComponent voucher={voucher} onSave={handleSave} onUse={handleUse} onClick={() => showVoucherDetails(voucher)} /> */}
+                <VoucherComponent voucher={voucher} />
               </Col>
             ))}
           </Row>
@@ -184,7 +185,9 @@ const VoucherPage = () => {
               <Row gutter={[16, 16]} justify="center">
                 {savedVouchers.map((voucher) => (
                   <Col key={voucher._id} span={12}>
-                    <VoucherComponent voucher={voucher} onSave={handleSave} onUse={handleUse} />
+                    {/* <VoucherComponent voucher={voucher} onSave={handleSave} onUse={handleUse} /> */}
+                    <VoucherComponent voucher={voucher} />
+
                   </Col>
                 ))}
               </Row>

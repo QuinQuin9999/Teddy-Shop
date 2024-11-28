@@ -5,12 +5,14 @@ import {
   MinusOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { Button, Select, Form, message, Radio, Space } from "antd";
+import { Button, Select, Form, message, Radio, Space, Modal, List } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import axios from "axios";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import StepComponent from "../../components/StepConponent/StepComponent";
+import VoucherComponent from "../../components/VoucherComponent/VoucherComponent";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import {
   decreaseProductAmount,
@@ -64,7 +66,50 @@ const CartPage = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams()
   const [bank, setBank] = useState('NCB')
+  const [isVoucherModalVisible, setIsVoucherModalVisible] = useState(false);
+  const [vouchers, setVouchers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedVoucher1, setSelectedVoucher1] = useState(null);
+  const [selectedVoucher2, setSelectedVoucher2] = useState(null);
+
+  const handleVoucher1Change = (e) => {
+    // console.log(selectedVoucher)
+    const selected1 = vouchers.find(voucher => voucher._id === e.target.value);
+    setSelectedVoucher1(selected1);
+  };
+
+  const handleVoucher2Change = (e) => {
+    console.log("Hi")
+    const selected2 = vouchers.find(voucher => voucher._id === e.target.value);
+    setSelectedVoucher2(selected2);
+  };
+
+  const resetVoucher = () => {
+    setSelectedVoucher1(null)
+    setSelectedVoucher2(null)
+  }
+
   // const [shipAddress, setShipAddress] = useState(user?.shippingAddress[user?.tempShipAddr])
+  const fetchVouchers = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("http://localhost:8083/api/v1/voucher/getAll");
+      setVouchers(response.data.filter(item => new Date(item.toDate) >= new Date() && item.quantity > 0));
+    } catch (error) {
+      message.error("Không thể tải danh sách voucher!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showVoucherList = async () => {
+    fetchVouchers();
+    setIsVoucherModalVisible(true)
+  }
+  const closeVoucherModal = () => {
+    // setSelectedVoucher(null);
+    setIsVoucherModalVisible(false);
+  };
 
   const mutationAddOrder = useMutationHook((data) => {
     console.log("data from mutation order: ", data)
@@ -203,8 +248,10 @@ const CartPage = () => {
   const deliveryPriceMemo = useMemo(() => {
     if (priceMemo > 1000000 || listChecked.length === 0) {
       return 0;
-    } else {
+    } else if (priceMemo > 500000) {
       return 12000;
+    } else {
+      return 30000;
     }
   }, [priceMemo, listChecked]);
 
@@ -213,6 +260,22 @@ const CartPage = () => {
       Number(priceMemo) - Number(priceDiscountMemo) + Number(deliveryPriceMemo)
     );
   }, [priceMemo, priceDiscountMemo, deliveryPriceMemo]);
+
+  const shipDiscount = useMemo(() => {
+    if (!selectedVoucher2) return 0;
+    const discount = (deliveryPriceMemo * selectedVoucher2.percent) / 100;
+    return Math.min(discount, selectedVoucher2.maxPrice);
+  }, [selectedVoucher2, deliveryPriceMemo]);
+  
+  const productDiscount = useMemo(() => {
+    if (!selectedVoucher1) return 0;
+    const discount = (totalPriceMemo * selectedVoucher1.percent) / 100;
+    return Math.min(discount, selectedVoucher1.maxPrice);
+  }, [selectedVoucher1, totalPriceMemo]);
+
+  const totalPriceOrder = useMemo(() => {
+    return Number(totalPriceMemo) - Number(shipDiscount) - Number(productDiscount)
+  }, [totalPriceMemo, shipDiscount, productDiscount])
 
   // const fetchPay = async () => {
   //   try {
@@ -237,7 +300,7 @@ const CartPage = () => {
   // };
   const fetchPay = async (bankCode) => {
     try {
-      const response = await fetch(`http://localhost:8083/api/vnpay/create_payment?amount=${totalPriceMemo}&bankCode=${bankCode}`,{
+      const response = await fetch(`http://localhost:8083/api/vnpay/create_payment?amount=${totalPriceOrder}&bankCode=${bankCode}`,{
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -264,9 +327,17 @@ const CartPage = () => {
     createOrder(false);
   };
   const createOrder = async (isPaid) => {
+    if (selectedVoucher1 !== null) {
+      let newSelectedVoucher1 = {...selectedVoucher1, quantity: selectedVoucher1.quantity - 1};
+      const updateVoucher1 = await axios.put(`http://localhost:8083/api/v1/voucher/update/${selectedVoucher1._id}`, newSelectedVoucher1);
+    }
+    if (selectedVoucher2 !== null) {
+      let newSelectedVoucher2 = {...selectedVoucher2, quantity: selectedVoucher2.quantity - 1};
+      const updateVoucher2 = await axios.put(`http://localhost:8083/api/v1/voucher/update/${selectedVoucher2._id}`, newSelectedVoucher2);
+    }
     const savedListCheck = cart?.tempChecklist;
     console.log("after get from saved ship address: ", user?.tempShipAddr, "  -  ", shipAddressIndex)    
-    console.log("saved temp other: ", cart?.tempOther.paymentMethod ,"  -  ", cart?.tempOther.shipmentMethod,"  -  ", cart?.tempOther.priceMemo,"  -  ", cart?.tempOther.deliveryPriceMemo,"  -  ", cart?.tempOther.totalPriceMemo);
+    console.log("saved temp other: ", cart?.tempOther.paymentMethod ,"  -  ", cart?.tempOther.shipmentMethod,"  -  ", cart?.tempOther.priceMemo,"  -  ", cart?.tempOther.deliveryPriceMemo,"  -  ", cart?.tempOther.totalPriceOrder);
     if (
       user?.accessToken &&
       cart?.orderItems.filter((item) => savedListCheck.includes(item.id))
@@ -312,7 +383,7 @@ const CartPage = () => {
             // totalPrice: totalPriceMemo,
             itemsPrice: cart?.tempOther.priceMemo,
             shippingPrice: cart?.tempOther.deliveryPriceMemo,
-            totalPrice: cart?.tempOther.totalPriceMemo,
+            totalPrice: cart?.tempOther.totalPriceOrder,
             isPaid: isPaid,
           },
           {
@@ -376,7 +447,7 @@ const CartPage = () => {
               : "inTPHCM",
           itemsPrice: cart?.tempOther.priceMemo,
           shippingPrice: cart?.tempOther.deliveryPriceMemo,
-          totalPrice: cart?.tempOther.totalPriceMemo,
+          totalPrice: cart?.tempOther.totalPriceOrder,
           isPaid: isPaid,
         },
         {
@@ -403,7 +474,7 @@ const CartPage = () => {
       console.log("state: ",user?.id," - ",shipmentMethod," - ",shipAddressIndex);
       dispatch(saveTempChecklist(listChecked));
       // dispatch(saveTempShipAddr(shipAddress));
-      dispatch(saveTempOther({paymentMethod, shipmentMethod, priceMemo, deliveryPriceMemo, totalPriceMemo}));
+      dispatch(saveTempOther({paymentMethod, shipmentMethod, priceMemo, deliveryPriceMemo, totalPriceOrder}));
 
       if (user?.id === '') {
         // khong co user
@@ -762,150 +833,215 @@ const CartPage = () => {
               </div>
             )}
           </WrapperLeft>
-          <WrapperRight>
-            <div style={{ width: "100%" }}>
-              <WrapperInfo>
-                <div>
-                  <span>Địa chỉ: </span>
-                  {processState === 0 ? (
-                    <></>
-                  ) : (
-                    <>
-                      <span style={{ fontWeight: "bold" }}>
-                        {/* {`${user?.address}`}{" "} */}
-                        {/* {
-                          const address = user?.shippingAddress[user?.tempShipAddr]
-                          return `${address.addressNumber}, ${address.addressWard}, ${address.addressDistrict}, ${address.addressProvince},`
-                        }{" "} */}
-                        {user?.id !== ''? 
-                          (user?.shippingAddress[user?.tempShipAddr]?.addressNumber + ", " + user?.shippingAddress[user?.tempShipAddr]?.addressWard + ", " + user?.shippingAddress[user?.tempShipAddr]?.addressDistrict + ", " + user?.shippingAddress[user?.tempShipAddr]?.addressProvince) 
-                          : (user?.tempShipAddrNone?.addressNumber + ", " + user?.tempShipAddrNone?.addressWard + ", " + user?.tempShipAddrNone?.addressDistrict + ", " + user?.tempShipAddrNone?.addressProvince)}
-                      </span>
-                      <span
-                        onClick={handleChangeAddress}
-                        style={{
-                          color: "#9255FD",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Thay đổi
-                      </span>
-                    </>
-                  )}
-                </div>
-              </WrapperInfo>
-              <WrapperInfo>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+          {processState !==2 && (
+              <WrapperRight>
+              <div style={{ width: "100%" }}>
+                <WrapperInfo>
+                  <div>
+                    <span>Địa chỉ: </span>
+                    {processState === 0 ? (
+                      <></>
+                    ) : (
+                      <>
+                        <span style={{ fontWeight: "bold" }}>
+                          {/* {`${user?.address}`}{" "} */}
+                          {/* {
+                            const address = user?.shippingAddress[user?.tempShipAddr]
+                            return `${address.addressNumber}, ${address.addressWard}, ${address.addressDistrict}, ${address.addressProvince},`
+                          }{" "} */}
+                          {user?.id !== ''? 
+                            (user?.shippingAddress[user?.tempShipAddr]?.addressNumber + ", " + user?.shippingAddress[user?.tempShipAddr]?.addressWard + ", " + user?.shippingAddress[user?.tempShipAddr]?.addressDistrict + ", " + user?.shippingAddress[user?.tempShipAddr]?.addressProvince) 
+                            : (user?.tempShipAddrNone?.addressNumber + ", " + user?.tempShipAddrNone?.addressWard + ", " + user?.tempShipAddrNone?.addressDistrict + ", " + user?.tempShipAddrNone?.addressProvince)}
+                        </span>
+                        <span
+                          onClick={handleChangeAddress}
+                          style={{
+                            color: "#9255FD",
+                            cursor: "pointer",
+                          }}
+                        >
+                          Thay đổi
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </WrapperInfo>
+                <WrapperInfo>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Tạm tính</span>
+                    <span
+                      style={{
+                        color: "#000",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {convertPrice(priceMemo)}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Phí giao hàng</span>
+                    <span
+                      style={{
+                        color: "#000",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {convertPrice(deliveryPriceMemo)}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Giảm giá</span>
+                    <span
+                      style={{
+                        color: "#000",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      - {convertPrice(priceDiscountMemo)}
+                    </span>
+                  </div>
+                </WrapperInfo>
+                <WrapperInfo>
+                  <div style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}>
+                    <span style={{color: "red"}}>Voucher</span>
+                    <Button icon={<PlusOutlined />} danger type="text" onClick={showVoucherList}></Button>
+                  </div>
+                  <Modal
+                    open={isVoucherModalVisible}
+                    onCancel={closeVoucherModal}
+                    footer={[
+                      <Button onClick={resetVoucher}>Đặt lại</Button>,
+                      <Button onClick={closeVoucherModal}>Áp dụng</Button>,
+                    ]
+                    }
+                  >
+                    <h4>Ưu đãi phí giao hàng</h4>
+                    <Radio.Group onChange={handleVoucher2Change} value={selectedVoucher2?._id}>
+                      {vouchers.map((voucher) => (
+                        voucher.type === 2 
+                        &&
+                        <Radio disabled={(totalPriceMemo >= voucher.minPriceOrder)? false : true} key={voucher._id} value={voucher._id} >
+                          <VoucherComponent voucher={voucher} />
+                        </Radio>
+                      ))}
+                    </Radio.Group>
+                    <h4>Ưu đãi sản phẩm</h4>
+                    <Radio.Group onChange={handleVoucher1Change} value={selectedVoucher1?._id}>
+                      {vouchers.map((voucher) => (
+                        voucher.type === 1 
+                        &&
+                        <Radio disabled={(totalPriceMemo >= voucher.minPriceOrder)? false : true} key={voucher._id} value={voucher._id}>
+                          <VoucherComponent voucher={voucher} />
+                        </Radio>
+                      ))}
+                    </Radio.Group>
+                  </Modal>
+                  <div>
+                    {selectedVoucher2 && (
+                      <span style={{
+                        color: "#000",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        float: "right"
+                      }}>- {convertPrice(shipDiscount)}</span>
+                    )}
+                  </div>
+                  <br />
+                  <div>
+                    {selectedVoucher1 && (
+                      <span style={{
+                        color: "#000",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        float: "right"
+                      }}>- {convertPrice(productDiscount)}</span>
+                    )}
+                  </div>
+                </WrapperInfo>
+                <br />
+                <WrapperTotal>
+                  <span>Tổng tiền</span>
+                  <span style={{ display: "flex", flexDirection: "column" }}>
+                    <span
+                      style={{
+                        color: "rgb(254, 56, 52)",
+                        fontSize: "24px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {convertPrice(totalPriceOrder)}
+                    </span>
+                    <span style={{ color: "#000", fontSize: "11px" }}>
+                      (Đã bao gồm VAT nếu có)
+                    </span>
+                  </span>
+                </WrapperTotal>
+              </div>
+              {processState == 1 && (
+                <ButtonComponent
+                  onClick={() => onBack()}
+                  size={40}
+                  styleButton={{
+                    background: "rgb(100, 100, 100)",
+                    height: "48px",
+                    width: "320px",
+                    border: "none",
+                    borderRadius: "4px",
                   }}
-                >
-                  <span>Tạm tính</span>
-                  <span
-                    style={{
-                      color: "#000",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {convertPrice(priceMemo)}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                  textButton={"Trở lại"}
+                  styleTextButton={{
+                    color: "#fff",
+                    fontSize: "15px",
+                    fontWeight: "700",
                   }}
-                >
-                  <span>Giảm giá</span>
-                  <span
-                    style={{
-                      color: "#000",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {convertPrice(priceDiscountMemo)}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <span>Phí giao hàng</span>
-                  <span
-                    style={{
-                      color: "#000",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {convertPrice(deliveryPriceMemo)}
-                  </span>
-                </div>
-              </WrapperInfo>
-              <WrapperTotal>
-                <span>Tổng tiền</span>
-                <span style={{ display: "flex", flexDirection: "column" }}>
-                  <span
-                    style={{
-                      color: "rgb(254, 56, 52)",
-                      fontSize: "24px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {convertPrice(totalPriceMemo)}
-                  </span>
-                  <span style={{ color: "#000", fontSize: "11px" }}>
-                    (Đã bao gồm VAT nếu có)
-                  </span>
-                </span>
-              </WrapperTotal>
-            </div>
-            {processState == 1 && (
+                ></ButtonComponent>
+              )}
               <ButtonComponent
-                onClick={() => onBack()}
+                isLoading = {isPaying}
+                onClick={() => handleAddCard()}
                 size={40}
                 styleButton={{
-                  background: "rgb(100, 100, 100)",
+                  background: "rgb(255, 57, 69)",
                   height: "48px",
                   width: "320px",
                   border: "none",
                   borderRadius: "4px",
                 }}
-                textButton={"Trở lại"}
+                textButton={processState == 0 ? "Tiếp theo" : "Mua hàng"}
                 styleTextButton={{
                   color: "#fff",
                   fontSize: "15px",
                   fontWeight: "700",
                 }}
               ></ButtonComponent>
-            )}
-            <ButtonComponent
-              isLoading = {isPaying}
-              onClick={() => handleAddCard()}
-              size={40}
-              styleButton={{
-                background: "rgb(255, 57, 69)",
-                height: "48px",
-                width: "320px",
-                border: "none",
-                borderRadius: "4px",
-              }}
-              textButton={processState == 0 ? "Tiếp theo" : "Mua hàng"}
-              styleTextButton={{
-                color: "#fff",
-                fontSize: "15px",
-                fontWeight: "700",
-              }}
-            ></ButtonComponent>
-          </WrapperRight>
+            </WrapperRight>
+            )
+          }
         </div>
       </div>
       <ShippingAddress
