@@ -54,14 +54,16 @@ const VoucherComponent = ({ voucher }) => {
         onCancel={closeModal}
         footer={null}
       >
-        <h3 style={{ padding: "12px", textAlign: "center" }}>Thông Tin Voucher</h3>
+        {selectedVoucher &&
+          (<h3 style={{ padding: "12px", textAlign: "center", color: "#994C00" }}>Thông Tin Voucher {selectedVoucher.code}</h3>)
+        }
         {selectedVoucher && (
           <div>
             <p><strong>Mã voucher:</strong> {selectedVoucher.code}</p>
             <p><strong>Tên voucher:</strong> {selectedVoucher.name}</p>
             <p><strong>Ưu đãi:</strong> {selectedVoucher.percent}%</p>
-            <p><strong>Giá trị đơn hàng tối thiểu:</strong> {selectedVoucher.minPriceOrder ? `${selectedVoucher.minPriceOrder} VNĐ` : "Không yêu cầu"}</p>
-            <p><strong>Giá trị giảm tối đa:</strong> {selectedVoucher.maxPrice ? `${selectedVoucher.minPriceOrder} VNĐ` : "Không giới hạn"}</p>
+            <p><strong>Giá trị đơn hàng tối thiểu:</strong> {selectedVoucher.minPriceOrder ? `${selectedVoucher.minPriceOrder.toLocaleString()} VNĐ` : "Không yêu cầu"}</p>
+            <p><strong>Giá trị giảm tối đa:</strong> {selectedVoucher.maxPrice ? `${selectedVoucher.maxPrice.toLocaleString()} VNĐ` : "Không giới hạn"}</p>
             <p><strong>Loại:</strong> {selectedVoucher.type === 1 ? "Dành cho sản phẩm" : "Dành cho phí ship"}</p>
             <p><strong>Ngày bắt đầu:</strong> {new Date(selectedVoucher.fromDate).toLocaleDateString()}</p>
             <p><strong>Ngày kết thúc:</strong> {new Date(selectedVoucher.toDate).toLocaleDateString()}</p>
@@ -76,7 +78,7 @@ const VoucherComponent = ({ voucher }) => {
         marginBottom: 16,
         padding: 10,
         borderRadius: 8,
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+        // boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -147,7 +149,7 @@ const VoucherComponent = ({ voucher }) => {
                 handleSave(voucher);
               }}
             >
-              Lưu
+              {(savedVouchers.some((v) => v._id === voucher._id)) ? "Đã lưu" : "Lưu"}
             </Button>
             <Button
               type="primary"
