@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import ChatBox from '../../components/ChatBox/Chatbox'
 import { WechatOutlined } from '@ant-design/icons'
 import { Button } from "antd";
+import DealSection from '../../components/DealSection/DealSection';
 
 const HomePage = () => {
   // const user = useSelector((state) => state.user.id);
@@ -45,11 +46,16 @@ const HomePage = () => {
     (acc[product.productType] = acc[product.productType] || []).push(product);
     return acc;
   }, {});
-
+  
+  const hotTrendData = groupedProducts['Labubu']
+  const handleViewDeal = (category) => {
+    navigate(`/category/Labubu`);
+  };
 
   return (
     <div>
       <ImageSlider />
+      <div style={{marginTop: '20px'}}><DealSection data={hotTrendData} onViewMore={handleViewDeal}/></div>
       <div style={{ maxWidth: '1200px', textAlign: 'center', margin: 'auto'  }}>
         {Object.keys(groupedProducts).map((category) => (
           <ProductListByCategory
