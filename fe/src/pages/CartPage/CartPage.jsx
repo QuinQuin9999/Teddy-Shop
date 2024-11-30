@@ -45,6 +45,12 @@ import {
   WrapperStyleHeaderDelivery,
   WrapperTotal,
 } from "./style";
+import Cookies from "js-cookie";
+
+const getVouchersFromCookie = () => {
+  const saved = Cookies.get("savedVouchers");
+  return saved ? JSON.parse(saved) : [];
+};
 
 const CartPage = () => {
   const cart = useSelector((state) => state.cart);
@@ -71,6 +77,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedVoucher1, setSelectedVoucher1] = useState(null);
   const [selectedVoucher2, setSelectedVoucher2] = useState(null);
+  const [savedVouchers, setSavedVouchers] = useState(getVouchersFromCookie());
 
   const handleVoucher1Change = (e) => {
     // console.log(selectedVoucher)
@@ -110,6 +117,10 @@ const CartPage = () => {
     // setSelectedVoucher(null);
     setIsVoucherModalVisible(false);
   };
+
+  const goToVoucherPage = () => {
+    navigate(`/voucher`);
+  }
 
   const mutationAddOrder = useMutationHook((data) => {
     console.log("data from mutation order: ", data)
@@ -935,28 +946,29 @@ const CartPage = () => {
                     open={isVoucherModalVisible}
                     onCancel={closeVoucherModal}
                     footer={[
-                      <Button onClick={resetVoucher}>Đặt lại</Button>,
-                      <Button onClick={closeVoucherModal}>Áp dụng</Button>,
+                      <Button type="primary" onClick={resetVoucher}>Đặt lại</Button>,
+                      <Button type="primary" onClick={closeVoucherModal}>Áp dụng</Button>,
+                      <Button type="primary" onClick={goToVoucherPage}>Tìm thêm các voucher khác</Button>,
                     ]
                     }
                   >
                     <h4>Ưu đãi phí giao hàng</h4>
                     <Radio.Group onChange={handleVoucher2Change} value={selectedVoucher2?._id}>
                       {vouchers.map((voucher) => (
-                        voucher.type === 2 
+                        (voucher.type === 2 && savedVouchers.some((v) => v._id === voucher._id))
                         &&
                         <Radio disabled={(totalPriceMemo >= voucher.minPriceOrder)? false : true} key={voucher._id} value={voucher._id} >
-                          <VoucherComponent voucher={voucher} />
+                          <VoucherComponent voucher={voucher} functionBtn={false}/>
                         </Radio>
                       ))}
                     </Radio.Group>
                     <h4>Ưu đãi sản phẩm</h4>
                     <Radio.Group onChange={handleVoucher1Change} value={selectedVoucher1?._id}>
                       {vouchers.map((voucher) => (
-                        voucher.type === 1 
+                        (voucher.type === 1 && savedVouchers.some((v) => v._id === voucher._id))
                         &&
                         <Radio disabled={(totalPriceMemo >= voucher.minPriceOrder)? false : true} key={voucher._id} value={voucher._id}>
-                          <VoucherComponent voucher={voucher} />
+                          <VoucherComponent voucher={voucher} functionBtn={false} />
                         </Radio>
                       ))}
                     </Radio.Group>

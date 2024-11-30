@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import { Button, message, Row, Col, Input, Select, Divider, Modal } from "antd";
 import axios from "axios";
 import VoucherComponent from "../../components/VoucherComponent/VoucherComponent";
 import Cookies from "js-cookie";
-// import { useNavigate } from "react-router-dom";  // Thêm import này
-
+import { useNavigate } from "react-router-dom";
 const { Search } = Input;
-const { Option } = Select;
 
 const saveVouchersToCookie = (vouchers) => {
   Cookies.set("savedVouchers", JSON.stringify(vouchers), { expires: 7 });
@@ -17,7 +14,6 @@ const getVouchersFromCookie = () => {
   const saved = Cookies.get("savedVouchers");
   return saved ? JSON.parse(saved) : [];
 };
-
 const validateSavedVouchers = (allVouchers, savedVouchers) => {
   const validVoucherIds = allVouchers.map((voucher) => voucher._id);
   const updatedSavedVouchers = savedVouchers.filter((voucher) =>
@@ -44,8 +40,9 @@ const VoucherPage = () => {
   const [visibleShipVouchers, setVisibleShipVouchers] = useState(2);
 
   const [visibleSavedVouchers, setVisibleSavedVouchers] = useState(2);
+  // var disabledSaveBtn;
 
-  // const navigate = useNavigate();  // Khai báo hook useNavigate
+  const navigate = useNavigate();
 
   // const showVoucherDetails = (voucher) => {
   //   setSelectedVoucher(voucher);
@@ -56,6 +53,7 @@ const VoucherPage = () => {
   //   setSelectedVoucher(null);
   //   setIsModalVisible(false);
   // };
+
 
   const fetchVouchers = async () => {
     try {
@@ -72,17 +70,16 @@ const VoucherPage = () => {
     }
   };
 
-  // const handleSave = (voucher) => {
-  //   if (savedVouchers.some((v) => v._id === voucher._id)) {
-  //     message.warning("Voucher này đã được lưu!");
-  //   } else {
-  //     const updatedVouchers = [...savedVouchers, voucher];
-  //     setSavedVouchers(updatedVouchers);
-  //     saveVouchersToCookie(updatedVouchers);
-  //     message.success(`Đã lưu mã giảm giá ${voucher.name}!`);
-  //   }
-  // };
-
+  const handleSave = (voucher) => {
+    if (savedVouchers.some((v) => v._id === voucher._id)) {
+      message.warning("Voucher này đã được lưu!");
+    } else {
+      const updatedVouchers = [...savedVouchers, voucher];
+      setSavedVouchers(updatedVouchers);
+      saveVouchersToCookie(updatedVouchers);
+      message.success(`Đã lưu mã giảm giá ${voucher.name}!`);
+    }
+  };
   const handleLoadMoreSaved = () => {
     if (visibleSavedVouchers + 4 >= savedVouchers.length) {
       setVisibleSavedVouchers(savedVouchers.length);
@@ -106,30 +103,30 @@ const VoucherPage = () => {
     }
   };
 
-  // const handleUse = (voucher) => {
-  //   console.log("Dùng ngay voucher:", voucher);
+  const handleUse = (voucher) => {
+    console.log("Dùng ngay voucher:", voucher);
 
-  //   navigate("/search");
-  // };
+    navigate("/search");
+  };
 
   const handleSearch = (value) => {
     setSearchTerm(value.toLowerCase());
   };
 
-  const handleFilter = (value) => {
-    setFilterCategory(value);
-  };
+
 
   useEffect(() => {
     fetchVouchers();
   }, []);
+
+
 
   const filteredVouchers = vouchers.filter(
     (voucher) =>
       voucher.name.toLowerCase().includes(searchTerm) &&
       (filterCategory
         ? (filterCategory === "product" && voucher.type === 1) ||
-          (filterCategory === "ship" && voucher.type === 2)
+        (filterCategory === "ship" && voucher.type === 2)
         : true)
   );
   const hasMoreProductVouchers = filteredVouchers.filter(v => v.type === 1).length > 2;
@@ -141,14 +138,16 @@ const VoucherPage = () => {
         onCancel={closeModal}
         footer={null}
       >
-        <h3 style={{ padding: "12px", textAlign: "center" }}>Thông Tin Voucher</h3>
+        {selectedVoucher &&
+          (<h3 style={{ padding: "12px", textAlign: "center", color: "#994C00" }}>Thông Tin Voucher {selectedVoucher.code}</h3>)
+        }
         {selectedVoucher && (
           <div>
             <p><strong>Mã voucher:</strong> {selectedVoucher.code}</p>
             <p><strong>Tên voucher:</strong> {selectedVoucher.name}</p>
             <p><strong>Ưu đãi:</strong> {selectedVoucher.percent}%</p>
             <p><strong>Giá trị đơn hàng tối thiểu:</strong> {selectedVoucher.minPriceOrder ? `${selectedVoucher.minPriceOrder} VNĐ` : "Không yêu cầu"}</p>
-            <p><strong>Giá trị giảm tối đa:</strong> {selectedVoucher.maxPrice ? `${selectedVoucher.minPriceOrder} VNĐ` : "Không giới hạn"}</p>
+            <p><strong>Giá trị giảm tối đa:</strong> {selectedVoucher.maxPrice ? `${selectedVoucher.maxPrice} VNĐ` : "Không giới hạn"}</p>
             <p><strong>Loại:</strong> {selectedVoucher.type === 1 ? "Dành cho sản phẩm" : "Dành cho phí ship"}</p>
             <p><strong>Ngày bắt đầu:</strong> {new Date(selectedVoucher.fromDate).toLocaleDateString()}</p>
             <p><strong>Ngày kết thúc:</strong> {new Date(selectedVoucher.toDate).toLocaleDateString()}</p>
@@ -185,6 +184,7 @@ const VoucherPage = () => {
 
       </div>
 
+
       <h3 style={{ textAlign: "center", marginTop: "20px", color: "#994C00" }}>Ưu Đãi Dành Cho Sản Phẩm</h3>
       <p style={{ textAlign: "center", margin: "10px 15% 10px 15%" }}>"Tại BABYBEAR, chúng tôi luôn mang đến những ưu đãi đặc biệt cho các sản phẩm độc đáo của mình! Hãy nhanh tay sở hữu các món đồ siêu dễ thương với mức giá vô cùng ưu đãi. Giảm ngay lên đến 50% cho các sản phẩm yêu thích! 😍"</p>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
@@ -196,14 +196,19 @@ const VoucherPage = () => {
       </div>
       <p style={{ textAlign: "center", margin: "10px 15% 10px 15%" }}>"Chỉ với một cú click, bạn đã có thể tiết kiệm ngay cho những sản phẩm đáng yêu này. Đừng bỏ lỡ!!!🌟"</p>
 
-
       <div style={{ display: "flex", justifyContent: "center" }}>
         <div style={{ maxWidth: "800px", width: "100%" }}>
           <Row gutter={[16, 16]} justify="center">
-          {filteredVouchers.filter(voucher => voucher.type === 1).slice(0, visibleProductVouchers).map((voucher) => (
+            {filteredVouchers.filter(voucher => voucher.type === 1).slice(0, visibleProductVouchers).map((voucher) => (
               <Col key={voucher._id} span={12}>
-                {/* <VoucherComponent voucher={voucher} onSave={handleSave} onUse={handleUse} onClick={() => showVoucherDetails(voucher)} /> */}
-                <VoucherComponent voucher={voucher} />
+                <VoucherComponent
+                  voucher={voucher}
+                  onSave={handleSave}
+                  onUse={handleUse}
+                  // onClick={() => showVoucherDetails(voucher)}
+                  disabledSaveBtn={(savedVouchers.some((v) => v._id === voucher._id)) ? true : false}
+                  functionBtn={true}
+                />
               </Col>
             ))}
           </Row>
@@ -217,6 +222,8 @@ const VoucherPage = () => {
         </div>
       </div>
 
+
+
       <h3 style={{ textAlign: "center", marginTop: "20px", color: "#994C00" }}>Ưu Đãi Dành Cho Phí Vận Chuyển</h3>
       <p style={{ textAlign: "center", margin: "10px 15% 10px 15%" }}>"Chúng tôi hiểu rằng phí ship đôi khi là một nỗi lo, nhưng đừng lo! Hãy tận dụng ưu đãi vận chuyển miễn phí hoặc giảm giá để tiết kiệm hơn mỗi lần mua sắm tại BABYBEAR! 🚚✨"</p>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
@@ -228,13 +235,20 @@ const VoucherPage = () => {
       </div>
       <p style={{ textAlign: "center", margin: "10px 15% 10px 15%" }}>"Nhận ngay ưu đãi giao hàng miễn phí cho các đơn hàng đủ điều kiện. Đừng để phí ship cản trở niềm vui mua sắm của bạn!💖"</p>
 
+
       <div style={{ display: "flex", justifyContent: "center" }}>
         <div style={{ maxWidth: "800px", width: "100%" }}>
           <Row gutter={[16, 16]} justify="center">
             {filteredVouchers.filter(voucher => voucher.type === 2).slice(0, visibleShipVouchers).map((voucher) => (
               <Col key={voucher._id} span={12}>
-                {/* <VoucherComponent voucher={voucher} onSave={handleSave} onUse={handleUse} onClick={() => showVoucherDetails(voucher)} /> */}
-                <VoucherComponent voucher={voucher} />
+                <VoucherComponent
+                  voucher={voucher}
+                  onSave={handleSave}
+                  onUse={handleUse}
+                  // onClick={() => showVoucherDetails(voucher)}
+                  disabledSaveBtn={(savedVouchers.some((v) => v._id === voucher._id)) ? true : false}
+                  functionBtn={true}
+                />
               </Col>
             ))}
           </Row>
@@ -248,6 +262,8 @@ const VoucherPage = () => {
         </div>
       </div>
 
+
+
       <h3 style={{ marginTop: "20px", textAlign: "center", color: "#994C00" }}>Danh sách mã giảm giá đã lưu</h3>
       <p style={{ textAlign: "center", margin: "10px 15% 10px 15%" }}>"Cùng khám phá lại những ưu đãi hấp dẫn mà bạn không thể bỏ lỡ. Tất cả những mã giảm giá yêu thích của bạn đang chờ đợi để giúp bạn tiết kiệm ngay hôm nay!📲 "</p>
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
@@ -260,16 +276,21 @@ const VoucherPage = () => {
       <p style={{ textAlign: "center", margin: "10px 15% 10px 15%" }}>"Đừng để bất kỳ ưu đãi nào vuột mất! Tìm lại những mã giảm giá đã lưu và áp dụng ngay cho các đơn hàng tiếp theo để nhận thêm nhiều ưu đãi hấp dẫn!🎉"</p>
 
 
+
       <div>
-      {savedVouchers.length > 0 ? (
+        {savedVouchers.length > 0 ? (
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div style={{ maxWidth: "800px", width: "100%" }}>
               <Row gutter={[16, 16]} justify="center">
                 {savedVouchers.slice(0, visibleSavedVouchers).map((voucher) => (
                   <Col key={voucher._id} span={12}>
-                    {/* <VoucherComponent voucher={voucher} onSave={handleSave} onUse={handleUse} /> */}
-                    <VoucherComponent voucher={voucher} />
-
+                    <VoucherComponent
+                      voucher={voucher}
+                      onSave={handleSave}
+                      onUse={handleUse}
+                      disabledSaveBtn={(savedVouchers.some((v) => v._id === voucher._id)) ? true : false}
+                      functionBtn={true}
+                    />
                   </Col>
                 ))}
               </Row>
@@ -286,7 +307,11 @@ const VoucherPage = () => {
           <p style={{ textAlign: "center" }}>Bạn chưa lưu mã giảm giá nào!</p>
         )}
       </div>
+      <p style={{ textAlign: "center", margin: "10px 15% 10px 15%" }}>"Với BABYBEAR, mỗi lần mua sắm đều là một cuộc phiêu lưu đầy hấp dẫn! Khám phá những mã giảm giá siêu hấp dẫn cho sản phẩm yêu thích, ưu đãi miễn phí vận chuyển và các ưu đãi đặc biệt chỉ dành riêng cho bạn. Hãy lưu lại ngay các voucher hấp dẫn này và không bao giờ bỏ lỡ một cơ hội tuyệt vời nào!"</p>
+
+
     </div>
+
   );
 };
 
