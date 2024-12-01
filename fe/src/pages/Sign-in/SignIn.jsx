@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { importCart, resetCart } from "../../redux/slices/cartSlice";
 import { resetUser, updateUser } from "../../redux/slices/userSlice";
 import * as CartService from "../../services/CartService";
+import Cookies from "js-cookie";
 import * as UserService from "../../services/UserService";
 import {
   InlineWrapper,
@@ -110,7 +111,7 @@ const SignIn = () => {
           localStorage.removeItem("rememberMe");
           localStorage.removeItem("email"); // Xóa thông tin đăng nhập nếu không được chọn
         }
-        if (id === "66795d5344cfff55a1faf61a") {
+        if (id === "674bc564b71b6f0adc1a58d7") {
           data.data.isAdmin = true;
         }
         console.log(data.data);
@@ -119,6 +120,7 @@ const SignIn = () => {
         if (location?.state) {
           navigate(location?.state);
         } else navigate("/");
+        Cookies.remove("savedVouchers")
       } else {
         if (
           data.status === "ERR" &&
