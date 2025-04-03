@@ -32,7 +32,7 @@ Admin Features
 
 Backend (Spring Boot)
 
-cd backend
+cd TeddyShopProject
 
 mvn clean install
 
@@ -41,7 +41,7 @@ mvn spring-boot:run
 
 Frontend (ReactJS)
 
-cd frontend
+cd fe
 
 npm install
 
