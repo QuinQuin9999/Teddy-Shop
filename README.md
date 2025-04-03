@@ -16,10 +16,12 @@ Admin Features
 ✅ Generate reports on sales and inventory
 
 🔧 Installation & Setup
+
 Backend (Spring Boot)
 cd backend
 mvn clean install
 mvn spring-boot:run
+
 Frontend (ReactJS)
 cd frontend
 npm install
